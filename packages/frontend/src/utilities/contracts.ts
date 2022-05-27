@@ -2,9 +2,11 @@ import { Contract, ethers } from 'ethers';
 import Rewards from '../constants/abis/Rewards/Rewards.sol/Rewards.json';
 import Lottery from '../constants/abis/Lottery/Lottery.sol/Lottery.json';
 import Auction from '../constants/abis/Auction/Auction.sol/Auction.json';
-import type { Rewards as RewardsContract } from '@/types/Rewards';
-import type { Auction as AuctionContract } from '@/types/Auction';
-import type { Lottery as LotteryContract } from '@/types/Lottery';
+import type {
+  Lottery as LotteryContract,
+  Auction as AuctionContract,
+  Rewards as RewardsContract,
+} from '@/types/contracts';
 import { parameters } from '../constants/config';
 import web3Modal from './web3Modal';
 
@@ -98,7 +100,7 @@ export async function getCoinBalance() {
 /**
  * This function is called server-side, so web3Modal isn't available
  * if auction is finished and unclaimed, returns the winning wallet address;
- * if auction is already settled and claimed, throws an error 
+ * if auction is already settled and claimed, throws an error
  */
 export async function getUnclaimedAuctionWinner(auctionId: number): Promise<string> {
   console.log(`getUnclaimedAuctionWinner(${auctionId})`);
@@ -108,7 +110,7 @@ export async function getUnclaimedAuctionWinner(auctionId: number): Promise<stri
   const signer = new ethers.Wallet(privateKey, provider);
   const contract = new ethers.Contract(AUCTION_ADDRESS, Auction.abi, signer);
   const auctionState = await contract.getAuction(auctionId);
-  if (auctionState.settled || auctionState.endTime > (new Date().getTime() / 1000)) {
+  if (auctionState.settled || auctionState.endTime > new Date().getTime() / 1000) {
     throw Error(`Auction ${auctionId} is already settled or hasn't finished yet.`);
   }
   return auctionState.highestBidder;

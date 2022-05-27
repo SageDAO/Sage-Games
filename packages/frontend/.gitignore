@@ -3,7 +3,7 @@
 .next
 .vercel
 # typechain generated files
-types/*
+types/contracts/
 !types/react-table-config.d.ts
 tests/e2e/screenshots
 tests/e2e/videos

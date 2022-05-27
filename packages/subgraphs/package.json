@@ -1,5 +1,5 @@
 {
-  "name": "urn",
+  "name": "urn-subgraph",
   "license": "UNLICENSED",
   "scripts": {
     "codegen": "graph codegen",

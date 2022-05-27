@@ -1,7 +1,7 @@
 import { User } from '@prisma/client';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { toast } from 'react-toastify';
-import type { MemeXLottery as LotteryContract } from '@/types/MemeXLottery';
+import type { Lottery as LotteryContract } from '@/types/contracts';
 import { getLotteryContract } from '@/utilities/contracts';
 
 export interface LotteryParticipant {
