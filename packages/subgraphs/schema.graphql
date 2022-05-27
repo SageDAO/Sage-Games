@@ -1,0 +1,63 @@
+enum LotteryStatus {
+  Created
+  Cancelled
+  Closed
+  Completed
+}
+
+type Lottery @entity {
+  id: ID!
+  status: LotteryStatus!
+  tickets: [Ticket!]! @derivedFrom(field: "lottery")
+  claimedPrizes: [ClaimedPrize!]! @derivedFrom(field: "lottery")
+  refunds: [Refund!]! @derivedFrom(field: "lottery")
+}
+
+enum TicketTier {
+  Member
+  NonMember
+}
+
+type Ticket {
+  id: ID!
+  lottery: Lottery!
+  ticketNumber: Int!
+  address: Bytes!
+  tier: TicketTier!
+}
+
+type ClaimedPrize {
+  id: ID!
+  lottery: Lottery!
+  address: Bytes!
+  prizeId: Int!
+}
+
+type Refund {
+  id: ID!
+  lottery: Lottery!
+  address: Bytes!
+  amount: BigInt!
+}
+
+enum AuctionStatus {
+  Created
+  Settled
+  Cancelled
+}
+
+type Auction @entity {
+  id: ID! # auctionId
+  status: AuctionStatus!
+  bids: [Bid!]! @derivedFrom(field: "auction")
+  highestBid: Bid
+  endTime: Int
+}
+
+type Bid {
+  id: ID! # tx id
+  auction: Auction!
+  bidder: Bytes! # address
+  amount: BigInt!
+  endTime: Int!
+}
