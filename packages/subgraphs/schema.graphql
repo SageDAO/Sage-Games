@@ -18,7 +18,7 @@ enum TicketTier {
   NonMember
 }
 
-type Ticket {
+type Ticket @entity {
   id: ID!
   lottery: Lottery!
   ticketNumber: Int!
@@ -26,14 +26,14 @@ type Ticket {
   tier: TicketTier!
 }
 
-type ClaimedPrize {
+type ClaimedPrize @entity {
   id: ID!
   lottery: Lottery!
   address: Bytes!
   prizeId: Int!
 }
 
-type Refund {
+type Refund @entity {
   id: ID!
   lottery: Lottery!
   address: Bytes!
@@ -50,11 +50,12 @@ type Auction @entity {
   id: ID! # auctionId
   status: AuctionStatus!
   bids: [Bid!]! @derivedFrom(field: "auction")
-  highestBid: Bid
+  highestBid: BigInt
+  highestBidder: Bytes # address
   endTime: Int
 }
 
-type Bid {
+type Bid @entity {
   id: ID! # tx id
   auction: Auction!
   bidder: Bytes! # address
