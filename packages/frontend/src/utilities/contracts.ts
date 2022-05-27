@@ -1,10 +1,10 @@
 import { Contract, ethers } from 'ethers';
 import Rewards from '../constants/abis/Rewards/Rewards.sol/Rewards.json';
-import MemeXLottery from '../constants/abis/Lottery/MemeXLottery.sol/MemeXLottery.json';
-import MemeXAuction from '../constants/abis/Auction/MemeXAuction.sol/MemeXAuction.json';
-import type { Rewards as RewardsContract } from '../../types/Rewards';
-import type { MemeXAuction as AuctionContract } from '@/types/MemeXAuction';
-import type { MemeXLottery as LotteryContract } from '@/types/MemeXLottery';
+import Lottery from '../constants/abis/Lottery/Lottery.sol/Lottery.json';
+import Auction from '../constants/abis/Auction/Auction.sol/Auction.json';
+import type { Rewards as RewardsContract } from '@/types/Rewards';
+import type { Auction as AuctionContract } from '@/types/Auction';
+import type { Lottery as LotteryContract } from '@/types/Lottery';
 import { parameters } from '../constants/config';
 import web3Modal from './web3Modal';
 
@@ -17,12 +17,12 @@ interface ContractDetails {
 
 const lotteryContractDetails: ContractDetails = {
   address: LOTTERY_ADDRESS,
-  abi: MemeXLottery.abi,
+  abi: Lottery.abi,
 };
 
 const auctionContractDetails: ContractDetails = {
   address: AUCTION_ADDRESS,
-  abi: MemeXAuction.abi,
+  abi: Auction.abi,
 };
 
 const pointsContractDetails: ContractDetails = {
@@ -106,7 +106,7 @@ export async function getUnclaimedAuctionWinner(auctionId: number): Promise<stri
   const providerUrl = process.env.RPC_PROVIDER_URL || '';
   const provider = new ethers.providers.JsonRpcProvider(providerUrl);
   const signer = new ethers.Wallet(privateKey, provider);
-  const contract = new ethers.Contract(AUCTION_ADDRESS, MemeXAuction.abi, signer);
+  const contract = new ethers.Contract(AUCTION_ADDRESS, Auction.abi, signer);
   const auctionState = await contract.getAuction(auctionId);
   if (auctionState.settled || auctionState.endTime > (new Date().getTime() / 1000)) {
     throw Error(`Auction ${auctionId} is already settled or hasn't finished yet.`);
