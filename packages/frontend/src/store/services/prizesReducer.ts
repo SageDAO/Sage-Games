@@ -76,7 +76,7 @@ export const prizesApi = createApi({
           );
           toast.promise(tx.wait(), {
             pending: 'Request submitted to the blockchain, awaiting confirmation...',
-            success: 'Success! NFT claimed!',
+            success: 'Success! NFT claimed and moved to your collection!',
             error: 'Failure! Unable to complete request.',
           });
           await tx.wait();

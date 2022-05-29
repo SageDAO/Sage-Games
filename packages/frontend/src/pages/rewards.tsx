@@ -34,9 +34,11 @@ export default function rewards() {
         style={{
           display: 'flex',
           flexDirection: 'row',
-          gap: '10px',
+          gap: '20px',
           textAlign: 'center',
           margin: '25px',
+          justifyContent: 'center',
+          flexWrap: 'wrap'
         }}
       >
         {false && prizes?.length == 0 && (
@@ -46,6 +48,24 @@ export default function rewards() {
         )}
         {prizes?.map((p: GamePrize, i: number) => (
           <PrizeCard prize={p} key={i} />
+        ))}
+        {[1, 2, 3].map((i) => (
+          <PrizeCard
+            prize={{
+              nftId: 1,
+              dropId: 1,
+              auctionId: 1,
+              lotteryId: 1,
+              lotteryTicketNumber: 1,
+              nftName: 'nft name',
+              artistUsername: 'artist_username',
+              artistDisplayName: 'artist display name',
+              artistProfilePicture: '',
+              s3Path:
+                'https://memex-dev.s3.us-east-2.amazonaws.com/1653686761682/nft_2.jpg',
+              isVideo: false,
+            }}
+          />
         ))}
       </div>
     </div>
