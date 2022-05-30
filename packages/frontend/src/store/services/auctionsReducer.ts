@@ -106,7 +106,7 @@ async function setupBidListener(auctionId: number, stateUpdateCallback: () => vo
   }
 }
 
-export async function bid(auctionId: number, amount: number) {
+export async function bid({ auctionId, amount }: { auctionId: number; amount: number }) {
   console.log(`bid(${auctionId}, ${amount})`);
   try {
     const tx = await (

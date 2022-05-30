@@ -32,9 +32,9 @@ export default function drop({ drop }: Props) {
   }
   const { Drawings, Lotteries } = filterDrawingsFromLottery(drop.Lotteries);
   const { Auctions } = drop;
-  const hasAuctions: boolean = !!Auctions.length;
-  const hasDrawings: boolean = !!Lotteries.length;
-  const hasLotteries: boolean = !!Drawings.length;
+  const hasAuctions: boolean = Auctions.length > 0;
+  const hasDrawings: boolean = Drawings.length > 0;
+  const hasLotteries: boolean = Lotteries.length > 0;
 
   //TODO: add admin only functionalities
   //if (!drop.approvedBy && user?.role !== "ADMIN") return null;
@@ -106,32 +106,38 @@ export default function drop({ drop }: Props) {
         </div>
       </section>
       {/* --------------------LOTTERIES------------------------ */}
-      <section className='games' id='lotteries'>
-        <h1 className='games__title'>Lotteries</h1>
-        <div className='games__grid'>
-          {Lotteries.map((l: Lottery_include_Nft) => {
-            return <LotteryTile lottery={l} artist={drop.Artist} key={l.id} />;
-          })}
-        </div>
-      </section>
+      {hasLotteries && (
+        <section className='games' id='lotteries'>
+          <h1 className='games__title'>Lotteries</h1>
+          <div className='games__grid'>
+            {Lotteries.map((l: Lottery_include_Nft) => {
+              return <LotteryTile lottery={l} artist={drop.Artist} key={l.id} />;
+            })}
+          </div>
+        </section>
+      )}
       {/* --------------------Drawings------------------------ */}
-      <section className='games' id='drawings'>
-        <h1 className='games__title'>Drawings</h1>
-        <div className='games__grid'>
-          {Drawings.map((d: Lottery_include_Nft) => {
-            return <DrawingTile drawing={d} artist={drop.Artist} key={d.id} />;
-          })}
-        </div>
-      </section>
+      {hasDrawings && (
+        <section className='games' id='drawings'>
+          <h1 className='games__title'>Drawings</h1>
+          <div className='games__grid'>
+            {Drawings.map((d: Lottery_include_Nft) => {
+              return <DrawingTile drawing={d} artist={drop.Artist} key={d.id} />;
+            })}
+          </div>
+        </section>
+      )}
       {/* --------------------AUCTIONS------------------------ */}
-      <section className='games' id='auctions'>
-        <h1 className='games__title'>Auctions</h1>
-        <div className='games__grid'>
-          {Auctions.map((a: Auction_include_Nft) => {
-            return <AuctionTile auction={a} artist={drop.Artist} key={a.id} />;
-          })}
-        </div>
-      </section>
+      {hasAuctions && (
+        <section className='games' id='auctions'>
+          <h1 className='games__title'>Auctions</h1>
+          <div className='games__grid'>
+            {Auctions.map((a: Auction_include_Nft) => {
+              return <AuctionTile auction={a} artist={drop.Artist} key={a.id} />;
+            })}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

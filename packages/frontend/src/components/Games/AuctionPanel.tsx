@@ -1,10 +1,10 @@
 import { Auction_include_Nft } from '@/prisma/types';
-import { useGetAuctionStateQuery, AuctionState } from '@/store/services/auctionsReducer';
+import { useGetAuctionStateQuery } from '@/store/services/auctionsReducer';
 import { useGetUserDisplayInfoQuery } from '@/store/services/user';
 useGetUserDisplayInfoQuery;
 import Image from 'next/image';
 import { useBalance, useAccount } from 'wagmi';
-import PlaceBidModal from '@/components/Modals/PlaceBidModal';
+import PlaceBidModal from '@/components/Modals/Games/PlaceBidModal';
 import useModal from '@/hooks/useModal';
 import { User } from '@prisma/client';
 
