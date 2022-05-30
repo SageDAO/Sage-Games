@@ -1,13 +1,11 @@
 import {
   BuyTicketRequest,
-  LotteryWithNftsAndArtist,
   TicketPriceTier,
   useBuyTicketsMutation,
 } from '@/store/services/lotteriesReducer';
 import Modal, { Props as ModalProps } from '@/components/Modals';
 import { useSession } from 'next-auth/react';
-import { Lottery_include_Nft } from '@/prisma/types';
-import { User } from '@prisma/client';
+import { Lottery_include_Nft, User } from '@/prisma/types';
 
 interface Props extends ModalProps {
   lottery: Lottery_include_Nft;
@@ -96,14 +94,13 @@ function GetTicketModal({ isOpen, closeModal, lottery, artist }: Props) {
           )}
         </pre>
         <button name={TicketPriceTier.VIP.toString()} onClick={handleBuyTicketClick}>
-          MEME VIPs: {lottery.vipCostPerTicketPoints} PINA + {lottery.vipCostPerTicketCoins} FTM
+          MEME VIPs: {lottery.vipCostPerTicketPoints} points + {lottery.vipCostPerTicketCoins} coins
         </button>
         <button name={TicketPriceTier.Member.toString()} onClick={handleBuyTicketClick}>
-          PINA holders: {lottery.memberCostPerTicketPoints} PINA +{' '}
-          {lottery.memberCostPerTicketCoins} FTM
+          PINA holders: {lottery.memberCostPerTicketPoints} points + {lottery.memberCostPerTicketCoins} coins
         </button>
         <button name={TicketPriceTier.NonMember.toString()} onClick={handleBuyTicketClick}>
-          General: {lottery.nonMemberCostPerTicketCoins} FTM
+          General: {lottery.nonMemberCostPerTicketCoins} coins
         </button>
       </div>
     </Modal>
