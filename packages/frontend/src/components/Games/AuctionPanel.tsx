@@ -28,6 +28,8 @@ function computeGameStatus(start: number, end: number, settled: boolean): GameSt
   return 'Error';
 }
 
+
+// styles/components/_game-panel.scss
 export default function AuctionPanel({ auction, artist }: Props) {
   const {
     isOpen: isPlaceBidModalOpen,
@@ -51,40 +53,40 @@ export default function AuctionPanel({ auction, artist }: Props) {
       )
     : 'Error';
   return (
-    <div className='auction-panel'>
+    <div className='game-panel'>
       <PlaceBidModal
         isOpen={isPlaceBidModalOpen}
         closeModal={closePlaceBidModal}
         auction={auction}
         artist={artist}
       />
-      <div className='auction-panel__header'>
-        <h1 className='auction-panel__header-title'>Auction</h1>
-        <div className='auction-panel__balance-label'>
+      <div className='game-panel__header'>
+        <h1 className='game-panel__header-title'>Auction</h1>
+        <div className='game-panel__balance-label'>
           Balance
-          <div className='auction-panel__balance'>
+          <div className='game-panel__balance'>
             {userBalance?.formatted} {userBalance?.symbol}
           </div>
         </div>
       </div>
-      <div className='auction-panel__pricing'>
-        <div className='auction-panel__pricing-item'>
-          <h1 className='auction-panel__pricing-label'>Current Bid</h1>
-          <div className='auction-panel__price'>
+      <div className='game-panel__pricing'>
+        <div className='game-panel__pricing-item'>
+          <h1 className='game-panel__pricing-label'>Current Bid</h1>
+          <div className='game-panel__price'>
             {auctionState?.highestBid || 0}
-            <div className='auction-panel__price-unit'>ETH</div>
+            <div className='game-panel__price-unit'>ETH</div>
           </div>
         </div>
         {highestBidder && (
-          <div className='auction-panel__pricing-item'>
-            <h1 className='auction-panel__pricing-label'>Highest Bidder</h1>
-            <div className='auction-panel__highest-bidder'>
-              <div className='auction-panel__highest-bidder-pfp'>
+          <div className='game-panel__pricing-item'>
+            <h1 className='game-panel__pricing-label'>Highest Bidder</h1>
+            <div className='game-panel__highest-bidder'>
+              <div className='game-panel__highest-bidder-pfp'>
                 <Image src={highestBidder?.profilePicture || '/sample/pfp.svg'} layout='fill' />
               </div>
-              <div className='auction-panel__highest-bidder-name'>
+              <div className='game-panel__highest-bidder-name'>
                 {highestBidder?.displayName}
-                <div className='auction-panel__highest-bidder-username'>
+                <div className='game-panel__highest-bidder-username'>
                   @{highestBidder?.username}
                 </div>
               </div>
@@ -92,22 +94,22 @@ export default function AuctionPanel({ auction, artist }: Props) {
           </div>
         )}
       </div>
-      <div className='auction-panel__actions'>
-        <button className='auction-panel__place-bid-btn' onClick={openPlaceBidModal}>
+      <div className='game-panel__actions'>
+        <button className='game-panel__interact-btn' onClick={openPlaceBidModal}>
           Place A Bid
         </button>
         {status == 'Done' && (
-          <div className='auction-panel__status-dot auction-panel__status-dot--inactive' />
+          <div className='game-panel__status-dot game-panel__status-dot--inactive' />
         )}
         {status === 'Live' && (
-          <div className='auction-panel__status-dot auction-panel__status-dot--active' />
+          <div className='game-panel__status-dot game-panel__status-dot--active' />
         )}
         {status === 'Error' && (
-          <div className='auction-panel__status-dot auction-panel__status-dot--error' />
+          <div className='game-panel__status-dot game-panel__status-dot--error' />
         )}
-        <div className='auction-panel__status-text'>{status}</div>
-        {status === 'Live' && <div className='auction-panel__countdown'>00h 03m 12s</div>}
-        <h1 className='auction-panel__rules'>Auction Rules</h1>
+        <div className='game-panel__status-text'>{status}</div>
+        {status === 'Live' && <div className='game-panel__countdown'>00h 03m 12s</div>}
+        <h1 className='game-panel__rules'>Auction Rules</h1>
       </div>
     </div>
   );
