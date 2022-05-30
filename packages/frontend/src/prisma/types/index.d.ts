@@ -1,7 +1,7 @@
-import { Prisma, Drop, User } from '@prisma/client';
+import { Prisma, Drop, User, Nft } from '@prisma/client';
 import type { DropWhereInput } from '@prisma/client';
 
-export type { User, Drop };
+export type { User, Drop, Nft };
 
 export type SafeUserUpdate = Partial<
   Pick<User, 'displayName' | 'username' | 'email' | 'bio' | 'profilePicture'>

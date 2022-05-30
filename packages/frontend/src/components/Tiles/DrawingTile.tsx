@@ -37,6 +37,7 @@ export default function DrawingTile({ drawing, artist, dropName }: Props) {
         isOpen={isModalOpen}
         closeModal={closeModal}
         lottery={drawing}
+				nft={drawing.Nfts[0]}
         artist={artist}
         dropName={dropName}
       />

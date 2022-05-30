@@ -1,5 +1,5 @@
-@use "@/styles/abstracts/colors" as c;
-@use "@/styles/abstracts/mixins" as m;
+@use '@/styles/abstracts/colors' as c;
+@use '@/styles/abstracts/mixins' as m;
 .game-panel {
   padding: 28px;
   margin-top: 24px;
@@ -8,6 +8,7 @@
   background-color: #1e1e21;
   display: flex;
   flex-direction: column;
+  gap: 15px;
 }
 
 .game-panel__header {
@@ -49,7 +50,6 @@
 }
 
 .game-panel__pricing {
-  margin-top: 16px;
   background-color: c.$box-black;
   border-radius: 12px;
   padding: 16px;
@@ -127,7 +127,6 @@
 }
 
 .game-panel__actions {
-  margin-top: 15px;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -135,7 +134,7 @@
 }
 
 .game-panel__interact-btn {
-	@include m.btn;
+  @include m.btn;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -212,4 +211,29 @@
   align-items: center;
   text-align: center;
   color: #ffffff;
+}
+
+.game-panel__extra-info {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 21px;
+  color: #9299a0;
+}
+
+.game-panel__tickets-available {
+  flex: 1;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 17px;
+  display: flex;
+	justify-content: end;
+  align-items: center;
+  color: c.$white;
+	gap: 7px;
+}
+
+.game-panel__tickets-available-label {
+  color: c.$text-gray-2;
 }

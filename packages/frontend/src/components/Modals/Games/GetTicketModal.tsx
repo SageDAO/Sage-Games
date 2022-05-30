@@ -1,27 +1,22 @@
-import {
-  BuyTicketRequest,
-  LotteryWithNftsAndArtist,
-  TicketPriceTier,
-  useBuyTicketsMutation,
-} from '@/store/services/lotteriesReducer';
+import { BuyTicketRequest, useBuyTicketsMutation } from '@/store/services/lotteriesReducer';
 import Modal, { Props as ModalProps } from '@/components/Modals';
 import { useSession } from 'next-auth/react';
-import { Lottery_include_Nft } from '@/prisma/types';
+import { Lottery_include_Nft, Nft } from '@/prisma/types';
 import { User } from '@prisma/client';
 import GamesModalHeader from './GamesModalHeader';
 import { useState } from 'react';
 import { useAccount } from 'wagmi';
-import useAsync from '@/hooks/useAsync';
 import Loader from 'react-loader-spinner';
 
 interface Props extends ModalProps {
   lottery: Lottery_include_Nft;
+  nft: Nft;
   artist: User;
   dropName: string;
 }
 
 //@scss : '@/styles/components/_games-modal.scss'
-function GetTicketModal({ isOpen, closeModal, lottery, dropName, artist }: Props) {
+function GetTicketModal({ isOpen, closeModal, lottery, dropName, artist, nft }: Props) {
   const [desiredTicketAmount, setDesiredTicketAmount] = useState<number>(0);
   const { data: sessionData } = useSession();
   const [buyTickets, { isLoading }] = useBuyTicketsMutation();
@@ -96,23 +91,24 @@ function GetTicketModal({ isOpen, closeModal, lottery, dropName, artist }: Props
     } as BuyTicketRequest;
     await buyTickets(request);
   };
+
   return (
     <Modal title='Get a Ticket' isOpen={isOpen} closeModal={closeModal}>
       <div className='games-modal'>
         <GamesModalHeader
-          imgSrc={lottery.Nfts[0].s3Path}
-          nftName={lottery.Nfts[0].name}
-          nftEditions={lottery.Nfts[0].numberOfEditions}
+          imgSrc={nft.s3Path}
+          nftName={nft.name}
+          nftEditions={nft.numberOfEditions}
           artist={artist}
         ></GamesModalHeader>
         <div className='games-modal__rules'>
           <div className='games-modal__rules-item'>
             <div className='games-modal__rules-label'>Drawing For</div>
-            <div className='games-modal__rules-value'>{lottery.Nfts[0].name}</div>
+            <div className='games-modal__rules-value'>{nft.name}</div>
           </div>
           <div className='games-modal__rules-item'>
             <div className='games-modal__rules-label'>Refundable</div>
-            <div className='games-modal__rules-value'>value</div>
+            <div className='games-modal__rules-value'>{lottery.isRefundable ? 'true' : 'false'}</div>
           </div>
           <div className='games-modal__rules-item'>
             <div className='games-modal__rules-label'>Drawing</div>

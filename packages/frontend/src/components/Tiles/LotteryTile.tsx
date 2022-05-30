@@ -37,6 +37,7 @@ export default function LotteryTile({ lottery, artist, dropName }: Props) {
         closeModal={closeModal}
         lottery={lottery}
         artist={artist}
+				nft={lottery.Nfts[0]}
         dropName={dropName}
       />
     </NftTile>

@@ -7,6 +7,7 @@ import { useBalance, useAccount } from 'wagmi';
 import PlaceBidModal from '@/components/Modals/Games/PlaceBidModal';
 import useModal from '@/hooks/useModal';
 import { User } from '@prisma/client';
+import Status from '@/components/Status';
 
 interface Props {
   auction: Auction_include_Nft;
@@ -28,7 +29,6 @@ function computeGameStatus(start: number, end: number, settled: boolean): GameSt
   return 'Error';
 }
 
-
 // styles/components/_game-panel.scss
 export default function AuctionPanel({ auction, artist }: Props) {
   const {
@@ -46,11 +46,7 @@ export default function AuctionPanel({ auction, artist }: Props) {
     ),
   });
   const status: GameStatus = auctionState
-    ? computeGameStatus(
-        auction.startTime.getTime(),
-        auctionState!.endTime,
-        auctionState!.settled
-      )
+    ? computeGameStatus(auction.startTime.getTime(), auctionState!.endTime, auctionState!.settled)
     : 'Error';
   return (
     <div className='game-panel'>
@@ -98,17 +94,7 @@ export default function AuctionPanel({ auction, artist }: Props) {
         <button className='game-panel__interact-btn' onClick={openPlaceBidModal}>
           Place A Bid
         </button>
-        {status == 'Done' && (
-          <div className='game-panel__status-dot game-panel__status-dot--inactive' />
-        )}
-        {status === 'Live' && (
-          <div className='game-panel__status-dot game-panel__status-dot--active' />
-        )}
-        {status === 'Error' && (
-          <div className='game-panel__status-dot game-panel__status-dot--error' />
-        )}
-        <div className='game-panel__status-text'>{status}</div>
-        {status === 'Live' && <div className='game-panel__countdown'>00h 03m 12s</div>}
+        <Status />
         <h1 className='game-panel__rules'>Auction Rules</h1>
       </div>
     </div>

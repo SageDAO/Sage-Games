@@ -13,6 +13,7 @@ interface Props {
   lottery: Lottery_include_Nft;
   artist: User;
   dropName: string;
+  selectedNftIndex: number;
 }
 
 type GameStatus = 'Done' | 'Live' | 'Error';
@@ -31,7 +32,7 @@ function computeGameStatus(start: number, end: number, settled: boolean): GameSt
 }
 
 // styles/components/_game-panel.scss
-export default function LotteryPanel({ lottery, artist, dropName }: Props) {
+export default function LotteryPanel({ lottery, artist, dropName, selectedNftIndex }: Props) {
   const {
     isOpen: isTicketModalOpen,
     closeModal: closeTicketModal,
@@ -44,11 +45,14 @@ export default function LotteryPanel({ lottery, artist, dropName }: Props) {
     skip: !accountData?.address,
   });
   const userBalancePoints = userPoints! - escrowPoints!;
+	console.log('selected: ', selectedNftIndex)
+	console.log(lottery.Nfts)
   return (
     <div className='game-panel'>
       <GetTicketModal
         isOpen={isTicketModalOpen}
         closeModal={closeTicketModal}
+        nft={lottery.Nfts[selectedNftIndex]}
         lottery={lottery}
         artist={artist}
         dropName={dropName}
@@ -74,12 +78,19 @@ export default function LotteryPanel({ lottery, artist, dropName }: Props) {
           </div>
         </div>
       </div>
+      <p className='game-panel__extra-info'>
+        This is a fair drop mechanic. Buy purchasing one or more tickets for this drop, you have the
+        opportunity to be selected to buy this NFT. Losing tickets will be refunded.
+      </p>
       <div className='game-panel__actions'>
         <button className='game-panel__interact-btn' onClick={openTicketModal}>
           Get Tickets
         </button>
-				<Status />
-        <h1 className='game-panel__rules'>Auction Rules</h1>
+        <Status />
+        <h1 className='game-panel__tickets-available'>
+          <span className='game-panel__tickets-available-label'>Available</span>
+          x/{lottery.maxTickets}
+        </h1>
       </div>
     </div>
   );

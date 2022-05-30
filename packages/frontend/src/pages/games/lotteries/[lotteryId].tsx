@@ -30,6 +30,7 @@ import NftHeader from '@/components/Games/NftHeader';
 import GameInfo from '@/components/Games/GameInfo';
 import MoreInDrop from '@/components/Games/MoreInDrop';
 import TicketPanel from '@/components/Games/TicketPanel';
+import LotterySlider from '@/components/Games/LotterySlider';
 
 type Props = {
   drop: Drop;
@@ -41,11 +42,8 @@ type Props = {
 };
 
 function lottery({ drop, lottery, auctions, lotteries, drawings, artist }: Props) {
-  const {
-    isOpen: isGetTicketModalOpen,
-    openModal: openGetTicketModal,
-    closeModal: closeGetTicketModal,
-  } = useModal();
+  const [selectedNftIndex, setSelectedNftIndex] = useState<number>(0);
+  console.log('og: ', selectedNftIndex);
   const [blockchainTimestamp, setBlockchainTimestamp] = useState<number>(0);
   const [userBalanceCoins, setUserBalanceCoins] = useState<string>('');
   const { data: sessionData } = useSession();
@@ -91,21 +89,35 @@ function lottery({ drop, lottery, auctions, lotteries, drawings, artist }: Props
     } as ClaimPrizeRequest);
   };
 
+  const currentNft = lottery.Nfts[selectedNftIndex];
+
   return (
     <div className='game-page'>
       <div className='game__main'>
         <div>
-          <NftDisplay imgSrc={lottery.Nfts[0].s3Path} />
+          <NftDisplay imgSrc={currentNft.s3Path} />
         </div>
         <div className='game__content'>
           <ArtistTag artist={artist} />
           <NftHeader
-            nftName={lottery.Nfts[0].name}
+            nftName={currentNft.name}
             dropName={drop.name}
-            numberOfEditions={lottery.Nfts[0].numberOfEditions}
+            numberOfEditions={currentNft.numberOfEditions}
           />
-          <TicketPanel lottery={lottery} artist={artist} dropName={drop.name} />
+          <TicketPanel
+            lottery={lottery}
+            artist={artist}
+            dropName={drop.name}
+            selectedNftIndex={selectedNftIndex}
+          />
           <GameInfo drop={drop} />
+          {lottery.Nfts.length > 1 && (
+            <LotterySlider
+              nfts={lottery.Nfts}
+              selectedNftIndex={selectedNftIndex}
+              setSelectedNftIndex={setSelectedNftIndex}
+            />
+          )}
         </div>
       </div>
       <MoreInDrop
@@ -158,15 +170,17 @@ export async function getStaticProps({
   }
   //TODO: handle drawings vs lotteries
   const otherLotteries = data.Drop.Lotteries.filter((l) => l.id !== +params.lotteryId!);
+
   const artist = data.Drop.Artist;
   const drawings = otherLotteries.filter((l) => l.Nfts.length === 1);
+  const lotteries = otherLotteries.filter((l) => l.Nfts.length > 1);
   const auctions = data.Drop.Auctions;
   const drop = data.Drop;
   return {
     props: {
       lottery: data,
       auctions,
-      lotteries: [...otherLotteries],
+      lotteries,
       drawings,
       artist,
       drop,
