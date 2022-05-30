@@ -95,10 +95,10 @@ export const lotteriesApi = createApi({
 
 async function buyTicketsWithoutPoints(buyRequest: BuyTicketRequest): Promise<ContractTransaction> {
   const value = BigInt(buyRequest.numberOfTickets) * buyRequest.ticketCostCoins;
-  console.log(`buyTicketsWithoutPoints() :: cost = ${value}`);
+  console.log(`buyTicketsWithoutPoints(${buyRequest.lotteryId}) :: cost = ${value}`);
   const contract = await getLotteryContract();
   return await contract.buyTickets(buyRequest.lotteryId, buyRequest.numberOfTickets, buyRequest.tier, {
-    value, gasLimit: 250000
+    value
   });
 }
 
