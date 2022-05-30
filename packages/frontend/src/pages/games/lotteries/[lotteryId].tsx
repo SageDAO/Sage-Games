@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import prisma from '@/prisma/client';
+import { Prisma } from '@prisma/client';
 import { useRouter } from 'next/router';
 import {
   TicketPriceTier,
@@ -16,6 +18,18 @@ import { useGetPointsBalanceQuery, useGetEscrowPointsQuery } from '@/store/servi
 import useModal from '@/hooks/useModal';
 import { getBlockchainTimestamp, getCoinBalance } from '@/utilities/contracts';
 import { Drop, Lottery_include_Nft, Auction_include_Nft, User } from '@/prisma/types';
+import {
+  GetStaticPropsContext,
+  GetStaticPropsResult,
+  GetStaticPathsResult,
+  GetStaticPathsContext,
+} from 'next';
+import NftDisplay from '@/components/Games/NftDisplay';
+import ArtistTag from '@/components/Games/ArtistTag';
+import NftHeader from '@/components/Games/NftHeader';
+import GameInfo from '@/components/Games/GameInfo';
+import MoreInDrop from '@/components/Games/MoreInDrop';
+import TicketPanel from '@/components/Games/TicketPanel';
 
 type Props = {
   drop: Drop;
@@ -78,81 +92,111 @@ function lottery({ drop, lottery, auctions, lotteries, drawings, artist }: Props
   };
 
   return (
-    <div id='drop-details' style={{ alignSelf: 'center' }}>
-      <img src={lottery?.Nfts[0].s3Path} alt='' width='100' style={{ marginTop: '20px' }} />
-      <br />
-      {isFetching && (
-        <>
-          loading ...
-          <br />
-        </>
-      )}
-      {lottery && (
-        <>
-          <button onClick={openGetTicketModal}> ** Get a Ticket ** </button>
-          <br />
-          <pre style={{ fontFamily: 'monospace', whiteSpace: 'pre-wrap' }}>
-            {JSON.stringify(
-              {
-                dropId: lottery.Drop.id,
-                dropName: lottery.Drop.name,
-                dropDescription: lottery.Drop.description,
-                nftName: lottery.Nfts[0].name,
-                nftDescription: lottery.Nfts[0].description,
-                editions: lottery.Nfts[0].numberOfEditions,
-                artistUsername: lottery.Drop.Artist.username,
-                artistDisplayName: lottery.Drop.Artist.displayName,
-                artistProfilePicture: lottery.Drop.Artist.profilePicture ? 'BLOB' : null,
-                startTime: lottery.startTime,
-                endTime: lottery.endTime,
-                blockchainCreatedAt: lottery.blockchainCreatedAt,
-                vipPriceCoins: lottery.vipCostPerTicketCoins,
-                vipPricePoints: lottery.vipCostPerTicketPoints,
-                memberPriceCoins: lottery.memberCostPerTicketCoins,
-                memberPricePoints: lottery.memberCostPerTicketPoints,
-                generalPriceCoins: lottery.nonMemberCostPerTicketCoins,
-                userBalanceCoins,
-                userBalancePoints,
-                userTier,
-                userTickets: ticketCount?.userTickets,
-                maxTicketsPerUser: lottery.maxTicketsPerUser,
-                maxTickets: lottery.maxTickets,
-                ticketsSold: ticketCount?.totalTickets,
-                isRefundable: lottery.isRefundable,
-                status: 'Created' || 'Canceled' || 'Closed' || 'Completed', // TODO
-                isUserRefundAvailable: false, // TODO
-                userPrizes: prizes?.length,
-              },
-              null,
-              2
-            )}
-            {prizes?.map((prize, index) => {
-              if (prize.claimedAt) {
-                return (
-                  <div key={index}>
-                    NFT '{prize.nftName}' claimed at {prize.claimedAt}
-                  </div>
-                );
-              } else {
-                return (
-                  <button key={index} onClick={() => handleClaimLotteryPrizeClick(index)}>
-                    Claim NFT '{prize.nftName}'
-                  </button>
-                );
-              }
-            })}
-          </pre>
-          <GetTicketModal
-            isOpen={isGetTicketModalOpen}
-            closeModal={closeGetTicketModal}
-            lottery={lottery}
-            artist={lottery.Drop.Artist}
+    <div className='game-page'>
+      <div className='game__main'>
+        <div>
+          <NftDisplay imgSrc={lottery.Nfts[0].s3Path} />
+        </div>
+        <div className='game__content'>
+          <ArtistTag artist={artist} />
+          <NftHeader
+            nftName={lottery.Nfts[0].name}
             dropName={drop.name}
+            numberOfEditions={lottery.Nfts[0].numberOfEditions}
           />
-        </>
-      )}
+          <TicketPanel lottery={lottery} artist={artist} dropName={drop.name} />
+          <GameInfo drop={drop} />
+        </div>
+      </div>
+      <MoreInDrop
+        auctions={auctions}
+        lotteries={lotteries}
+        drawings={drawings}
+        artist={artist}
+        dropName={drop.name}
+      />
     </div>
   );
+}
+
+export async function getStaticProps({
+  params,
+}: GetStaticPropsContext): Promise<GetStaticPropsResult<Props>> {
+  //prisma query options
+  const lotteryPageQuery = Prisma.validator<Prisma.LotteryArgs>()({
+    include: {
+      Drop: {
+        include: {
+          Artist: true,
+          Lotteries: { include: { Nfts: true } },
+          Auctions: { include: { Nft: true } },
+        },
+      },
+      Nfts: true,
+    },
+  });
+  //redirect if invalid auction id
+  if (!params || !params.lotteryId) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+  const data = await prisma.lottery.findUnique({
+    where: { id: +params.lotteryId },
+    include: lotteryPageQuery.include,
+  });
+  if (!data) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+  //TODO: handle drawings vs lotteries
+  const otherLotteries = data.Drop.Lotteries.filter((l) => l.id !== +params.lotteryId!);
+  const artist = data.Drop.Artist;
+  const drawings = otherLotteries.filter((l) => l.Nfts.length === 1);
+  const auctions = data.Drop.Auctions;
+  const drop = data.Drop;
+  return {
+    props: {
+      lottery: data,
+      auctions,
+      lotteries: [...otherLotteries],
+      drawings,
+      artist,
+      drop,
+    },
+  };
+}
+
+export async function getStaticPaths(
+  _context: GetStaticPathsContext
+): Promise<GetStaticPathsResult> {
+  const approvedLotteries = await prisma.lottery.findMany({
+    where: {
+      Drop: {
+        approvedBy: {
+          not: null,
+        },
+      },
+    },
+  });
+
+  const paths = approvedLotteries.map((l) => {
+    return {
+      params: { lotteryId: String(l.id) },
+    };
+  });
+
+  return {
+    paths,
+    fallback: 'blocking',
+  };
 }
 
 export default lottery;

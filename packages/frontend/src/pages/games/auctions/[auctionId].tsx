@@ -34,7 +34,6 @@ type Props = {
 };
 
 function auction({ auction, auctions, lotteries, artist, drawings, drop }: Props) {
-  const [isPlaceBidModalOpen, setIsPlaceBidModalOpen] = useState<boolean>(false);
   const [blockchainTimestamp, setBlockchainTimestamp] = useState<number>(0);
   const { data: sessionData } = useSession();
   const walletAddress = sessionData?.address;

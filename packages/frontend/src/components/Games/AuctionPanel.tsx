@@ -32,7 +32,7 @@ export default function AuctionPanel({ auction, artist }: Props) {
   const {
     isOpen: isPlaceBidModalOpen,
     closeModal: closePlaceBidModal,
-    openModal: openCloseBidModal,
+    openModal: openPlaceBidModal,
   } = useModal();
   const { data: accountData } = useAccount();
   const { data: userBalance } = useBalance({ addressOrName: accountData?.address });
@@ -93,7 +93,7 @@ export default function AuctionPanel({ auction, artist }: Props) {
         )}
       </div>
       <div className='auction-panel__actions'>
-        <button className='auction-panel__place-bid-btn' onClick={openCloseBidModal}>
+        <button className='auction-panel__place-bid-btn' onClick={openPlaceBidModal}>
           Place A Bid
         </button>
         {status == 'Done' && (

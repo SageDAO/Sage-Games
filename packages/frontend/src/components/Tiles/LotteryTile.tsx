@@ -12,7 +12,7 @@ type Props = {
 };
 
 export default function LotteryTile({ lottery, artist, dropName }: Props) {
-  const { openModal, isOpen: isModalOpen, closeModal } = useModal(true);
+  const { openModal, isOpen: isModalOpen, closeModal } = useModal(false);
   const isActive = false;
   return (
     <NftTile
