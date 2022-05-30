@@ -1,9 +1,10 @@
-import { GamePrize, AuctionNftWithArtist } from '@/prisma/types';
+import { GamePrize } from '@/prisma/types';
 import { extractErrorMessage, getAuctionContract } from '@/utilities/contracts';
 import { playErrorSound, playPrizeClaimedSound, playTxSuccessSound } from '@/utilities/sounds';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { toast } from 'react-toastify';
 import { Auction_include_Nft } from '@/prisma/types';
+import { ethers } from 'ethers';
 
 export interface AuctionState {
   highestBidder: string; // wallet address
@@ -106,12 +107,11 @@ async function setupBidListener(auctionId: number, stateUpdateCallback: () => vo
   }
 }
 
-export async function bid(auctionId: number, amount: number) {
+export async function bid({ auctionId, amount }: { auctionId: number; amount: number }) {
   console.log(`bid(${auctionId}, ${amount})`);
   try {
-    const tx = await (
-      await getAuctionContract()
-    ).bid(auctionId, amount.toString(), { value: amount.toString() });
+    const weiValue = ethers.utils.parseEther(amount.toString());
+    const tx = await (await getAuctionContract()).bid(auctionId, weiValue, { value: weiValue });
     toast.promise(tx.wait(), {
       pending: 'Request submitted to the blockchain, awaiting confirmation...',
       success: `Success! You are now the highest bidder!`,
@@ -120,6 +120,7 @@ export async function bid(auctionId: number, amount: number) {
     await tx.wait();
     playTxSuccessSound();
   } catch (e) {
+    console.log(e);
     const errMsg = extractErrorMessage(e);
     toast.error(`Failure! ${errMsg}`);
     playErrorSound();

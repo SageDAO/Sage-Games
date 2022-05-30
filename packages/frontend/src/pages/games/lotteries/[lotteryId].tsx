@@ -5,7 +5,7 @@ import {
   useGetLotteryQuery,
   useGetTicketCountsQuery,
 } from '@/store/services/lotteriesReducer';
-import GetTicketModal from '@/components/Modals/GetTicketModal';
+import GetTicketModal from '@/components/Modals/Games/GetTicketModal';
 import { useSession } from 'next-auth/react';
 import {
   ClaimPrizeRequest,

@@ -1,21 +1,10 @@
+import { LotteryWithNftsAndArtist } from '@/prisma/types';
 import { extractErrorMessage, getLotteryContract } from '@/utilities/contracts';
 import { playErrorSound, playTxSuccessSound } from '@/utilities/sounds';
-import { Prisma } from '@prisma/client';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { ContractTransaction } from 'ethers';
 import { toast } from 'react-toastify';
 import { pointsApi } from './pointsReducer';
-
-export type LotteryWithNftsAndArtist = Prisma.LotteryGetPayload<{
-  include: {
-    Nfts: true;
-    Drop: {
-      include: {
-        Artist: true;
-      };
-    };
-  };
-}>;
 
 export enum TicketPriceTier {
   VIP = 0,
@@ -106,9 +95,10 @@ export const lotteriesApi = createApi({
 
 async function buyTicketsWithoutPoints(buyRequest: BuyTicketRequest): Promise<ContractTransaction> {
   const value = BigInt(buyRequest.numberOfTickets) * buyRequest.ticketCostCoins;
+  console.log(`buyTicketsWithoutPoints() :: cost = ${value}`);
   const contract = await getLotteryContract();
-  return contract.buyTickets(buyRequest.lotteryId, buyRequest.numberOfTickets, buyRequest.tier, {
-    value,
+  return await contract.buyTickets(buyRequest.lotteryId, buyRequest.numberOfTickets, buyRequest.tier, {
+    value, gasLimit: 250000
   });
 }
 
