@@ -1,3 +1,5 @@
+@use '@/styles/abstracts/mixins' as m;
+@use '@/styles/abstracts/colors' as c;
 .nft-tile {
   border-radius: 9px;
   overflow: hidden;
@@ -34,22 +36,25 @@
 
     color: rgba(196, 196, 196, 0.6);
   }
+}
 
-  &__button {
-    cursor: pointer;
-    background: linear-gradient(90deg, #8e45b0 0%, #792e9c 100%);
-    border-radius: 20px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    padding: 6px 12px;
-    border: none;
-
-    color: white;
-    font-style: normal;
-    font-weight: 600;
-    font-size: 12px;
-    line-height: 16px;
+.nft-tile__interact-btn {
+  @include m.btn;
+  @include m.pill;
+  background: linear-gradient(90deg, #8e45b0 0%, #792e9c 100%);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 6px 12px;
+  color: white;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 16px;
+  &[disabled] {
+    background-color: #131314;
+    color: #c4c4c4;
   }
 }
