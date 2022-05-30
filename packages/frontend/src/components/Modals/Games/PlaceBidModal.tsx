@@ -88,9 +88,9 @@ function PlaceBidModal({ isOpen, closeModal, auction, artist }: Props) {
             <div className='games-modal__rules-value'>value</div>
           </div>
         </div>
-        <div className='games-modal__bid-header'>
-          <h1 className='games-modal__bid-header-label'>Amount</h1>
-          <div className='games-modal__bid-header-value'>
+        <div className='games-modal__header'>
+          <h1 className='games-modal__header-label'>Amount</h1>
+          <div className='games-modal__header-value games-modal__header-value--blue'>
             {auction.buyNowPrice || auction.minimumPrice}
           </div>
         </div>
@@ -133,8 +133,7 @@ function PlaceBidModal({ isOpen, closeModal, auction, artist }: Props) {
             'Place bid'
           )}
         </button>
-        <div className='games-modal__status-container'>
-        </div>
+        <div className='games-modal__status-container'></div>
       </div>
     </Modal>
   );

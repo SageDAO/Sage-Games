@@ -13,7 +13,7 @@ export type DropWithArtist = Prisma.DropGetPayload<{
   };
 }>;
 
-export type DropWithGamesAndArtist = Prisma.DropGetPayload<{
+export type Drop_include_GamesAndArtist = Prisma.DropGetPayload<{
   include: {
     Lotteries: {
       include: {

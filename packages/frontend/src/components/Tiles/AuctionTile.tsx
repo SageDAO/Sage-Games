@@ -14,7 +14,7 @@ type Props = {
 
 // styles/components/_nft-tile.scss
 export default function AuctionTile({ auction, artist }: Props) {
-  const { openModal, isOpen: isModalOpen, closeModal } = useModal(true);
+  const { openModal, isOpen: isModalOpen, closeModal } = useModal();
   const { data: auctionState } = useGetAuctionStateQuery(auction.id);
   const isActive = auctionState?.settled || false;
   return (

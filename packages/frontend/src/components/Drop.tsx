@@ -2,15 +2,15 @@ import { Lottery as LotteryType, Auction as AuctionType } from '@prisma/client';
 import Image from 'next/image';
 import shortenAddress from '@/utilities/shortenAddress';
 import Link from 'next/link';
-import { DropWithGamesAndArtist } from '@/prisma/types';
+import { Drop_include_GamesAndArtist } from '@/prisma/types';
 
 interface Props {
-  drop: DropWithGamesAndArtist;
+  drop: Drop_include_GamesAndArtist;
 }
 
 type Game = Partial<LotteryType> | Partial<AuctionType>;
 
-function computeStatus({ Lotteries, Auctions }: DropWithGamesAndArtist) {
+function computeStatus({ Lotteries, Auctions }: Drop_include_GamesAndArtist) {
   let games: Game[];
   let startTime: number;
   let endTime: number;

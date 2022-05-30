@@ -15,9 +15,18 @@ import {
 import { useGetPointsBalanceQuery, useGetEscrowPointsQuery } from '@/store/services/pointsReducer';
 import useModal from '@/hooks/useModal';
 import { getBlockchainTimestamp, getCoinBalance } from '@/utilities/contracts';
+import { Drop, Lottery_include_Nft, Auction_include_Nft, User } from '@/prisma/types';
 
+type Props = {
+  drop: Drop;
+  lottery: Lottery_include_Nft;
+  auctions: Auction_include_Nft[];
+  lotteries: Lottery_include_Nft[];
+  drawings: Lottery_include_Nft[];
+  artist: User;
+};
 
-function lottery() {
+function lottery({ drop, lottery, auctions, lotteries, drawings, artist }: Props) {
   const {
     isOpen: isGetTicketModalOpen,
     openModal: openGetTicketModal,
@@ -28,9 +37,9 @@ function lottery() {
   const { data: sessionData } = useSession();
   const walletAddress = sessionData?.address;
   const { lotteryId } = useRouter().query;
-  const { data: lottery, isFetching } = useGetLotteryQuery(+lotteryId!, {
-    skip: isNaN(+lotteryId!),
-  });
+  // const { data: lottery, isFetching } = useGetLotteryQuery(+lotteryId!, {
+  //   skip: isNaN(+lotteryId!),
+  // });
   const { data: ticketCount } = useGetTicketCountsQuery(
     { lotteryId: +lotteryId!, walletAddress: walletAddress as string },
     { skip: isNaN(+lotteryId!) }
@@ -138,6 +147,7 @@ function lottery() {
             closeModal={closeGetTicketModal}
             lottery={lottery}
             artist={lottery.Drop.Artist}
+            dropName={drop.name}
           />
         </>
       )}

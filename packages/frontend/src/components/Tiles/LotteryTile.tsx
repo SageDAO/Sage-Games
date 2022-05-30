@@ -8,10 +8,11 @@ import type { User } from '@prisma/client';
 type Props = {
   lottery: Lottery_include_Nft;
   artist: User;
+  dropName: string;
 };
 
-export default function LotteryTile({ lottery, artist }: Props) {
-  const { openModal, isOpen: isModalOpen, closeModal } = useModal();
+export default function LotteryTile({ lottery, artist, dropName }: Props) {
+  const { openModal, isOpen: isModalOpen, closeModal } = useModal(true);
   const isActive = false;
   return (
     <NftTile
@@ -36,6 +37,7 @@ export default function LotteryTile({ lottery, artist }: Props) {
         closeModal={closeModal}
         lottery={lottery}
         artist={artist}
+        dropName={dropName}
       />
     </NftTile>
   );

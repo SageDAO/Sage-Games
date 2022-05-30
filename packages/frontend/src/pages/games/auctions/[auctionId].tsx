@@ -90,7 +90,13 @@ function auction({ auction, auctions, lotteries, artist, drawings, drop }: Props
           <GameInfo drop={drop} />
         </div>
       </div>
-      <MoreInDrop auctions={auctions} lotteries={lotteries} drawings={drawings} artist={artist} />
+      <MoreInDrop
+        auctions={auctions}
+        lotteries={lotteries}
+        drawings={drawings}
+        artist={artist}
+        dropName={drop.name}
+      />
     </div>
   );
 }
