@@ -48,8 +48,8 @@ export default function Drop({ drop }: Props) {
   return (
     <div className='drop'>
       <Link href={`drops/${drop.id}`}>
-        <div className='thumbnail'>
-          <BaseImage src={drop.bannerImageS3Path} />
+        <div className='drop__thumbnail'>
+          <BaseImage src={drop.bannerImageS3Path || '/'} />
         </div>
       </Link>
       <div className='details'>

@@ -9,9 +9,6 @@ interface Props {
 
 export default function Countdown({ endTime, color }: Props) {
   const { days, hours, minutes, seconds, total } = useCountdown({ targetDate: endTime });
-  if (total < 0) {
-    return null;
-  }
   return (
     <div className='status__countdown' data-color={color}>
       {days * 24 + hours}h {minutes}m {seconds}s

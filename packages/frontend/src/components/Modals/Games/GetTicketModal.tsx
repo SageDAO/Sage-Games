@@ -7,6 +7,7 @@ import GamesModalHeader from './GamesModalHeader';
 import { useState } from 'react';
 import { useAccount } from 'wagmi';
 import GetTicketsButton from '@/components/Games/GetTicketsButton';
+import Status from '@/components/Status';
 
 interface Props extends ModalProps {
   lottery: Lottery_include_Nft;
@@ -159,6 +160,9 @@ function GetTicketModal({ isOpen, closeModal, lottery, dropName, artist, nft }: 
           <div className='games-modal__btn-container'>
             <GetTicketsButton onClick={handleBuyTicketClick} pending={isLoading}></GetTicketsButton>
           </div>
+        </div>
+        <div className='games-modal__status-container'>
+          <Status startTime={lottery.startTime} endTime={lottery.endTime} settled={false} />
         </div>
       </div>
     </Modal>

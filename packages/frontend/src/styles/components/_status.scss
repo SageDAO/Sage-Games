@@ -15,6 +15,9 @@
 .status__dot {
   @include m.circle;
   height: 8px;
+  &[data-status='Upcoming'] {
+    background-color: yellow;
+  }
   &[data-status='Live'] {
     background-color: c.$purple;
   }
@@ -54,5 +57,8 @@
   color: c.$white;
   &[data-color='purple'] {
     color: c.$purple;
+  }
+  &[data-color='blue'] {
+    color: c.$blue;
   }
 }

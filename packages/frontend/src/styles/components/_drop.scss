@@ -1,13 +1,7 @@
+@use '@/styles/abstracts/colors' as c;
+
 .drop {
   aspect-ratio: 448/357;
-  .thumbnail {
-    border-radius: 9px;
-    overflow: hidden;
-    width: 100%;
-    aspect-ratio: 448/297;
-    position: relative;
-    cursor: pointer;
-  }
   .details {
     margin: 20px 0;
     aspect-ratio: 448/40;
@@ -35,6 +29,16 @@
     font-size: max(12px, 1.2vw);
     line-height: 19px;
   }
+}
+
+.drop__thumbnail {
+  border-radius: 9px;
+  background-color: c.$bg-dark;
+  overflow: hidden;
+  width: 100%;
+  aspect-ratio: 448/297;
+  position: relative;
+  cursor: pointer;
 }
 
 .drop__status {
