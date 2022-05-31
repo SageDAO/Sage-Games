@@ -5,7 +5,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Slider from 'react-slick';
 
-import { DropWithGamesAndArtist } from '@/prisma/types';
+import { Drop_include_GamesAndArtist } from '@/prisma/types';
 import Drop from '@/components/Drop';
 import Link from 'next/link';
 import AWS from 'aws-sdk';
@@ -33,7 +33,7 @@ const sliderSettings = {
 };
 
 interface Props {
-  drops: DropWithGamesAndArtist[];
+  drops: Drop_include_GamesAndArtist[];
   useS3: boolean;
 }
 
@@ -52,15 +52,17 @@ function home({ drops, useS3 }: Props) {
       </Slider>
       <h1 id='header'>Available Drops</h1>
       <div id='featured-drops'>
-        {drops.map((d: DropWithGamesAndArtist) => {
+        {drops.map((d: Drop_include_GamesAndArtist) => {
           return <Drop drop={d} key={d.id} />;
         })}
       </div>
-      <div id='explore-all'>
-        <Link href='/drops'>
-          <button>Explore all drops</button>
-        </Link>
-      </div>
+      {
+        // <div id='explore-all'>
+        //   <Link href='/drops'>
+        //     <button>Explore all drops</button>
+        //   </Link>
+        // </div>
+      }
     </div>
   );
 }
@@ -72,7 +74,7 @@ export async function getStaticProps() {
   const awsAccessKeyId = process.env.AWS_ACCESS_KEY_ID_MEMEX || '';
   const awsSecretAccessKey = process.env.AWS_SECRET_ACCESS_KEY_MEMEX || '';
 
-  let drops: DropWithGamesAndArtist[] = [];
+  let drops: Drop_include_GamesAndArtist[] = [];
 
   // Fleek environment variables come in as strings, so gotta check the value this way.
   if (useHeroku === 'true') {

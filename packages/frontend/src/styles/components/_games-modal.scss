@@ -2,12 +2,15 @@
 @use '@/styles/abstracts/mixins' as m;
 
 .games-modal {
+  width: 100%;
 }
 
 .games-modal__header {
   display: flex;
+  width: max-content;
   margin-top: 5px;
   gap: 0 25px;
+  justify-content: center;
 }
 
 .games-modal__header-right {
@@ -31,7 +34,6 @@
 .games-modal__header-artist-pfp {
   @include m.img-container;
   @include m.circle;
-  background-color: red;
   height: 20px;
   width: 20px;
 }
@@ -106,13 +108,13 @@
   border-radius: 1px;
 }
 
-.games-modal__bid-header {
+.games-modal__heading {
   margin-top: 20px;
   display: flex;
   justify-content: space-between;
 }
 
-.games-modal__bid-header-label {
+.games-modal__heading-label {
   display: flex;
   align-items: center;
   font-style: normal;
@@ -122,7 +124,8 @@
   color: c.$white;
 }
 
-.games-modal__bid-header-value {
+.games-modal__heading-value {
+  @include m.pill;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -130,8 +133,27 @@
   padding: 3px 10px 4px 9px;
   gap: 7px;
   background: c.$blue;
-  border-radius: 14px;
-  @include m.pill;
+
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 17px;
+  color: c.$white;
+  &--blue {
+    background-color: c.$blue;
+  }
+  &--green {
+    background-color: c.$green;
+  }
+}
+
+.games-modal__btn-container {
+  height: 46px;
+}
+
+.games-modal__bid-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
 .games-modal__bid-controls {
@@ -162,7 +184,7 @@
 }
 
 .games-modal__bid-min-max-btn {
-	@include m.btn;
+  @include m.btn;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -188,9 +210,9 @@
   display: flex;
   width: 100%;
   justify-content: center;
-	align-items: center;
+  align-items: center;
   padding: 15px 20px;
-	gap: 8px;
+  gap: 8px;
 
   font-style: normal;
   font-weight: 600;
@@ -204,4 +226,98 @@
   align-items: center;
   justify-content: center;
   margin-top: 15px;
+}
+
+.games-modal__tickets-section {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.games-modal__tickets-inner {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.games-modal__tickets-controls {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.games-modal__tickets-input {
+  display: flex;
+  width: 75px;
+  justify-content: center;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 27px;
+  color: c.$white;
+  background: transparent;
+  text-align: center;
+}
+
+.games-modal__tickets-sub,
+.games-modal__tickets-add {
+  @include m.circle;
+  @include m.btn;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 0px;
+  gap: 10px;
+  height: 34px;
+  border: 1.5px solid #c4c4c4;
+  border-radius: 22px;
+  background-color: transparent;
+
+  text-align: center;
+  font-style: normal;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.games-modal__tickets-total {
+  margin-top: 14px;
+  display: flex;
+  justify-content: center;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 17px;
+  color: c.$white;
+  gap: 5px;
+}
+
+.games-modal__tickets-total-label {
+  display: flex;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 17px;
+  color: c.$text-gray-2;
+}
+
+.games-modal__tickets-buy-btn {
+  @include m.btn;
+  @include m.pill;
+  margin-top: 30px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 15px 20px;
+  gap: 7px;
+  background: #792e9c;
+
+  color: c.$white;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 16px;
+  text-align: center;
 }

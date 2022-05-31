@@ -1,5 +1,6 @@
-@use "@/styles/abstracts/colors" as c;
-.auction-panel {
+@use '@/styles/abstracts/colors' as c;
+@use '@/styles/abstracts/mixins' as m;
+.game-panel {
   padding: 28px;
   margin-top: 24px;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.3);
@@ -7,15 +8,16 @@
   background-color: #1e1e21;
   display: flex;
   flex-direction: column;
+  gap: 15px;
 }
 
-.auction-panel__header {
+.game-panel__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.auction-panel__header-title {
+.game-panel__header-title {
   font-style: normal;
   font-weight: 500;
   font-size: 17px;
@@ -23,7 +25,7 @@
   color: #ffffff;
 }
 
-.auction-panel__balance-label {
+.game-panel__balance-label {
   gap: 14px;
   display: flex;
   font-style: normal;
@@ -34,7 +36,7 @@
   color: #6f767e;
 }
 
-.auction-panel__balance {
+.game-panel__balance {
   font-style: normal;
   font-weight: 600;
   font-size: 12px;
@@ -47,8 +49,7 @@
   padding: 3px 10px;
 }
 
-.auction-panel__pricing {
-  margin-top: 16px;
+.game-panel__pricing {
   background-color: c.$box-black;
   border-radius: 12px;
   padding: 16px;
@@ -56,13 +57,13 @@
   gap: 50px;
 }
 
-.auction-panel__pricing-item {
+.game-panel__pricing-item {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.auction-panel__price {
+.game-panel__price {
   font-style: normal;
   font-weight: 600;
   font-size: 23px;
@@ -72,7 +73,7 @@
   gap: 6px;
 }
 
-.auction-panel__price-unit {
+.game-panel__price-unit {
   font-style: normal;
   font-weight: 500;
   font-size: 13px;
@@ -82,7 +83,7 @@
   color: #6f767e;
 }
 
-.auction-panel__pricing-label {
+.game-panel__pricing-label {
   font-style: normal;
   font-weight: 500;
   font-size: 12px;
@@ -92,12 +93,12 @@
   color: #6f767e;
 }
 
-.auction-panel__highest-bidder {
+.game-panel__highest-bidder {
   display: flex;
   gap: 10px;
 }
 
-.auction-panel__highest-bidder-pfp {
+.game-panel__highest-bidder-pfp {
   position: relative;
   overflow: hidden;
   aspect-ratio: 1/1;
@@ -105,7 +106,7 @@
   border-radius: 7px;
 }
 
-.auction-panel__highest-bidder-name {
+.game-panel__highest-bidder-name {
   display: flex;
   flex-direction: column;
   font-style: normal;
@@ -115,7 +116,7 @@
   color: rgba(255, 255, 255, 0.8);
 }
 
-.auction-panel__highest-bidder-username {
+.game-panel__highest-bidder-username {
   font-style: normal;
   font-weight: 500;
   font-size: 12px;
@@ -125,35 +126,34 @@
   color: #6f767e;
 }
 
-.auction-panel__actions {
-  margin-top: 15px;
+.game-panel__actions {
   display: flex;
   align-items: center;
   gap: 12px;
   width: 100%;
 }
 
-.auction-panel__place-bid-btn {
+.game-panel__btn-container {
+  // @include m.btn;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  // flex-direction: column;
+  // justify-content: center;
   align-items: center;
-  padding: 14px 20px;
-  background: linear-gradient(90deg, #6c2e9c 0%, #792e9c 100%);
-  border-radius: 23px;
-  color: white;
+  // padding: 14px 20px;
+  // background: linear-gradient(90deg, #6c2e9c 0%, #792e9c 100%);
+  // border-radius: 23px;
+  // color: white;
   width: 190px;
-  height: 44px;
 
-  font-style: normal;
-  font-weight: 600;
-  font-size: 13px;
-  line-height: 16px;
-  text-align: center;
-  color: #ffffff;
+  // font-style: normal;
+  // font-weight: 600;
+  // font-size: 13px;
+  // line-height: 16px;
+  // text-align: center;
+  // color: #ffffff;
 }
 
-.auction-panel__status-text {
+.game-panel__status-text {
   font-style: normal;
   font-weight: 600;
   font-size: 12px;
@@ -163,25 +163,25 @@
   color: #6f767e;
 }
 
-.auction-panel__status-dot {
+.game-panel__status-dot {
   aspect-ratio: 1/1;
   height: 8px;
   border-radius: 100%;
 }
 
-.auction-panel__status-dot--active {
+.game-panel__status-dot--active {
   background-color: c.$purple;
 }
 
-.auction-panel__status-dot--inactive {
+.game-panel__status-dot--inactive {
   background-color: grey;
 }
 
-.auction-panel__status-dot--error {
+.game-panel__status-dot--error {
   background-color: red;
 }
 
-.auction-panel__rules {
+.game-panel__rules {
   font-style: normal;
   font-weight: 600;
   font-size: 12px;
@@ -193,7 +193,7 @@
   cursor: pointer;
 }
 
-.auction-panel__countdown {
+.game-panel__countdown {
   flex-direction: row;
   justify-content: center;
   align-items: center;
@@ -210,4 +210,29 @@
   align-items: center;
   text-align: center;
   color: #ffffff;
+}
+
+.game-panel__extra-info {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 21px;
+  color: #9299a0;
+}
+
+.game-panel__tickets-available {
+  flex: 1;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 17px;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  color: c.$white;
+  gap: 7px;
+}
+
+.game-panel__tickets-available-label {
+  color: c.$text-gray-2;
 }

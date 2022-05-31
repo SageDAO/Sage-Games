@@ -33,8 +33,8 @@ type Props = {
   artist: User;
 };
 
+// src/styles/layout/_game-page.scss
 function auction({ auction, auctions, lotteries, artist, drawings, drop }: Props) {
-  const [isPlaceBidModalOpen, setIsPlaceBidModalOpen] = useState<boolean>(false);
   const [blockchainTimestamp, setBlockchainTimestamp] = useState<number>(0);
   const { data: sessionData } = useSession();
   const walletAddress = sessionData?.address;
@@ -90,7 +90,13 @@ function auction({ auction, auctions, lotteries, artist, drawings, drop }: Props
           <GameInfo drop={drop} />
         </div>
       </div>
-      <MoreInDrop auctions={auctions} lotteries={lotteries} drawings={drawings} artist={artist} />
+      <MoreInDrop
+        auctions={auctions}
+        lotteries={lotteries}
+        drawings={drawings}
+        artist={artist}
+        dropName={drop.name}
+      />
     </div>
   );
 }

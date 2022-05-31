@@ -15,10 +15,15 @@
 .status__dot {
   @include m.circle;
   height: 8px;
-}
-
-.status__dot--active {
-  background-color: c.$purple;
+  &[data-status='Live'] {
+    background-color: c.$purple;
+  }
+  &[data-status='Done'] {
+    background-color: c.$gray;
+  }
+  &[data-status='Error'] {
+    background-color: red;
+  }
 }
 
 .status__text {
@@ -32,7 +37,7 @@
 }
 
 .status__countdown {
-	@include m.pill;
+  @include m.pill;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -47,4 +52,7 @@
   line-height: 17px;
   text-align: center;
   color: c.$white;
+  &[data-color='purple'] {
+    color: c.$purple;
+  }
 }

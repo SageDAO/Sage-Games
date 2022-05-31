@@ -1,39 +1,62 @@
-import {
-  BuyTicketRequest,
-  TicketPriceTier,
-  useBuyTicketsMutation,
-} from '@/store/services/lotteriesReducer';
+import { BuyTicketRequest, useBuyTicketsMutation } from '@/store/services/lotteriesReducer';
 import Modal, { Props as ModalProps } from '@/components/Modals';
 import { useSession } from 'next-auth/react';
-import { Lottery_include_Nft, User } from '@/prisma/types';
+import { Lottery_include_Nft, Nft } from '@/prisma/types';
+import { User } from '@prisma/client';
+import GamesModalHeader from './GamesModalHeader';
+import { useState } from 'react';
+import { useAccount } from 'wagmi';
+import GetTicketsButton from '@/components/Games/GetTicketsButton';
 
 interface Props extends ModalProps {
   lottery: Lottery_include_Nft;
+  nft: Nft;
   artist: User;
+  dropName: string;
 }
 
-function GetTicketModal({ isOpen, closeModal, lottery, artist }: Props) {
+//@scss : '@/styles/components/_games-modal.scss'
+function GetTicketModal({ isOpen, closeModal, lottery, dropName, artist, nft }: Props) {
+  const [desiredTicketAmount, setDesiredTicketAmount] = useState<number>(0);
   const { data: sessionData } = useSession();
-  const [buyTickets] = useBuyTicketsMutation();
+  const [buyTickets, { isLoading }] = useBuyTicketsMutation();
+  const { data: accountData } = useAccount();
 
-  const getPriceCoins = (tier: TicketPriceTier): bigint => {
-    if (tier == TicketPriceTier.VIP) {
-      var price = lottery.vipCostPerTicketCoins;
-    } else if (tier == TicketPriceTier.Member) {
-      var price = lottery.memberCostPerTicketCoins;
-    } else {
-      var price = lottery.nonMemberCostPerTicketCoins;
+  //ui event handlers
+  function handleTicketSubClick() {
+    if (desiredTicketAmount == 0) {
+      return;
     }
-    return BigInt(price * 1000) * BigInt(10 ** 15);
+    setDesiredTicketAmount((prevState) => prevState - 1);
+  }
+
+  function handleTicketAddClick() {
+    if (desiredTicketAmount + 1 > lottery.maxTicketsPerUser) {
+      return;
+    }
+    setDesiredTicketAmount((prevState) => prevState + 1);
+  }
+
+  function handleTicketInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const val = +e.target.value;
+    if (val < 0) {
+      return;
+    }
+    if (val > lottery.maxTicketsPerUser) {
+      e.currentTarget.value = String(lottery.maxTicketsPerUser);
+      setDesiredTicketAmount(lottery.maxTicketsPerUser);
+    }
+    setDesiredTicketAmount(+e.target.value);
+  }
+
+  // ? lottery db field will only have one tier?
+  const getPriceCoins = (): bigint => {
+    return BigInt(lottery.memberCostPerTicketCoins * 1000) * BigInt(10 ** 15);
   };
 
-  const getPricePoints = (tier: TicketPriceTier): bigint => {
-    if (tier == TicketPriceTier.VIP) {
-      return BigInt(lottery.vipCostPerTicketPoints);
-    } else if (tier == TicketPriceTier.Member) {
-      return BigInt(lottery.memberCostPerTicketPoints);
-    }
-    return BigInt(0);
+  // ? lottery db field will only have one tier?
+  const getPricePoints = (): bigint => {
+    return BigInt(lottery.memberCostPerTicketPoints);
   };
 
   const fetchUserPointsAndProof = async (): Promise<{
@@ -48,9 +71,8 @@ function GetTicketModal({ isOpen, closeModal, lottery, artist }: Props) {
     };
   };
 
-  const handleBuyTicketClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    const tier = Number(e.currentTarget.name); // button name represents price tier
-    const pricePoints = getPricePoints(tier);
+  const handleBuyTicketClick = async () => {
+    const pricePoints = getPricePoints();
     if (pricePoints > 0) {
       var { totalPointsEarned, proof } = await fetchUserPointsAndProof();
     } else {
@@ -59,12 +81,11 @@ function GetTicketModal({ isOpen, closeModal, lottery, artist }: Props) {
     }
 
     const request = {
-      walletAddress: sessionData?.address,
+      walletAddress: accountData?.address,
       lotteryId: lottery.id,
-      numberOfTickets: 1,
+      numberOfTickets: desiredTicketAmount,
       ticketCostPoints: pricePoints,
-      ticketCostCoins: getPriceCoins(tier),
-      tier,
+      ticketCostCoins: getPriceCoins(),
       totalPointsEarned,
       proof,
     } as BuyTicketRequest;
@@ -73,35 +94,72 @@ function GetTicketModal({ isOpen, closeModal, lottery, artist }: Props) {
 
   return (
     <Modal title='Get a Ticket' isOpen={isOpen} closeModal={closeModal}>
-      <div className='accountmodal'>
-        Buy Tickets
-        <br />
-        <img src={lottery.Nfts[0].s3Path} alt='' width='100' />
-        <br />
-        <pre style={{ fontFamily: 'monospace', whiteSpace: 'pre-wrap' }}>
-          {JSON.stringify(
-            {
-              nftName: lottery.Nfts[0].name,
-              editions: lottery.Nfts[0].numberOfEditions,
-              artist: artist.username || 'anon',
-              drawingFor: lottery.Nfts.length > 1 ? 'Multiple NFTs' : 'Individual NFT',
-              isRefundable: lottery.isRefundable,
-              // pointsBalance: userBalance.points,
-              // coinsBalance: userBalance.coins,
-            },
-            null,
-            2
-          )}
-        </pre>
-        <button name={TicketPriceTier.VIP.toString()} onClick={handleBuyTicketClick}>
-          MEME VIPs: {lottery.vipCostPerTicketPoints} points + {lottery.vipCostPerTicketCoins} coins
-        </button>
-        <button name={TicketPriceTier.Member.toString()} onClick={handleBuyTicketClick}>
-          PINA holders: {lottery.memberCostPerTicketPoints} points + {lottery.memberCostPerTicketCoins} coins
-        </button>
-        <button name={TicketPriceTier.NonMember.toString()} onClick={handleBuyTicketClick}>
-          General: {lottery.nonMemberCostPerTicketCoins} coins
-        </button>
+      <div className='games-modal'>
+        <GamesModalHeader
+          imgSrc={nft.s3Path}
+          nftName={nft.name}
+          nftEditions={nft.numberOfEditions}
+          artist={artist}
+        ></GamesModalHeader>
+        <div className='games-modal__rules'>
+          <div className='games-modal__rules-item'>
+            <div className='games-modal__rules-label'>Drawing For</div>
+            <div className='games-modal__rules-value'>{nft.name}</div>
+          </div>
+          <div className='games-modal__rules-item'>
+            <div className='games-modal__rules-label'>Refundable</div>
+            <div className='games-modal__rules-value'>
+              {lottery.isRefundable ? 'true' : 'false'}
+            </div>
+          </div>
+          <div className='games-modal__rules-item'>
+            <div className='games-modal__rules-label'>Drawing</div>
+            <div className='games-modal__rules-value'>{lottery.endTime.toLocaleDateString()}</div>
+          </div>
+        </div>
+        <div className='games-modal__heading'>
+          <h1 className='games-modal__heading-label'>Price per ticket</h1>
+          <div className='games-modal__heading-value games-modal__heading-value--green'>
+            {lottery.memberCostPerTicketPoints} PIXEL
+          </div>
+        </div>
+        <div className='games-modal__tickets-section'>
+          <div className='games-modal__tickets-inner'>
+            <div className='games-modal__tickets-controls'>
+              <button
+                onClick={handleTicketSubClick}
+                className='games-modal__tickets-sub'
+                disabled={isLoading}
+              >
+                -
+              </button>
+              <input
+                type='number'
+                className='games-modal__tickets-input'
+                value={desiredTicketAmount}
+                onChange={handleTicketInputChange}
+                min={1}
+                max={lottery.maxTicketsPerUser}
+                disabled={isLoading}
+              ></input>
+              <button
+                onClick={handleTicketAddClick}
+                className='games-modal__tickets-add'
+                disabled={isLoading}
+              >
+                +
+              </button>
+            </div>
+          </div>
+          <div className='games-modal__tickets-total'>
+            <span className='games-modal__tickets-total-label'>Total </span>
+            {desiredTicketAmount * lottery.memberCostPerTicketPoints} PIXEL{' + '}
+            {desiredTicketAmount * lottery.memberCostPerTicketCoins} ASH
+          </div>
+          <div className='games-modal__btn-container'>
+            <GetTicketsButton onClick={handleBuyTicketClick} pending={isLoading}></GetTicketsButton>
+          </div>
+        </div>
       </div>
     </Modal>
   );

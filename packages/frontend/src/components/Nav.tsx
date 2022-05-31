@@ -25,9 +25,8 @@ const navLinks: NavLink[] = [
 ];
 
 function Rewards() {
+  const { status } = useSession();
 
-	const {status} = useSession()
-	
   if (!(status === 'authenticated')) return null;
   return (
     <Link href='/rewards'>
@@ -42,9 +41,11 @@ export default function Nav() {
   return (
     <div className='nav'>
       <ul>
-        <div className='logo'>
-          <Image src='/' layout='fill' />
-        </div>
+        {
+          // <div className='logo'>
+          //   <Image src='/' layout='fill' />
+          // </div>
+        }
         {navLinks.map((n: NavLink) => {
           return (
             <Link key={n.name} href={n.url}>

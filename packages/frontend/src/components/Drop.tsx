@@ -2,19 +2,21 @@ import { Lottery as LotteryType, Auction as AuctionType } from '@prisma/client';
 import Image from 'next/image';
 import shortenAddress from '@/utilities/shortenAddress';
 import Link from 'next/link';
-import { DropWithGamesAndArtist } from '@/prisma/types';
+import { Drop_include_GamesAndArtist } from '@/prisma/types';
+import { BaseImage, PfpImage } from './Image';
+import Countdown from '@/components/Countdown';
 
 interface Props {
-  drop: DropWithGamesAndArtist;
+  drop: Drop_include_GamesAndArtist;
 }
 
 type Game = Partial<LotteryType> | Partial<AuctionType>;
 
-function computeStatus({ Lotteries, Auctions }: DropWithGamesAndArtist) {
+function computeStatus({ Lotteries, Auctions }: Drop_include_GamesAndArtist) {
   let games: Game[];
   let startTime: number;
   let endTime: number;
-  let status: 'upcoming' | 'active' | 'drawn';
+  let status: 'upcoming' | 'active' | 'drawn' | 'countdown';
 
   games = [...Lotteries!, ...Auctions!];
 
@@ -25,6 +27,10 @@ function computeStatus({ Lotteries, Auctions }: DropWithGamesAndArtist) {
   endTime = +games[0].endTime!;
 
   status = 'upcoming';
+  //TODO: status countdown
+  if (new Date(startTime).getHours() - Date.now() < 92) {
+    status = 'countdown';
+  }
   if (startTime < Date.now()) {
     status = 'active';
     if (endTime < Date.now()) {
@@ -38,28 +44,29 @@ function computeStatus({ Lotteries, Auctions }: DropWithGamesAndArtist) {
 }
 
 export default function Drop({ drop }: Props) {
-  const { status } = computeStatus(drop);
+  const { status, startTime, endTime } = computeStatus(drop);
   return (
     <div className='drop'>
       <Link href={`drops/${drop.id}`}>
         <div className='thumbnail'>
-          <Image src={drop.bannerImageS3Path || '/'} layout='fill' objectFit='cover' />
+          <BaseImage src={drop.bannerImageS3Path} />
         </div>
       </Link>
       <div className='details'>
         <div className='artist'>
           <div className='artist-pfp'>
-            <Image
-              src={drop.Artist.profilePicture || '/sample/pfp.svg'}
-              layout='fill'
-              objectFit='cover'
-            />
+            <PfpImage src={drop.Artist.profilePicture || undefined} />
           </div>
           <h1 className='artist-name'>
             {drop.Artist.username || shortenAddress(drop.artistAddress)}
           </h1>
         </div>
-        <div className='status'>{status}</div>
+        <div className='drop__status' data-status='drawn'>
+          {status === 'drawn' && <h1>DRAWN – {new Date(endTime).toLocaleDateString()}</h1>}
+          {status === 'active' && <Countdown endTime={endTime} data-color='purple' />}
+          {status === 'countdown' && <Countdown endTime={startTime} />}
+          {status === 'upcoming' && <h1>SOON™ – {new Date(startTime).toLocaleDateString()}</h1>}
+        </div>
       </div>
     </div>
   );
