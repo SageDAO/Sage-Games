@@ -107,11 +107,26 @@ async function setupBidListener(auctionId: number, stateUpdateCallback: () => vo
   }
 }
 
-export async function bid({ auctionId, amount }: { auctionId: number; amount: number }) {
+export async function bid({
+  auctionId,
+  erc20Address,
+  amount,
+}: {
+  auctionId: number;
+  erc20Address: string;
+  amount: number;
+}) {
   console.log(`bid(${auctionId}, ${amount})`);
   try {
-    const weiValue = ethers.utils.parseEther(amount.toString());
-    const tx = await (await getAuctionContract()).bid(auctionId, weiValue, { value: weiValue });
+    if (!erc20Address || erc20Address == ethers.constants.AddressZero) {
+      // Auction runs on native token
+      const weiValue = ethers.utils.parseEther(amount.toString());
+      var tx = await (await getAuctionContract()).bid(auctionId, weiValue, { value: weiValue });
+    } else {
+      // Auction runs on ERC-20 token that needs pre-approval
+      // TODO approve amount (or max?) on token contract or bid will fail with "insufficient allowance"
+      var tx = await (await getAuctionContract()).bid(auctionId, amount);
+    }
     toast.promise(tx.wait(), {
       pending: 'Request submitted to the blockchain, awaiting confirmation...',
       success: `Success! You are now the highest bidder!`,

@@ -20,7 +20,7 @@ function PlaceBidModal({ isOpen, closeModal, auction, artist }: Props) {
   const [desiredBidValue, setDesiredBidValue] = useState<number>(+auction.minimumPrice! || 0);
   const { data: accountData } = useAccount();
   const { data: balance } = useBalance({ addressOrName: accountData?.address });
-  const { call } = useAsync<{ auctionId: number; amount: number }, void>(bid);
+  const { call } = useAsync<{ auctionId: number; erc20Address: string; amount: number }, void>(bid);
   // const handlePlaceBidClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
   //   const bidVal = (document.getElementById('bid') as HTMLInputElement).value;
   //   if (bidVal && !isNaN(+bidVal)) {
@@ -40,7 +40,7 @@ function PlaceBidModal({ isOpen, closeModal, auction, artist }: Props) {
       toast.error('Bid too low');
       return;
     }
-    call({ auctionId: auction.id, amount: desiredBidValue });
+    call({ auctionId: auction.id, erc20Address: auction.erc20Address, amount: desiredBidValue });
   }
 
   function handleMaxButtonClick() {
