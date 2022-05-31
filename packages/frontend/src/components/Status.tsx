@@ -1,7 +1,7 @@
 import Countdown from './Countdown';
 
 // styles/components/_status.scss
-type GameStatus = 'Done' | 'Live' | 'Error';
+type GameStatus = 'Done' | 'Live' | 'Error' | 'Upcoming';
 
 interface ComputeGameStatusArgs {
   endTime: number | Date;
@@ -23,6 +23,10 @@ export function computeGameStatus({
   if (startTime < Date.now()) {
     return 'Live';
   }
+  if (startTime > Date.now()) {
+    return 'Upcoming';
+  }
+
   return 'Error';
 }
 
@@ -36,7 +40,8 @@ export default function Status({ endTime, startTime, settled }: Props) {
       <div className='status__is-live'>
         <div className='status__dot' data-status={gameStatus} />
         <div className='status__text'>{gameStatus}</div>
-        <Countdown endTime={endTime}></Countdown>
+        {gameStatus === 'Live' && <Countdown endTime={endTime}></Countdown>}
+        {gameStatus === 'Upcoming' && <Countdown endTime={startTime}></Countdown>}
       </div>
     </div>
   );

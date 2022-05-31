@@ -52,7 +52,7 @@ export default function drop({ drop }: Props) {
             </div>
             <div className='artist__info'>
               {/* TODO: display using new artist name field */}
-              <div className='artist__name'>artistname</div>
+              <div className='artist__name'>{drop.Artist.displayName}</div>
               <div className='artist__handle'>@{drop.Artist.username}</div>
             </div>
           </div>

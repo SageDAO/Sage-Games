@@ -169,6 +169,7 @@
 
 .games-modal__bid-input {
   display: flex;
+  flex: 1;
   background-color: transparent;
   color: c.$white;
 }
@@ -233,6 +234,7 @@
   display: flex;
   justify-content: center;
   flex-direction: column;
+  gap: 25px;
 }
 
 .games-modal__tickets-inner {
@@ -282,7 +284,6 @@
 }
 
 .games-modal__tickets-total {
-  margin-top: 14px;
   display: flex;
   justify-content: center;
   font-style: normal;
@@ -305,7 +306,7 @@
 .games-modal__tickets-buy-btn {
   @include m.btn;
   @include m.pill;
-  margin-top: 30px;
+  margin-top: 5px;
   display: flex;
   flex-direction: row;
   justify-content: center;
