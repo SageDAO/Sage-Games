@@ -4,7 +4,7 @@ const nextConfig = {
   trailingSlash: true,
   reactStrictMode: true,
   images: {
-    domains: ['memex-dev.s3.us-east-2.amazonaws.com', 'memex-staging.s3.us-east-2.amazonaws.com'],
+    domains: ['urn-dev.s3.us-east-2.amazonaws.com', 'urn-staging.s3.us-east-2.amazonaws.com'],
   },
   webpack: (config) => {
     config.module.rules.push({
