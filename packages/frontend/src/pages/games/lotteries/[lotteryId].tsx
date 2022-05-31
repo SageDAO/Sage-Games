@@ -43,7 +43,6 @@ type Props = {
 
 function lottery({ drop, lottery, auctions, lotteries, drawings, artist }: Props) {
   const [selectedNftIndex, setSelectedNftIndex] = useState<number>(0);
-  console.log('og: ', selectedNftIndex);
   const [blockchainTimestamp, setBlockchainTimestamp] = useState<number>(0);
   const [userBalanceCoins, setUserBalanceCoins] = useState<string>('');
   const { data: sessionData } = useSession();

@@ -35,13 +35,23 @@
     font-size: max(12px, 1.2vw);
     line-height: 19px;
   }
+}
 
-  .status {
-    display: flex;
-    align-items: center;
-    font-size: max(12px, 1.2vw);
-    background-color: #792e9c;
-    padding: 4px 10px 4px 9px;
-    border-radius: 14px;
+.drop__status {
+  display: flex;
+  align-items: center;
+  // font-size: max(14px, 1.2vw);
+  // background-color: #792e9c;
+  // padding: 4px 10px 4px 9px;
+
+  // border-radius: 999px;
+  &[data-status='drawn'],
+  &[data-status='upcoming'] {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 19px;
+    text-transform: uppercase;
+    color: rgba(196, 196, 196, 0.5);
   }
 }

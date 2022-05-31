@@ -33,6 +33,7 @@ type Props = {
   artist: User;
 };
 
+// src/styles/layout/_game-page.scss
 function auction({ auction, auctions, lotteries, artist, drawings, drop }: Props) {
   const [blockchainTimestamp, setBlockchainTimestamp] = useState<number>(0);
   const { data: sessionData } = useSession();

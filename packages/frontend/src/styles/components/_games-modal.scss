@@ -146,6 +146,16 @@
   }
 }
 
+.games-modal__btn-container {
+  height: 46px;
+}
+
+.games-modal__bid-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
 .games-modal__bid-controls {
   margin-top: 10px;
   display: flex;

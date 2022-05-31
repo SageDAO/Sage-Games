@@ -56,11 +56,13 @@ function home({ drops, useS3 }: Props) {
           return <Drop drop={d} key={d.id} />;
         })}
       </div>
-      <div id='explore-all'>
-        <Link href='/drops'>
-          <button>Explore all drops</button>
-        </Link>
-      </div>
+      {
+        // <div id='explore-all'>
+        //   <Link href='/drops'>
+        //     <button>Explore all drops</button>
+        //   </Link>
+        // </div>
+      }
     </div>
   );
 }

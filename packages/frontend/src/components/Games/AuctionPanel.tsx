@@ -8,6 +8,7 @@ import PlaceBidModal from '@/components/Modals/Games/PlaceBidModal';
 import useModal from '@/hooks/useModal';
 import { User } from '@prisma/client';
 import Status from '@/components/Status';
+import PlaceBidButton from './PlaceBidButton';
 
 interface Props {
   auction: Auction_include_Nft;
@@ -91,10 +92,14 @@ export default function AuctionPanel({ auction, artist }: Props) {
         )}
       </div>
       <div className='game-panel__actions'>
-        <button className='game-panel__interact-btn' onClick={openPlaceBidModal}>
-          Place A Bid
-        </button>
-        <Status />
+        <div className='game-panel__btn-container'>
+          <PlaceBidButton pending={false} onClick={openPlaceBidModal} />
+        </div>
+        <Status
+          endTime={auctionState?.endTime || auction.endTime}
+          settled={auctionState?.settled || false}
+          startTime={auction.startTime}
+        />
         <h1 className='game-panel__rules'>Auction Rules</h1>
       </div>
     </div>

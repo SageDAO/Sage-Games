@@ -7,6 +7,7 @@ import GamesModalHeader from './GamesModalHeader';
 import { useState } from 'react';
 import { useAccount } from 'wagmi';
 import Loader from 'react-loader-spinner';
+import GetTicketsButton from '@/components/Games/GetTicketsButton';
 
 interface Props extends ModalProps {
   lottery: Lottery_include_Nft;
@@ -108,7 +109,9 @@ function GetTicketModal({ isOpen, closeModal, lottery, dropName, artist, nft }: 
           </div>
           <div className='games-modal__rules-item'>
             <div className='games-modal__rules-label'>Refundable</div>
-            <div className='games-modal__rules-value'>{lottery.isRefundable ? 'true' : 'false'}</div>
+            <div className='games-modal__rules-value'>
+              {lottery.isRefundable ? 'true' : 'false'}
+            </div>
           </div>
           <div className='games-modal__rules-item'>
             <div className='games-modal__rules-label'>Drawing</div>
@@ -154,20 +157,9 @@ function GetTicketModal({ isOpen, closeModal, lottery, dropName, artist, nft }: 
             {desiredTicketAmount * lottery.memberCostPerTicketPoints} PIXEL{' + '}
             {desiredTicketAmount * lottery.memberCostPerTicketCoins} ASH
           </div>
-          <button
-            className='games-modal__tickets-buy-btn'
-            onClick={handleBuyTicketClick}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <>
-                <Loader type='TailSpin' height='20px' width='20px' color='white'></Loader>
-                Buying tickets...
-              </>
-            ) : (
-              <>Buy {desiredTicketAmount} tickets</>
-            )}
-          </button>
+          <div className='games-modal__btn-container'>
+            <GetTicketsButton onClick={handleBuyTicketClick} pending={isLoading}></GetTicketsButton>
+          </div>
         </div>
       </div>
     </Modal>

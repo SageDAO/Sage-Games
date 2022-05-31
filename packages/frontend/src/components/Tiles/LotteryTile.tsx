@@ -4,6 +4,7 @@ import { basePathLotteries } from '@/constants/paths';
 import GetTicketModal from '@/components/Modals/Games/GetTicketModal';
 import useModal from '@/hooks/useModal';
 import type { User } from '@prisma/client';
+import GetTicketsButton from '../Games/GetTicketsButton';
 
 type Props = {
   lottery: Lottery_include_Nft;
@@ -17,15 +18,9 @@ export default function LotteryTile({ lottery, artist, dropName }: Props) {
   return (
     <NftTile
       button={
-        isActive ? (
-          <button className='nft-tile__interact-btn' onClick={openModal}>
-            Get Tickets
-          </button>
-        ) : (
-          <button disabled className='nft-tile__interact-btn' onClick={openModal}>
-            Inactive
-          </button>
-        )
+        <div className='nft-tile__btn-container'>
+          <GetTicketsButton onClick={openModal} pending={false} />
+        </div>
       }
       name={lottery.Nfts[0].name}
       subtitle={`${String(lottery.Nfts.length)} NFTs`}
@@ -37,7 +32,7 @@ export default function LotteryTile({ lottery, artist, dropName }: Props) {
         closeModal={closeModal}
         lottery={lottery}
         artist={artist}
-				nft={lottery.Nfts[0]}
+        nft={lottery.Nfts[0]}
         dropName={dropName}
       />
     </NftTile>

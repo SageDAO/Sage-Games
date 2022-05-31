@@ -45,8 +45,8 @@ export default function LotteryPanel({ lottery, artist, dropName, selectedNftInd
     skip: !accountData?.address,
   });
   const userBalancePoints = userPoints! - escrowPoints!;
-	console.log('selected: ', selectedNftIndex)
-	console.log(lottery.Nfts)
+  console.log('selected: ', selectedNftIndex);
+  console.log(lottery.Nfts);
   return (
     <div className='game-panel'>
       <GetTicketModal
@@ -86,7 +86,7 @@ export default function LotteryPanel({ lottery, artist, dropName, selectedNftInd
         <button className='game-panel__interact-btn' onClick={openTicketModal}>
           Get Tickets
         </button>
-        <Status />
+        <Status endTime={lottery.endTime} startTime={lottery.startTime} settled={lottery.isLive} />
         <h1 className='game-panel__tickets-available'>
           <span className='game-panel__tickets-available-label'>Available</span>
           x/{lottery.maxTickets}
