@@ -5,31 +5,25 @@ import { basePathAuctions } from '@/constants/paths';
 import PlaceBidModal from '@/components/Modals/Games/PlaceBidModal';
 import useModal from '@/hooks/useModal';
 import { useGetAuctionStateQuery } from '@/store/services/auctionsReducer';
+import PlaceBidButton from '../Games/PlaceBidButton';
 
 type Props = {
   auction: Auction_include_Nft;
   artist: User;
 };
 
-
 // styles/components/_nft-tile.scss
 export default function AuctionTile({ auction, artist }: Props) {
-  const { openModal, isOpen: isModalOpen, closeModal } = useModal(true);
+  const { openModal, isOpen: isModalOpen, closeModal } = useModal();
   const { data: auctionState } = useGetAuctionStateQuery(auction.id);
   const isActive = auctionState?.settled || false;
   return (
     <NftTile
       name={auction.Nft.name}
       button={
-        isActive ? (
-          <button className='nft-tile__interact-btn' onClick={openModal}>
-            Place bid
-          </button>
-        ) : (
-          <button disabled className='nft-tile__interact-btn' onClick={openModal}>
-            Inactive 
-          </button>
-        )
+        <div className='nft-tile__btn-container'>
+          <PlaceBidButton pending={false} onClick={openModal}></PlaceBidButton>
+        </div>
       }
       subtitle={`Auction - ${auction.Nft.numberOfEditions} editions`}
       imgSrc={auction.Nft.s3Path}

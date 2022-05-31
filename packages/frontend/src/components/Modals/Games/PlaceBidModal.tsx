@@ -7,8 +7,8 @@ import GamesModalHeader from './GamesModalHeader';
 import Status from '@/components/Status';
 import { useState } from 'react';
 import useAsync from '@/hooks/useAsync';
-import Loader from 'react-loader-spinner';
 import { useAccount, useBalance } from 'wagmi';
+import PlaceBidButton from '@/components/Games/PlaceBidButton';
 
 interface Props extends ModalProps {
   auction: Auction_include_Nft;
@@ -88,52 +88,49 @@ function PlaceBidModal({ isOpen, closeModal, auction, artist }: Props) {
             <div className='games-modal__rules-value'>value</div>
           </div>
         </div>
-        <div className='games-modal__bid-header'>
-          <h1 className='games-modal__bid-header-label'>Amount</h1>
-          <div className='games-modal__bid-header-value'>
+        <div className='games-modal__heading'>
+          <h1 className='games-modal__heading-label'>Amount</h1>
+          <div className='games-modal__heading-value games-modal__heading-value--blue'>
             {auction.buyNowPrice || auction.minimumPrice}
           </div>
         </div>
-        <div className='games-modal__bid-controls'>
-          <input
-            type='number'
-            className='games-modal__bid-input'
-            value={desiredBidValue}
-            onChange={handleBidInputChange}
-            min={+auction.minimumPrice! || 0}
-            max={+auction.buyNowPrice! || undefined}
-            disabled={pending}
-          ></input>
-          <span className='games-modal__bid-unit'>ETH</span>
-          <button
-            className='games-modal__bid-min-max-btn'
-            disabled={pending}
-            onClick={handleMinButtonClick}
-          >
-            min
-          </button>
-          <button
-            className='games-modal__bid-min-max-btn'
-            disabled={pending}
-            onClick={handleMaxButtonClick}
-          >
-            max
-          </button>
+        <div className='games-modal__bid-section'>
+          <div className='games-modal__bid-controls'>
+            <input
+              type='number'
+              className='games-modal__bid-input'
+              value={desiredBidValue}
+              onChange={handleBidInputChange}
+              min={+auction.minimumPrice! || 0}
+              max={+auction.buyNowPrice! || undefined}
+              disabled={pending}
+            ></input>
+            <span className='games-modal__bid-unit'>ETH</span>
+            <button
+              className='games-modal__bid-min-max-btn'
+              disabled={pending}
+              onClick={handleMinButtonClick}
+            >
+              min
+            </button>
+            <button
+              className='games-modal__bid-min-max-btn'
+              disabled={pending}
+              onClick={handleMaxButtonClick}
+            >
+              max
+            </button>
+          </div>
+          <div className='games-modal__btn-container'>
+            <PlaceBidButton pending={pending} onClick={handlePlaceBidClick} />
+          </div>
         </div>
-        <button
-          className='games-modal__place-bid-btn'
-          disabled={pending}
-          onClick={handlePlaceBidClick}
-        >
-          {pending ? (
-            <>
-              <Loader type='TailSpin' color='white' height='20px' width='20px' /> Bidding...
-            </>
-          ) : (
-            'Place bid'
-          )}
-        </button>
         <div className='games-modal__status-container'>
+          <Status
+            endTime={auction.endTime}
+            settled={auction.settled}
+            startTime={auction.startTime}
+          />
         </div>
       </div>
     </Modal>

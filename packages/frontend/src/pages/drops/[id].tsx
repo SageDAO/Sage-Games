@@ -1,8 +1,8 @@
 import Image from 'next/image';
-import { GetStaticPropsContext } from 'next';
+import { GetStaticPropsContext, GetStaticPathsResult, GetStaticPropsResult } from 'next';
 import prisma from '@/prisma/client';
 import type {
-  DropWithGamesAndArtist,
+  Drop_include_GamesAndArtist,
   Lottery_include_Nft,
   Auction_include_Nft,
 } from '@/prisma/types';
@@ -13,7 +13,7 @@ import AuctionTile from '@/components/Tiles/AuctionTile';
 
 //determines the type interface received from getStaticProps()
 interface Props {
-  drop: DropWithGamesAndArtist;
+  drop: Drop_include_GamesAndArtist;
 }
 
 function filterDrawingsFromLottery(array: Lottery_include_Nft[]) {
@@ -52,7 +52,7 @@ export default function drop({ drop }: Props) {
             </div>
             <div className='artist__info'>
               {/* TODO: display using new artist name field */}
-              <div className='artist__name'>artistname</div>
+              <div className='artist__name'>{drop.Artist.displayName}</div>
               <div className='artist__handle'>@{drop.Artist.username}</div>
             </div>
           </div>
@@ -111,7 +111,9 @@ export default function drop({ drop }: Props) {
           <h1 className='games__title'>Lotteries</h1>
           <div className='games__grid'>
             {Lotteries.map((l: Lottery_include_Nft) => {
-              return <LotteryTile lottery={l} artist={drop.Artist} key={l.id} />;
+              return (
+                <LotteryTile lottery={l} artist={drop.Artist} key={l.id} dropName={drop.name} />
+              );
             })}
           </div>
         </section>
@@ -122,7 +124,9 @@ export default function drop({ drop }: Props) {
           <h1 className='games__title'>Drawings</h1>
           <div className='games__grid'>
             {Drawings.map((d: Lottery_include_Nft) => {
-              return <DrawingTile drawing={d} artist={drop.Artist} key={d.id} />;
+              return (
+                <DrawingTile drawing={d} artist={drop.Artist} key={d.id} dropName={drop.name} />
+              );
             })}
           </div>
         </section>
@@ -142,8 +146,10 @@ export default function drop({ drop }: Props) {
   );
 }
 
-export async function getStaticProps({ params }: GetStaticPropsContext) {
-  const drop: DropWithGamesAndArtist | null = await prisma.drop.findFirst({
+export async function getStaticProps({
+  params,
+}: GetStaticPropsContext): Promise<GetStaticPropsResult<Props>> {
+  const drop: Drop_include_GamesAndArtist | null = await prisma.drop.findFirst({
     include: {
       Lotteries: {
         include: {
@@ -160,6 +166,14 @@ export async function getStaticProps({ params }: GetStaticPropsContext) {
     where: { id: Number(params!.id) },
   });
 
+  if (!drop) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
   return {
     props: {
       drop,
@@ -169,7 +183,7 @@ export async function getStaticProps({ params }: GetStaticPropsContext) {
 }
 
 // This function gets called at build time
-export async function getStaticPaths() {
+export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const useHeroku = process.env.getDropsFromHeroku;
 
   let drops: DropType[] = [];

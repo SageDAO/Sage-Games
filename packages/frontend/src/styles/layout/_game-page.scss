@@ -1,5 +1,5 @@
-@use "@/styles/layout/layout" as l;
-@use "@/styles/abstracts/colors" as c;
+@use '@/styles/layout/layout' as l;
+@use '@/styles/abstracts/colors' as c;
 
 .game-page {
   padding: 43px l.$indent;
@@ -17,12 +17,14 @@
   }
 
   .game__content {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
     flex: 1;
     margin-left: 60px;
   }
 
   .nft__header {
-    margin-top: 30px;
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -70,7 +72,6 @@
     display: flex;
     flex-direction: column;
     padding: 30px;
-    margin-top: 25px;
     background: #131314;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
     border-radius: 18px;
@@ -137,6 +138,6 @@
     font-size: 12px;
     line-height: 17px;
     color: #ffffff;
-		cursor: pointer;
+    cursor: pointer;
   }
 }
