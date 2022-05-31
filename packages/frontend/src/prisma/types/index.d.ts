@@ -60,6 +60,18 @@ export type AuctionNftWithArtist = Prisma.AuctionGetPayload<{
 export type Lottery_include_Nft = Prisma.LotteryGetPayload<{
   include: { Nfts: true };
 }>;
+
+export type LotteryWithNftsAndArtist = Prisma.LotteryGetPayload<{
+  include: {
+    Nfts: true;
+    Drop: {
+      include: {
+        Artist: true;
+      };
+    };
+  };
+}>;
+
 export interface GamePrize {
   nftId: number;
   dropId: number;

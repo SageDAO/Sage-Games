@@ -6,7 +6,6 @@ import { User } from '@prisma/client';
 import GamesModalHeader from './GamesModalHeader';
 import { useState } from 'react';
 import { useAccount } from 'wagmi';
-import Loader from 'react-loader-spinner';
 import GetTicketsButton from '@/components/Games/GetTicketsButton';
 
 interface Props extends ModalProps {
