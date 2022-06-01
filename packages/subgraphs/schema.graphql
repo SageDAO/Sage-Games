@@ -8,9 +8,9 @@ enum LotteryStatus {
 type Lottery @entity {
   id: ID!
   status: LotteryStatus!
-  tickets: [Ticket!]! @derivedFrom(field: "lottery")
-  claimedPrizes: [ClaimedPrize!]! @derivedFrom(field: "lottery")
-  refunds: [Refund!]! @derivedFrom(field: "lottery")
+  tickets: [Ticket!]!
+  claimedPrizes: [ClaimedPrize!]!
+  refunds: [Refund!]!
 }
 
 enum TicketTier {
@@ -49,7 +49,7 @@ enum AuctionStatus {
 type Auction @entity {
   id: ID! # auctionId
   status: AuctionStatus!
-  bids: [Bid!]! @derivedFrom(field: "auction")
+  bids: [Bid!]!
   highestBid: BigInt
   highestBidder: Bytes # address
   endTime: Int

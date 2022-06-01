@@ -11,7 +11,7 @@ export function handleLotteryStatusChanged(event: LotteryStatusChanged): void {
   const lotteryId = event.params.lotteryId.toHex();
   let lottery = Lottery.load(lotteryId);
   if (!lottery) {
-    lottery = new Lottery(lotteryId);
+    lottery = createLottery(lotteryId);
   }
   const status = statusEnumToString(ByteArray.fromI32(event.params.status));
   if (status) {
@@ -24,7 +24,7 @@ export function handleTicketSold(event: TicketSold): void {
   const lotteryId = event.params.lotteryId.toHex();
   let lottery = Lottery.load(lotteryId);
   if (!lottery) {
-    lottery = new Lottery(lotteryId);
+    lottery = createLottery(lotteryId);
   }
   const ticketId = event.transaction.hash.toHex() + "-" + event.logIndex.toString();
   let ticket = new Ticket(ticketId);
@@ -43,7 +43,7 @@ export function handlePrizeClaimed(event: PrizeClaimed): void {
   const lotteryId = event.params.lotteryId.toHex();
   let lottery = Lottery.load(lotteryId);
   if (!lottery) {
-    lottery = new Lottery(lotteryId);
+    lottery = createLottery(lotteryId);
   }
   const prizeId = event.params.prizeId.toHex();
   let prize = new ClaimedPrize(prizeId);
@@ -60,7 +60,7 @@ export function handleRefunded(event: Refunded): void {
   const lotteryId = event.params.lotteryId.toHex();
   let lottery = Lottery.load(lotteryId);
   if (!lottery) {
-    lottery = new Lottery(lotteryId);
+    lottery = createLottery(lotteryId);
   }
   const refundId = event.transaction.hash.toHex() + "-" + event.logIndex.toString();
   let refund = new Refund(refundId);
@@ -72,6 +72,15 @@ export function handleRefunded(event: Refunded): void {
   lottery.refunds = refunds;
   refund.save();
   lottery.save();
+}
+
+function createLottery(lotteryId: string): Lottery {
+  const lottery = new Lottery(lotteryId);
+  lottery.tickets = new Array<string>();
+  lottery.refunds = new Array<string>();
+  lottery.claimedPrizes = new Array<string>();
+  lottery.status = "Created";
+  return lottery;
 }
 
 function statusEnumToString(statusEnum: ByteArray): string {
