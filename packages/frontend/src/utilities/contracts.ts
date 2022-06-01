@@ -11,6 +11,7 @@ import type {
 } from '@/types/contracts';
 import { parameters } from '../constants/config';
 import web3Modal from './web3Modal';
+import { toast } from 'react-toastify';
 
 const { REWARDS_ADDRESS, LOTTERY_ADDRESS, AUCTION_ADDRESS } = parameters;
 
@@ -110,7 +111,13 @@ export async function approveERC20Transfer(erc20Address: string) {
     `approveERC20Transfer() :: contract ${erc20Address} allowance for wallet ${wallet} is ${allowance}`
   );
   if (allowance.eq(BigNumber.from(0))) {
-    await (erc20Contract as ERC20Contract).approve(AUCTION_ADDRESS, ethers.constants.MaxUint256);
+    var tx = await (erc20Contract as ERC20Contract).approve(AUCTION_ADDRESS, ethers.constants.MaxUint256);
+    toast.promise(tx.wait(), {
+      pending: 'Approval submitted to the blockchain, awaiting confirmation...',
+      success: `Approved! Preparing bid...`,
+      error: 'Failure! Unable to complete request.',
+    });
+    await tx.wait();
   }
 }
 
