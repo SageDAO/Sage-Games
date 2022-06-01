@@ -1,5 +1,5 @@
 import { GamePrize } from '@/prisma/types';
-import { extractErrorMessage, getAuctionContract } from '@/utilities/contracts';
+import { approveERC20Transfer, extractErrorMessage, getAuctionContract } from '@/utilities/contracts';
 import { playErrorSound, playPrizeClaimedSound, playTxSuccessSound } from '@/utilities/sounds';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { toast } from 'react-toastify';
@@ -117,15 +117,15 @@ export async function bid({
   amount: number;
 }) {
   console.log(`bid(${auctionId}, ${amount})`);
+  const weiValue = ethers.utils.parseEther(amount.toString());
   try {
     if (!erc20Address || erc20Address == ethers.constants.AddressZero) {
       // Auction runs on native token
-      const weiValue = ethers.utils.parseEther(amount.toString());
       var tx = await (await getAuctionContract()).bid(auctionId, weiValue, { value: weiValue });
     } else {
       // Auction runs on ERC-20 token that needs pre-approval
-      // TODO approve amount (or max?) on token contract or bid will fail with "insufficient allowance"
-      var tx = await (await getAuctionContract()).bid(auctionId, amount);
+      await approveERC20Transfer(erc20Address);
+      var tx = await (await getAuctionContract()).bid(auctionId, weiValue);
     }
     toast.promise(tx.wait(), {
       pending: 'Request submitted to the blockchain, awaiting confirmation...',
