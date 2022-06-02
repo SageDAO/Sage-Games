@@ -15,7 +15,7 @@ function profile() {
     data: userData,
     isFetching: isFetchingUser,
     isError: isFetchUserError,
-  } = useGetUserQuery();
+  } = useGetUserQuery(null, { skip: !sessionData });
   const { data: prizeData } = useGetPrizesByUserQuery(sessionData?.address as string, {
     skip: !sessionData,
   });
@@ -35,8 +35,6 @@ function profile() {
     return <div className='profile-page'>Error</div>;
   }
 
-  //TODO: determine vip status
-  const isVip = false;
   //TODO: determine claimable nfts
   const hasClaimables = !!prizeData?.length;
 
@@ -63,7 +61,6 @@ function profile() {
           </div>
           <div className='account-card__name'>{userData?.displayName || 'name'}</div>
           <div className='account-card__handle'>{userData?.username || '@handle'}</div>
-          {isVip && <div className='account-card__vip-badge'>vip</div>}
           <div className='account-card__bio'>{userData?.bio}</div>
           <div className='account-card__socials'>
             <div className='account-card__socials-icon'></div>

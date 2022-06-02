@@ -5,6 +5,8 @@ import { ethers } from 'ethers';
 import { toast } from 'react-toastify';
 import { parameters } from '@/constants/config';
 import type { SafeUserUpdate } from '@/prisma/types';
+import { getCsrfToken, signIn, signOut } from 'next-auth/react';
+import { SiweMessage } from 'siwe';
 // import {
 //   playLikeDropSound,
 //   playUnlikeDropSound,
@@ -75,7 +77,25 @@ export const userApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: '/' }),
   tagTypes: ['User', 'Wallet'],
   endpoints: (builder) => ({
-    getUser: builder.query<User, void>({
+    signIn: builder.mutation<null, { message: SiweMessage; signature: string }>({
+      queryFn: async ({ message, signature }) => {
+        signIn('credentials', {
+          message: JSON.stringify(message),
+          redirect: false,
+          signature,
+        });
+        return { data: null };
+      },
+      invalidatesTags: ['User'],
+    }),
+    signOut: builder.mutation<null, null>({
+      queryFn: async () => {
+        signOut({ redirect: false });
+        return { data: null };
+      },
+      invalidatesTags: ['User'],
+    }),
+    getUser: builder.query<User, null>({
       query: () => {
         return {
           url: 'api/user',
@@ -129,4 +149,6 @@ export const {
   useGetUserQuery,
   useGetUserDisplayInfoQuery,
   useUpdateUserMutation,
+  useSignInMutation,
+  useSignOutMutation,
 } = userApi;

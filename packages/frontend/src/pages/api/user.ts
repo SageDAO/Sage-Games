@@ -13,6 +13,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getSession({ req });
   if (!session) res.status(401).end('Not Authenticated');
   const { address: walletAddress } = session!;
+
   switch (method) {
     case 'GET':
       if (req.query.wallet) {
