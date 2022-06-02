@@ -27,17 +27,17 @@ export default function dashboard() {
 
   if (isFetchingUser || isFetchingLotteries || isFetchingUsers) {
     return (
-      <div className='mt-12 ml-12'>
+      <div style={{ margin: '25px' }}>
         <br />
-        <Loader type='ThreeDots' color='black' height={10} width={50} timeout={0} />
+        <Loader type='ThreeDots' color='white' height={10} width={50} timeout={0} />
       </div>
     );
   }
   if (!isAdmin(user)) {
-    return <div className='mt-12 ml-12'>Please connect with an admin wallet</div>;
+    return <div style={{ margin: '25px' }}>Please connect with an admin wallet</div>;
   }
   if (lotteryError || usersError) {
-    return <div className='mt-12 ml-12'>Oops, an error occured</div>;
+    return <div style={{ margin: '25px' }}>Oops, an error occured</div>;
   }
 
   return <DashBoardPage lotteriesStats={lotteryData as LotteryStats[]} users={users as User[]} />;
