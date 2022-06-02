@@ -5,7 +5,7 @@ import {
   LotteryStats,
   useGetAllUsersAndEarnedPointsQuery,
   useGetLotteriesStatsQuery,
-} from '@/store/services/_deprecated-dashboard';
+} from '@/store/services/dashboardReducer';
 import { useGetUserQuery } from '@/store/services/user';
 import { DashBoardPage } from '@/components/Dashboard/DashboardPage';
 

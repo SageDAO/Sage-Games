@@ -1,4 +1,4 @@
-import { LotteryStats } from '@/store/services/_deprecated-dashboard';
+import { LotteryStats } from '@/store/services/dashboardReducer';
 import { Tab } from '@headlessui/react';
 import { User } from '@prisma/client';
 import { Fragment } from 'react';

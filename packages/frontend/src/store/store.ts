@@ -6,7 +6,7 @@ import { prizesApi } from './services/prizesReducer';
 import { lotteriesApi } from './services/lotteriesReducer';
 import { auctionsApi } from './services/auctionsReducer';
 import { pointsApi } from './services/pointsReducer';
-import { dashboardApi } from './services/_deprecated-dashboard';
+import { dashboardApi } from './services/dashboardReducer';
 
 const rootReducer = combineReducers({
   [userApi.reducerPath]: userApi.reducer,

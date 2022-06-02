@@ -1,4 +1,4 @@
-import { LotteryStats } from '@/store/services/_deprecated-dashboard';
+import { LotteryStats } from '@/store/services/dashboardReducer';
 import { msToTime } from '@/utilities/time';
 import Countdown from 'react-countdown';
 import { toast } from 'react-toastify';
