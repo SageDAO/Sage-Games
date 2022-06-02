@@ -15,7 +15,7 @@ function profile() {
     data: userData,
     isFetching: isFetchingUser,
     isError: isFetchUserError,
-  } = useGetUserQuery(null, { skip: !sessionData });
+  } = useGetUserQuery();
   const { data: prizeData } = useGetPrizesByUserQuery(sessionData?.address as string, {
     skip: !sessionData,
   });
@@ -72,7 +72,7 @@ function profile() {
             <div
               className='account-card__private-info-address'
               onClick={() => {
-                window.navigator.clipboard.writeText(userData?.walletAddress as string);
+                window.navigator.clipboard.writeText(sessionData?.address as string);
                 toast.success('copied address');
               }}
             >

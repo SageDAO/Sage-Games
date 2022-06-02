@@ -95,7 +95,7 @@ export const userApi = createApi({
       },
       invalidatesTags: ['User'],
     }),
-    getUser: builder.query<User, null>({
+    getUser: builder.query<User, void>({
       query: () => {
         return {
           url: 'api/user',
