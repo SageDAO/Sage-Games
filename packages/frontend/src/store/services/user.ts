@@ -79,7 +79,7 @@ export const userApi = createApi({
   endpoints: (builder) => ({
     signIn: builder.mutation<null, { message: SiweMessage; signature: string }>({
       queryFn: async ({ message, signature }) => {
-        signIn('credentials', {
+        await signIn('credentials', {
           message: JSON.stringify(message),
           redirect: false,
           signature,

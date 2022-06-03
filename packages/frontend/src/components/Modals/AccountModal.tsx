@@ -22,9 +22,9 @@ interface Props extends ModalProps {
 
 export default function AccountModal({ isOpen, closeModal, isLoading, setIsLoading }: Props) {
   const { data: accountData } = useAccount();
-  const { data: sessionData } = useSession();
+  const { data: sessionData, status: sessionStatus } = useSession();
   const { connectors, connectAsync, activeConnector } = useConnect();
-  const [signIn] = useSignInMutation();
+  const [signIn, { isLoading: isSigningIn }] = useSignInMutation();
   const [signOut] = useSignOutMutation();
   const { signMessageAsync } = useSignMessage();
   const { activeChain } = useNetwork();
@@ -120,12 +120,11 @@ export default function AccountModal({ isOpen, closeModal, isLoading, setIsLoadi
             <button
               className='accountmodal__sign-in-btn'
               onClick={handleSignInClick}
-              disabled={isLoading || !accountData}
+              disabled={isLoading || !accountData || isSigningIn}
             >
               Sign In
             </button>
           )}
-
           <button
             className='accountmodal__profile-btn'
             onClick={() => router.push('/profile')}
