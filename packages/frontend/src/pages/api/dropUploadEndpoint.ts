@@ -200,7 +200,6 @@ async function insertAuction(data: any, response: NextApiResponse) {
             id: Number(data.dropId),
           },
         },
-        erc20Address: data.token,
         minimumPrice: data.minPrice,
         buyNowPrice: data.buyNowPrice ? data.buyNowPrice : null,
         startTime: new Date(Number(data.startDate) * 1000),
@@ -273,11 +272,8 @@ async function insertDrawing(data: any, response: NextApiResponse) {
     var record = await prisma.lottery.create({
       data: {
         dropId: Number(data.dropId),
-        vipCostPerTicketCoins: toNumber(data.ticketCostCoinsVIP),
-        vipCostPerTicketPoints: toNumber(data.ticketCostPointsVIP),
-        memberCostPerTicketCoins: toNumber(data.ticketCostCoinsMember),
-        memberCostPerTicketPoints: toNumber(data.ticketCostPointsMember),
-        nonMemberCostPerTicketCoins: toNumber(data.ticketCostCoins),
+        costPerTicketTokens: toNumber(data.ticketCostCoins),
+        costPerTicketPoints: toNumber(data.ticketCostPoints),
         maxTickets: toNumber(data.maxTickets),
         maxTicketsPerUser: toNumber(data.maxTicketsPerUser),
         endTime: new Date(Number(data.endDate) * 1000),

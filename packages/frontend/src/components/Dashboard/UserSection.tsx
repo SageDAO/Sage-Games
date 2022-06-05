@@ -8,7 +8,7 @@ import { GlobalFilter } from './GlobalFilter';
 import shortenAddress from '@/utilities/shortenAddress';
 
 interface UserSectionProps {
-  users: User[];
+  users: Array<User>;
 }
 
 export function UserSection({ users }: UserSectionProps) {
@@ -25,13 +25,13 @@ export function UserSection({ users }: UserSectionProps) {
         Header: '',
         accessor: 'profilePicture',
         Cell: (cell: any) => (
-          <div className='mx-auto relative sm:w-11 sm:h-11 w-11 h-11 overflow-hidden rounded-full shadow-md bg-white border-1'>
+          <div className='dashboard-user__cell'>
             <img
               src={cell.value || '/sample/pfp.svg'}
               onClick={() => {
                 displayUserDetailsModal(cell.row.original);
               }}
-              className='mx-auto cursor-pointer'
+              className='dashboard-user__profile-img'
             />
           </div>
         ),
@@ -42,17 +42,17 @@ export function UserSection({ users }: UserSectionProps) {
         accessor: 'walletAddress',
         sortType: compareWallets,
         Cell: (cell: any) => (
-          <div className='mx-auto flex items-center text-center justify-center' title={cell.value}>
+          <div className='dashboard-user__wallet-cell' title={cell.value}>
             <div
-              className='mx-3 bg-white rounded-full h-8 w-8 shadow-md border dark:border-gray-878786 flex items-center justify-center cursor-pointer filter active:brightness-95 dark:bg-black'
+              className='dashboard-user__wallet-clipboard'
               onClick={() => {
                 navigator.clipboard.writeText(cell.value);
                 toast.success('Address copied!');
               }}
             >
-              <img src='/copy.svg' alt='' width='15' className='dark:invert' />
+              <img src='/copy.svg' alt='' width='15' />
             </div>
-            <div className='font-mono mr-3'>{shortenAddress(cell.value)}</div>
+            <div className='dashboard-user__wallet-short-address'>{shortenAddress(cell.value)}</div>
           </div>
         ),
       },
@@ -145,20 +145,14 @@ export function UserSection({ users }: UserSectionProps) {
         globalFilter={globalFilter}
         setGlobalFilter={setGlobalFilter}
       />
-      <table {...getTableProps()} className='border border-purple-figma w-full mx-auto dark:invert'>
+      <table {...getTableProps()} className='dashboard-user__table'>
         <thead>
           {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
                 <th
                   {...column.getHeaderProps(column.getSortByToggleProps())}
-                  style={{
-                    borderBottom: 'solid 3px black',
-                    background: 'aliceblue',
-                    color: 'black',
-                    fontWeight: 'bold',
-                    cursor: 'pointer',
-                  }}
+                  className='dashboard-user__table__header'
                 >
                   {column.render('Header')}
                   <span>{column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}</span>
@@ -174,15 +168,7 @@ export function UserSection({ users }: UserSectionProps) {
               <tr {...row.getRowProps()} key={i}>
                 {row.cells.map((cell, j) => {
                   return (
-                    <td
-                      {...cell.getCellProps()}
-                      style={{
-                        padding: '5px',
-                        border: 'solid 1px gray',
-                      }}
-                      className='text-center'
-                      key={j}
-                    >
+                    <td {...cell.getCellProps()} className='dashboard-user__table__cell' key={j}>
                       {cell.render('Cell')}
                     </td>
                   );
@@ -192,14 +178,14 @@ export function UserSection({ users }: UserSectionProps) {
           })}
         </tbody>
       </table>
-      <div className='mt-5 mx-auto text-center'>
+      <div className='dashboard-user__nav-container'>
         <nav>
-          <ul className='inline-flex -space-x-px'>
+          <ul className='dashboard-user__nav-list'>
             <li>
               <button
                 onClick={() => gotoPage(0)}
                 disabled={!canPreviousPage}
-                className='py-2 px-3 ml-0 leading-tight text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
+                className='dashboard-user__nav-btn-first'
               >
                 {'<<'}
               </button>
@@ -208,7 +194,7 @@ export function UserSection({ users }: UserSectionProps) {
               <button
                 onClick={() => previousPage()}
                 disabled={!canPreviousPage}
-                className='py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
+                className='dashboard-user__nav-btn-prev'
               >
                 {'<'}
               </button>
@@ -218,11 +204,9 @@ export function UserSection({ users }: UserSectionProps) {
                 <li key={i}>
                   <button
                     onClick={() => gotoPage(pageItem - 1)}
-                    className={
-                      pageItem == pageIndex + 1
-                        ? 'py-2 px-3 leading-tight text-blue-600 bg-blue-50 border border-gray-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
-                        : 'py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
-                    }
+                    className={`dashboard-user__nav-page-number${
+                      pageItem == pageIndex + 1 && '--active'
+                    }`}
                   >
                     {pageItem}
                   </button>
@@ -233,7 +217,7 @@ export function UserSection({ users }: UserSectionProps) {
               <button
                 onClick={() => nextPage()}
                 disabled={!canNextPage}
-                className='py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
+                className='dashboard-user__nav-btn-next'
               >
                 {'>'}
               </button>
@@ -242,7 +226,7 @@ export function UserSection({ users }: UserSectionProps) {
               <button
                 onClick={() => gotoPage(pageCount - 1)}
                 disabled={!canNextPage}
-                className='py-2 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
+                className='dashboard-user__nav-btn-last'
               >
                 {'>>'}
               </button>
@@ -250,7 +234,7 @@ export function UserSection({ users }: UserSectionProps) {
           </ul>
         </nav>
 
-        <span className='mt-5 mx-3'>
+        <span>
           Page <strong>{pageIndex + 1}</strong> of <strong>{pageOptions.length}</strong>
         </span>
         <select
@@ -258,7 +242,6 @@ export function UserSection({ users }: UserSectionProps) {
           onChange={(e) => {
             setPageSize(Number(e.target.value));
           }}
-          className='mt-5 mx-3'
         >
           {[5, 10, 25, 50, 100, 250].map((pageSize) => (
             <option key={pageSize} value={pageSize}>

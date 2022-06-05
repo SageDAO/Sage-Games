@@ -52,12 +52,12 @@ function GetTicketModal({ isOpen, closeModal, lottery, dropName, artist, nft }: 
 
   // ? lottery db field will only have one tier?
   const getPriceCoins = (): bigint => {
-    return BigInt(lottery.memberCostPerTicketCoins * 1000) * BigInt(10 ** 15);
+    return BigInt(lottery.costPerTicketTokens * 1000) * BigInt(10 ** 15);
   };
 
   // ? lottery db field will only have one tier?
   const getPricePoints = (): bigint => {
-    return BigInt(lottery.memberCostPerTicketPoints);
+    return BigInt(lottery.costPerTicketPoints);
   };
 
   const fetchUserPointsAndProof = async (): Promise<{
@@ -121,7 +121,7 @@ function GetTicketModal({ isOpen, closeModal, lottery, dropName, artist, nft }: 
         <div className='games-modal__heading'>
           <h1 className='games-modal__heading-label'>Price per ticket</h1>
           <div className='games-modal__heading-value games-modal__heading-value--green'>
-            {lottery.memberCostPerTicketPoints} PIXEL
+            {lottery.costPerTicketPoints} PIXEL
           </div>
         </div>
         <div className='games-modal__tickets-section'>
@@ -154,8 +154,8 @@ function GetTicketModal({ isOpen, closeModal, lottery, dropName, artist, nft }: 
           </div>
           <div className='games-modal__tickets-total'>
             <span className='games-modal__tickets-total-label'>Total </span>
-            {desiredTicketAmount * lottery.memberCostPerTicketPoints} PIXEL{' + '}
-            {desiredTicketAmount * lottery.memberCostPerTicketCoins} ASH
+            {desiredTicketAmount * lottery.costPerTicketPoints} PIXEL{' + '}
+            {desiredTicketAmount * lottery.costPerTicketTokens} ASH
           </div>
           <div className='games-modal__btn-container'>
             <GetTicketsButton onClick={handleBuyTicketClick} pending={isLoading}></GetTicketsButton>

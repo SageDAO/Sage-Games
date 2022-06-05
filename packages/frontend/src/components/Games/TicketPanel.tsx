@@ -71,9 +71,9 @@ export default function LotteryPanel({ lottery, artist, dropName, selectedNftInd
         <div className='game-panel__pricing-item'>
           <h1 className='game-panel__pricing-label'>Pricing</h1>
           <div className='game-panel__price'>
-            {lottery.memberCostPerTicketPoints}
+            {lottery.costPerTicketPoints}
             <div className='game-panel__price-unit'>PIXEL +</div>
-            {lottery.memberCostPerTicketCoins}
+            {lottery.costPerTicketTokens}
             <div className='game-panel__price-unit'>Coins</div>
           </div>
         </div>

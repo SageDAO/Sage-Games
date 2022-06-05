@@ -1,5 +1,9 @@
 import { GamePrize } from '@/prisma/types';
-import { approveERC20Transfer, extractErrorMessage, getAuctionContract } from '@/utilities/contracts';
+import {
+  approveERC20Transfer,
+  extractErrorMessage,
+  getAuctionContract,
+} from '@/utilities/contracts';
 import { playErrorSound, playPrizeClaimedSound, playTxSuccessSound } from '@/utilities/sounds';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { toast } from 'react-toastify';
@@ -107,26 +111,14 @@ async function setupBidListener(auctionId: number, stateUpdateCallback: () => vo
   }
 }
 
-export async function bid({
-  auctionId,
-  erc20Address,
-  amount,
-}: {
-  auctionId: number;
-  erc20Address: string;
-  amount: number;
-}) {
+export async function bid({ auctionId, amount }: { auctionId: number; amount: number }) {
   console.log(`bid(${auctionId}, ${amount})`);
   const weiValue = ethers.utils.parseEther(amount.toString());
   try {
-    if (!erc20Address || erc20Address == ethers.constants.AddressZero) {
-      // Auction runs on native token
-      var tx = await (await getAuctionContract()).bid(auctionId, weiValue, { value: weiValue });
-    } else {
-      // Auction runs on ERC-20 token that needs pre-approval
-      await approveERC20Transfer(erc20Address);
-      var tx = await (await getAuctionContract()).bid(auctionId, weiValue);
-    }
+    const erc20AddressASH = '0x64d91f12ece7362f91a6f8e7940cd55f05060b92';
+    const erc20AddressMOCK = '0x20c99f1F5bdf00e3270572177C6e30FC6213cEfe';
+    await approveERC20Transfer(erc20AddressMOCK);
+    var tx = await (await getAuctionContract()).bid(auctionId, weiValue);
     toast.promise(tx.wait(), {
       pending: 'Request submitted to the blockchain, awaiting confirmation...',
       success: `Success! You are now the highest bidder!`,

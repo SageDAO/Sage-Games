@@ -41,11 +41,8 @@ model Lottery {
   isRefundable                Boolean    @default(false) 
   isLive                      Boolean    @default(false)
   blockchainCreatedAt         DateTime?
-  vipCostPerTicketCoins       Float      @default(0.0)
-  vipCostPerTicketPoints      Int        @default(0)
-  memberCostPerTicketCoins    Float      @default(0.0)
-  memberCostPerTicketPoints   Int        @default(0)
-  nonMemberCostPerTicketCoins Float      @default(0.0)
+  costPerTicketTokens         Float      @default(0.0)
+  costPerTicketPoints         Int        @default(0)
   defaultPrizeId              Int?
   maxTickets                  Int        @default(0)
   maxTicketsPerUser           Int        @default(0)
@@ -61,7 +58,6 @@ model Lottery {
 model Auction {
   id                    Int        @id @default(autoincrement())
   dropId                Int        
-  erc20Address          String     @db.Char(42)
   buyNowPrice           String?
   lastUpdatedAt         DateTime?
   minimumPrice          String?
@@ -141,7 +137,7 @@ model PrizeProof {
   @@id([lotteryId, winnerAddress, nftId, ticketNumber])
 }
 
-model MemeTransactions {
+model TokenTransaction {
   blockNumber    Int
   blockTimestamp Int
   from           String    @db.Char(42)
@@ -150,7 +146,6 @@ model MemeTransactions {
   assetType      AssetType
   id             Int       @id @default(autoincrement())
   txHash         String    @db.Char(66)
-
   @@index([from, to])
 }
 
@@ -158,6 +153,7 @@ model EarnedPoints {
   address           String   @id @db.Char(42)
   totalPointsEarned BigInt   @default(0)
   proof             String
+  signedMessage     String
   updatedAt         DateTime @default(now())
   User              User     @relation(fields: [address], references: [walletAddress])
 }
@@ -185,14 +181,11 @@ model User {
   ArtistDrops                   Drop[]  @relation("ArtistDrops")
   EarnedPoints                  EarnedPoints?
   FavoriteDrops                 Drop[]  @relation("userFavoriteDrops")
-
   @@index([walletAddress])
 }
 
 enum AssetType {
-  ETH_MEMEINU
-  FTM_MEMEINU
-  FTM_LIQUIDITY
+  ETH_ASH
 }
 
 enum Role {

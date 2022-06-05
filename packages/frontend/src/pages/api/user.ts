@@ -16,7 +16,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   switch (method) {
     case 'GET':
-      if (req.query.wallet) {
+      if (req.query.action == 'GetAllUsersAndEarnedPoints') {
+        await getAllUsersAndEarnedPoints(res);
+      } else if (req.query.wallet) {
         await getUserDisplayInfo(req.query.wallet as string, res);
       } else {
         await getUser(walletAddress as string, res);
@@ -66,20 +68,20 @@ async function getUserDisplayInfo(walletAddress: string, res: NextApiResponse) {
   res.status(500).end;
 }
 
-/* async function getAllUsersAndEarnedPoints(res: NextApiResponse) {
-    try {
-        const users = await prisma.user.findMany({
-            include: { EarnedPoints: true },
-        });
-        const json = JSON.stringify(users, (_, value) =>
-            typeof value === "bigint" ? value.toString() : value
-        );
-        res.status(200).end(json);
-    } catch (error) {
-        console.log(error);
-        res.status(500).end();
-    }
-} */
+async function getAllUsersAndEarnedPoints(res: NextApiResponse) {
+  try {
+    const users = await prisma.user.findMany({
+      include: { EarnedPoints: true },
+    });
+    const json = JSON.stringify(users, (_, value) =>
+      typeof value === 'bigint' ? value.toString() : value
+    );
+    res.status(200).end(json);
+  } catch (error) {
+    console.log(error);
+    res.status(500).end();
+  }
+}
 
 async function createUser(walletAddress: string, res: NextApiResponse) {
   try {
