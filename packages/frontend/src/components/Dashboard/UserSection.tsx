@@ -25,7 +25,7 @@ export function UserSection({ users }: UserSectionProps) {
         Header: '',
         accessor: 'profilePicture',
         Cell: (cell: any) => (
-          <div className='dashboard-user__cell'>
+          <div>
             <img
               src={cell.value || '/sample/pfp.svg'}
               onClick={() => {
@@ -42,15 +42,15 @@ export function UserSection({ users }: UserSectionProps) {
         accessor: 'walletAddress',
         sortType: compareWallets,
         Cell: (cell: any) => (
-          <div className='dashboard-user__wallet-cell' title={cell.value}>
+          <div title={cell.value} style={{ display: 'flex' }}>
             <div
-              className='dashboard-user__wallet-clipboard'
+              
               onClick={() => {
                 navigator.clipboard.writeText(cell.value);
                 toast.success('Address copied!');
               }}
             >
-              <img src='/copy.svg' alt='' width='15' />
+              <img className='dashboard-user__wallet-clipboard' src='/copy.svg' style={{ stroke: 'white' }} alt='' width='15' />
             </div>
             <div className='dashboard-user__wallet-short-address'>{shortenAddress(cell.value)}</div>
           </div>
