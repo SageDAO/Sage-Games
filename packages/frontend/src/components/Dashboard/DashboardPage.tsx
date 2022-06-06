@@ -1,16 +1,9 @@
-import { LotteryStats } from '@/store/services/dashboardReducer';
 import { Tab } from '@headlessui/react';
-import { User } from '@prisma/client';
 import { Fragment } from 'react';
-import { LotterySection } from './LotterySection';
-import { UserSection } from './UserSection';
+import { GamePanel } from './GamePanel';
+import { UserPanel } from './UserPanel';
 
-interface Props {
-  lotteriesStats: LotteryStats[];
-  users: User[];
-}
-
-export function DashBoardPage({ lotteriesStats, users }: Props) {
+export function DashBoardPage() {
   return (
     <div className='dashboard-page'>
       <div className='dashboard-tab__container'>
@@ -19,8 +12,13 @@ export function DashBoardPage({ lotteriesStats, users }: Props) {
             <Tab as={Fragment}>
               {({ selected }) => (
                 <button className={`dashboard-tab__button${selected && '--active'}`}>
-                  Lotteries
+                  New Drops
                 </button>
+              )}
+            </Tab>
+            <Tab as={Fragment}>
+              {({ selected }) => (
+                <button className={`dashboard-tab__button${selected && '--active'}`}>Games</button>
               )}
             </Tab>
             <Tab as={Fragment}>
@@ -31,10 +29,13 @@ export function DashBoardPage({ lotteriesStats, users }: Props) {
           </Tab.List>
           <Tab.Panels as='div' className='dashboard-tab__panels'>
             <Tab.Panel as='div' className='dashboard-tab__panel'>
-              <LotterySection lotteriesStats={lotteriesStats} />
+              <GamePanel />
             </Tab.Panel>
             <Tab.Panel as='div' className='dashboard-tab__panel'>
-              <UserSection users={users} />
+              <GamePanel />
+            </Tab.Panel>
+            <Tab.Panel as='div' className='dashboard-tab__panel'>
+              <UserPanel />
             </Tab.Panel>
           </Tab.Panels>
         </Tab.Group>

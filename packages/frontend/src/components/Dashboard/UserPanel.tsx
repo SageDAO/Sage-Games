@@ -1,4 +1,3 @@
-import { User } from '@prisma/client';
 import React from 'react';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
@@ -6,12 +5,28 @@ import { useSortBy, useTable, usePagination, useGlobalFilter } from 'react-table
 import { UserDetailsModal } from './UserDetailsModal';
 import { GlobalFilter } from './GlobalFilter';
 import shortenAddress from '@/utilities/shortenAddress';
+import { useGetAllUsersAndEarnedPointsQuery } from '@/store/services/dashboardReducer';
+import Loader from 'react-loader-spinner';
+import { User } from '@prisma/client';
 
-interface UserSectionProps {
-  users: Array<User>;
+export function UserPanel() {
+  const { data: users, isFetching: isFetchingUsers } = useGetAllUsersAndEarnedPointsQuery();
+  if (isFetchingUsers) {
+    return (
+      <div style={{ margin: '25px' }}>
+        <br />
+        <Loader type='ThreeDots' color='white' height={10} width={50} timeout={0} />
+      </div>
+    );
+  }
+  return <UserTable users={users!} />;
 }
 
-export function UserSection({ users }: UserSectionProps) {
+interface UserTableProps {
+  users: User[];
+}
+
+function UserTable({ users }: UserTableProps) {
   const [isUserDetailsModalOpen, setIsUserDetailsModalOpen] = useState<boolean>(false);
   const [userDetails, setUserDetails] = useState<any>(undefined);
   const data = React.useMemo(() => JSON.parse(JSON.stringify(users)), []);
@@ -44,13 +59,18 @@ export function UserSection({ users }: UserSectionProps) {
         Cell: (cell: any) => (
           <div title={cell.value} style={{ display: 'flex' }}>
             <div
-              
               onClick={() => {
                 navigator.clipboard.writeText(cell.value);
                 toast.success('Address copied!');
               }}
             >
-              <img className='dashboard-user__wallet-clipboard' src='/copy.svg' style={{ stroke: 'white' }} alt='' width='15' />
+              <img
+                className='dashboard-user__wallet-clipboard'
+                src='/copy.svg'
+                style={{ stroke: 'white' }}
+                alt=''
+                width='15'
+              />
             </div>
             <div className='dashboard-user__wallet-short-address'>{shortenAddress(cell.value)}</div>
           </div>
