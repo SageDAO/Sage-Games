@@ -30,7 +30,6 @@ export function handleTicketSold(event: TicketSold): void {
   let ticket = new Ticket(ticketId);
   ticket.address = event.params.participantAddress;
   ticket.ticketNumber = event.params.ticketNumber.toI32();
-  ticket.tier = tierEnumToString(ByteArray.fromI32(event.params.tier));
   ticket.lottery = lotteryId;
   let tickets = lottery.tickets;
   tickets.push(ticketId);
@@ -93,16 +92,6 @@ function statusEnumToString(statusEnum: ByteArray): string {
       return "Closed";
     case 3:
       return "Completed";
-  }
-  return "";
-}
-
-function tierEnumToString(tierEnum: ByteArray): string {
-  switch (tierEnum.toI32()) {
-    case 0:
-      return "Member";
-    case 1:
-      return "NonMember";
   }
   return "";
 }

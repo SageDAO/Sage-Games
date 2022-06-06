@@ -21,7 +21,7 @@ dataSources:
         - TicketSold
       abis:
         - name: LotteryContract
-          file: ./abis/LotteryContract.json
+          file: ./abis/Lottery.json
       eventHandlers:
         - event: LotteryStatusChanged(indexed uint256,indexed uint8)
           handler: handleLotteryStatusChanged
@@ -29,7 +29,7 @@ dataSources:
           handler: handlePrizeClaimed
         - event: Refunded(indexed uint256,indexed address,uint256)
           handler: handleRefunded
-        - event: TicketSold(indexed uint256,uint256,indexed address,uint8)
+        - event: TicketSold(indexed uint256,uint256,indexed address)
           handler: handleTicketSold
       file: ./src/mapping-lottery.ts
   - kind: ethereum
@@ -50,9 +50,9 @@ dataSources:
         - BidPlaced
       abis:
         - name: AuctionContract
-          file: ./abis/AuctionContract.json
+          file: ./abis/Auction.json
       eventHandlers:
-        - event: AuctionCreated(indexed uint256,uint256,uint256,address)
+        - event: AuctionCreated(indexed uint256,uint256,uint256)
           handler: handleAuctionCreated
         - event: AuctionSettled(indexed uint256,indexed address,uint256)
           handler: handleAuctionSettled

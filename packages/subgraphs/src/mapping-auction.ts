@@ -9,7 +9,6 @@ import { Auction, Bid } from "../generated/schema";
 export function handleAuctionCreated(event: AuctionCreated): void {
   const auctionId = event.params.auctionId.toHex();
   let auction = createAuction(auctionId);
-  auction.status = "Created";
   auction.save();
 }
 
@@ -60,5 +59,6 @@ export function handleBidPlaced(event: BidPlaced): void {
 function createAuction(auctionId: string): Auction {
   const auction = new Auction(auctionId);
   auction.bids = new Array<string>();
+  auction.status = "Created";
   return auction;
 }
