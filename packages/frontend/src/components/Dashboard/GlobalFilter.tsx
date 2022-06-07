@@ -19,9 +19,9 @@ export function GlobalFilter({
   }, 200);
 
   return (
-    <div className='dark:invert pb-4 text-center items-center justify-center flex'>
+    <div className='dashboard-search-container'>
       <label htmlFor='dashboardSearch'>
-        <img src='/search.svg' className='mx-auto mr-3' />
+        <img src='/search.svg' className='dashboard-search-icon' />
       </label>
       <input
         id='dashboardSearch'
@@ -33,7 +33,7 @@ export function GlobalFilter({
           onChange(e.target.value);
         }}
         placeholder={`${count} records...`}
-        size={12}
+        size={20}
       />
     </div>
   );
