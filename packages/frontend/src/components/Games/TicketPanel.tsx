@@ -45,8 +45,6 @@ export default function LotteryPanel({ lottery, artist, dropName, selectedNftInd
     skip: !accountData?.address,
   });
   const userBalancePoints = userPoints! - escrowPoints!;
-  console.log('selected: ', selectedNftIndex);
-  console.log(lottery.Nfts);
   return (
     <div className='game-panel'>
       <GetTicketModal
