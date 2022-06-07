@@ -5,9 +5,10 @@ import { Lottery_include_Nft, Nft } from '@/prisma/types';
 import { User } from '@prisma/client';
 import GamesModalHeader from './GamesModalHeader';
 import { useState } from 'react';
-import { useAccount } from 'wagmi';
+import { useAccount, useSigner } from 'wagmi';
 import GetTicketsButton from '@/components/Games/GetTicketsButton';
 import Status from '@/components/Status';
+import { SignerOrProvider } from '@/utilities/contracts';
 
 interface Props extends ModalProps {
   lottery: Lottery_include_Nft;
@@ -18,11 +19,13 @@ interface Props extends ModalProps {
 
 //@scss : '@/styles/components/_games-modal.scss'
 function GetTicketModal({ isOpen, closeModal, lottery, dropName, artist, nft }: Props) {
-  const [desiredTicketAmount, setDesiredTicketAmount] = useState<number>(0);
+  const [desiredTicketAmount, setDesiredTicketAmount] = useState<number>(1);
   const { data: sessionData } = useSession();
   const [buyTickets, { isLoading }] = useBuyTicketsMutation();
   const { data: accountData } = useAccount();
-
+  const { data: signer } = useSigner();
+  const hasMaxTicketsPerUser: boolean = lottery.maxTicketsPerUser > 0;
+  console.log(lottery);
   //ui event handlers
   function handleTicketSubClick() {
     if (desiredTicketAmount == 0) {
@@ -32,7 +35,7 @@ function GetTicketModal({ isOpen, closeModal, lottery, dropName, artist, nft }: 
   }
 
   function handleTicketAddClick() {
-    if (desiredTicketAmount + 1 > lottery.maxTicketsPerUser) {
+    if (hasMaxTicketsPerUser && Boolean(desiredTicketAmount + 1 > lottery.maxTicketsPerUser)) {
       return;
     }
     setDesiredTicketAmount((prevState) => prevState + 1);
@@ -81,15 +84,17 @@ function GetTicketModal({ isOpen, closeModal, lottery, dropName, artist, nft }: 
         proof = '';
     }
 
-    const request = {
-      walletAddress: accountData?.address,
+    const request: BuyTicketRequest = {
+      walletAddress: accountData?.address as string,
       lotteryId: lottery.id,
       numberOfTickets: desiredTicketAmount,
       ticketCostPoints: pricePoints,
       ticketCostCoins: getPriceCoins(),
       totalPointsEarned,
       proof,
-    } as BuyTicketRequest;
+      signerOrProvider: signer as SignerOrProvider,
+    };
+    console.log('buyTickets input: ', request);
     await buyTickets(request);
   };
 
@@ -121,7 +126,7 @@ function GetTicketModal({ isOpen, closeModal, lottery, dropName, artist, nft }: 
         <div className='games-modal__heading'>
           <h1 className='games-modal__heading-label'>Price per ticket</h1>
           <div className='games-modal__heading-value games-modal__heading-value--green'>
-            {lottery.costPerTicketPoints} PIXEL
+            {lottery.costPerTicketPoints} POINTS
           </div>
         </div>
         <div className='games-modal__tickets-section'>
@@ -140,7 +145,7 @@ function GetTicketModal({ isOpen, closeModal, lottery, dropName, artist, nft }: 
                 value={desiredTicketAmount}
                 onChange={handleTicketInputChange}
                 min={1}
-                max={lottery.maxTicketsPerUser}
+                max={hasMaxTicketsPerUser ? lottery.maxTicketsPerUser : undefined}
                 disabled={isLoading}
               ></input>
               <button
@@ -154,8 +159,8 @@ function GetTicketModal({ isOpen, closeModal, lottery, dropName, artist, nft }: 
           </div>
           <div className='games-modal__tickets-total'>
             <span className='games-modal__tickets-total-label'>Total </span>
-            {desiredTicketAmount * lottery.costPerTicketPoints} PIXEL{' + '}
-            {desiredTicketAmount * lottery.costPerTicketTokens} ASH
+            {desiredTicketAmount * lottery.costPerTicketPoints} POINTS{' + '}
+            {desiredTicketAmount * lottery.costPerTicketTokens} COINS
           </div>
           <div className='games-modal__btn-container'>
             <GetTicketsButton onClick={handleBuyTicketClick} pending={isLoading}></GetTicketsButton>

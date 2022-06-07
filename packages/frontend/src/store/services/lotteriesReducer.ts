@@ -1,14 +1,13 @@
 import { LotteryWithNftsAndArtist } from '@/prisma/types';
-import { extractErrorMessage, getLotteryContract } from '@/utilities/contracts';
+import { extractErrorMessage, getLotteryContract, SignerOrProvider } from '@/utilities/contracts';
 import { playErrorSound, playTxSuccessSound } from '@/utilities/sounds';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { ContractTransaction } from 'ethers';
+import { BigNumber, ContractTransaction, ethers } from 'ethers';
 import { toast } from 'react-toastify';
 import { pointsApi } from './pointsReducer';
 
 export enum TicketPriceTier {
-  VIP = 0,
-  Member = 1,
+  Member = 0,
   NonMember = 2,
 }
 
@@ -21,6 +20,7 @@ export interface BuyTicketRequest {
   tier: TicketPriceTier;
   totalPointsEarned?: bigint;
   proof?: string;
+  signerOrProvider: SignerOrProvider;
 }
 
 export type LotteryTickets = {
@@ -64,6 +64,7 @@ export const lotteriesApi = createApi({
           } else {
             var tx = await buyTicketsWithoutPoints(buyRequest);
           }
+          console.log('tx: ', tx);
           toast.promise(tx.wait(), {
             pending: 'Request submitted to the blockchain, awaiting confirmation...',
             success: `Success! You obtained ${buyRequest.numberOfTickets} ticket${
@@ -79,7 +80,7 @@ export const lotteriesApi = createApi({
           }
           return { data: true };
         } catch (e: any) {
-          console.log(e);
+          console.error(e);
           if (usePoints) {
             dispatch(pointsApi.endpoints.releaseEscrowPoints.initiate());
           }
@@ -95,11 +96,16 @@ export const lotteriesApi = createApi({
 
 async function buyTicketsWithoutPoints(buyRequest: BuyTicketRequest): Promise<ContractTransaction> {
   const value = BigInt(buyRequest.numberOfTickets) * buyRequest.ticketCostCoins;
+  // const value = ethers.BigNumber.from(1);
   console.log(`buyTicketsWithoutPoints(${buyRequest.lotteryId}) :: cost = ${value}`);
-  const contract = await getLotteryContract();
-  return await contract.buyTickets(buyRequest.lotteryId, buyRequest.numberOfTickets, buyRequest.tier, {
-    value
+  const contract = await getLotteryContract(buyRequest.signerOrProvider);
+  console.log('numberoftix: ', buyRequest.numberOfTickets);
+  const tx = await contract.buyTickets(buyRequest.lotteryId, buyRequest.numberOfTickets, {
+    gasLimit: 10000000,
   });
+
+  console.log('tx: ', tx);
+  return tx;
 }
 
 async function buyTicketsUsingPoints(buyRequest: BuyTicketRequest): Promise<ContractTransaction> {
