@@ -8,7 +8,7 @@ import { playErrorSound, playPrizeClaimedSound, playTxSuccessSound } from '@/uti
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { toast } from 'react-toastify';
 import { Auction_include_Nft } from '@/prisma/types';
-import { ethers } from 'ethers';
+import { ethers, Signer } from 'ethers';
 
 export interface AuctionState {
   highestBidder: string; // wallet address
@@ -114,14 +114,17 @@ async function setupBidListener(auctionId: number, stateUpdateCallback: () => vo
   }
 }
 
-export async function bid({ auctionId, amount }: { auctionId: number; amount: number }) {
+export type BidArgs = { auctionId: number; amount: number; signer: Signer };
+
+export async function bid({ auctionId, amount, signer }: BidArgs) {
   console.log(`bid(${auctionId}, ${amount})`);
   const weiValue = ethers.utils.parseEther(amount.toString());
   try {
     const erc20AddressASH = '0x64d91f12ece7362f91a6f8e7940cd55f05060b92';
     const erc20AddressMOCK = '0x20c99f1F5bdf00e3270572177C6e30FC6213cEfe';
     await approveERC20Transfer(erc20AddressMOCK);
-    var tx = await (await getAuctionContract()).bid(auctionId, weiValue);
+    const auctionContract = await getAuctionContract(signer);
+    var tx = await auctionContract.bid(auctionId, weiValue);
     toast.promise(tx.wait(), {
       pending: 'Request submitted to the blockchain, awaiting confirmation...',
       success: `Success! You are now the highest bidder!`,

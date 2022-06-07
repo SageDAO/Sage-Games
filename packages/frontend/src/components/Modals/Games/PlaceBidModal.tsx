@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify';
-import { bid, useGetAuctionStateQuery } from '@/store/services/auctionsReducer';
+import { bid, BidArgs, useGetAuctionStateQuery } from '@/store/services/auctionsReducer';
 import Modal, { Props as ModalProps } from '@/components/Modals';
 import { Auction_include_Nft } from '@/prisma/types';
 import type { User } from '@prisma/client';
@@ -7,7 +7,7 @@ import GamesModalHeader from './GamesModalHeader';
 import Status from '@/components/Status';
 import { useState } from 'react';
 import useAsync from '@/hooks/useAsync';
-import { useAccount, useBalance } from 'wagmi';
+import { useAccount, useBalance, useSigner } from 'wagmi';
 import PlaceBidButton from '@/components/Games/PlaceBidButton';
 
 interface Props extends ModalProps {
@@ -20,7 +20,8 @@ function PlaceBidModal({ isOpen, closeModal, auction, artist }: Props) {
   const [desiredBidValue, setDesiredBidValue] = useState<number>(+auction.minimumPrice! || 0);
   const { data: accountData } = useAccount();
   const { data: balance } = useBalance({ addressOrName: accountData?.address });
-  const { call } = useAsync<{ auctionId: number; amount: number }, void>(bid);
+  const { data: signer } = useSigner();
+  const { call } = useAsync<BidArgs, void>(bid);
   // const handlePlaceBidClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
   //   const bidVal = (document.getElementById('bid') as HTMLInputElement).value;
   //   if (bidVal && !isNaN(+bidVal)) {
@@ -40,7 +41,7 @@ function PlaceBidModal({ isOpen, closeModal, auction, artist }: Props) {
       toast.error('Bid too low');
       return;
     }
-    call({ auctionId: auction.id, amount: desiredBidValue });
+    call({ auctionId: auction.id, amount: desiredBidValue, signer });
   }
 
   function handleMaxButtonClick() {
