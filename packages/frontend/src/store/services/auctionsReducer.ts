@@ -78,12 +78,15 @@ export async function getAuctionContractState(
   if (stateUpdateCallback) {
     setupBidListener(auctionId, stateUpdateCallback);
   }
-  return {
+
+  const auctionState: AuctionState = {
     highestBid: +auctionStruct.highestBid,
     highestBidder: auctionStruct.highestBidder,
-    settled: auctionStruct['5'],
+    settled: auctionStruct.settled,
     endTime: auctionStruct.endTime,
-  } as AuctionState;
+  };
+
+  return auctionState;
 }
 
 /*
