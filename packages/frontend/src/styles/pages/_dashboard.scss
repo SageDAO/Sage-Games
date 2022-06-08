@@ -1,17 +1,22 @@
+@use "@/styles/abstracts/colors" as c;
+
 .dashboard-page {
+  margin: 2rem 5rem 2rem 5rem;
   margin-left: 5rem;
   margin-right: 5rem;
+  font-weight: 500;
+  font-size: 14px;
 }
 
 .dashboard-panel {
-  margin-top: 2rem;
+  margin-top: 1rem;
   margin-left: 2rem;
 }
 
 .dashboard-search-container {
   margin-left: auto;
   margin-right: auto;
-  padding-bottom: 2rem;
+  padding-bottom: 1rem;
   text-align: center;
 }
 
@@ -21,115 +26,88 @@
 }
 
 .dashboard-user {
-
   &__profile-img {
-    width: 3rem;
-    height: 3rem;
+    width: 2rem;
+    height: 2rem;
     border-radius: 7px;
-    border: 1px solid grey;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    border: 1px solid c.$text-gray-2;
+    margin-top: 5px;
+    margin-bottom: 5px;
     margin-left: auto;
     cursor: pointer;
   }
 
   &__wallet {
-
     &-clipboard {
+      filter: invert(93%) sepia(94%) saturate(0%) hue-rotate(248deg) brightness(106%) contrast(106%);
       cursor: pointer;
       margin-right: 1rem;
-      width: 1.5rem;
-      height: 1.5rem;
+      width: 1rem;
+      height: 1rem;
+      border: 1px solid c.$text-gray-2;
       border-radius: 99px;
       display: flex;
-      background-color: white;
-      padding: 2px;
-      // mx-3 bg-white rounded-full h-8 w-8 shadow-md border flex items-center justify-center cursor-pointer filter active:brightness-95
+      padding: 0.15rem;
     }
 
     &-short-address {
       font-family: ui-monospace, SFMono-Regular, Menlo, 'Courier New', monospace;
+      line-height: 1.5rem;
     }
   }
 
   &__table {
-
-    border: solid 1px grey;
+    border: solid 1px c.$text-gray-2;
     margin-left: auto;
     margin-right: auto;
-    // border border-purple-figma w-full mx-auto dark:invert
+    font-weight: 500;
+    font-size: 14px;
 
     &__header {
-      border: dashed 1px grey;
+      border: dashed 1px c.$text-gray-2;
       padding: 15px 15px 15px 15px;
-      border-bottom: solid 3px grey;
+      border-bottom: solid 3px c.$text-gray-2;
       font-weight: bold;
       cursor: pointer;
     }
 
     &__cell {
-      border: dashed 1px grey;
+      border: dashed 1px c.$text-gray-2;
       padding-right: 25px;
       padding-left: 25px;
       text-align: center;
+      vertical-align: middle;
+      display: table-cell;
     }
   }
 
   &__nav {
-    &-container {
-      margin-top: 1rem;
-      text-align: center;
-      // mt-5 mx-auto text-center
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    text-align: center;
+
+    &--active {
+      background-color: c.$purple !important;
+      cursor: default !important;
     }
 
-    &-list {
-      display: inline-flex;
-      // inline-flex -space-x-px
+    button {
+      cursor: pointer;
+      background-color: c.$bg-base;
+      color: white;
+      padding: 10px 13px;
+      border-radius: 5px;
+      border: 1px solid c.$text-gray-2;
+      transition: background-color 0.3s;
+      margin: 0 2px;
     }
-
-    &-btn-first {
-      padding-top: 0.5rem;
-      padding-bottom: 0.5rem;
-      margin-left: 0px;
-      line-height: 1.25;
-      color: grey;
-      background-color: white;
-      border-top-left-radius: 50px;
-      border-bottom-left-radius: 50px;     
-
-      &:hover {
-
-      }
-
-      // py-2 px-3 ml-0 leading-tight text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 
-      // dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white
+    button:hover {
+      background-color: c.$text-black;
     }
-
-    &-btn-prev {
-      padding-top: 0.5rem;
-      padding-bottom: 0.5rem;
-      padding-left: 0.75rem;
-      padding-right: 0.75rem;
-      line-height: 1.25;
-      color: grey;
-      background-color: white;
-      // py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white
-    }
-
-    &-btn-next {
-      // py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white
-    }
-
-    &-btn-last {
-      // py-2 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white
-    }
-
-    &-btn-page-number {
-      // py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white
-
-      &--active {
-        // py-2 px-3 leading-tight text-blue-600 bg-blue-50 border border-gray-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white
-      }
+    button:disabled,
+    button[disabled] {
+      background-color: c.$text-black;
+      cursor: default;
     }
   }
 }

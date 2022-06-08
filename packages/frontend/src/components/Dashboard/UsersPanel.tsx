@@ -9,7 +9,7 @@ import { useGetAllUsersAndEarnedPointsQuery } from '@/store/services/dashboardRe
 import Loader from 'react-loader-spinner';
 import { User } from '@prisma/client';
 
-export function UserPanel() {
+export function UsersPanel() {
   const { data: users, isFetching: isFetchingUsers } = useGetAllUsersAndEarnedPointsQuery();
   if (isFetchingUsers) {
     return (
@@ -19,14 +19,14 @@ export function UserPanel() {
       </div>
     );
   }
-  return <UserTable users={users!} />;
+  return <UsersTable users={users!} />;
 }
 
-interface UserTableProps {
+interface UsersTableProps {
   users: User[];
 }
 
-function UserTable({ users }: UserTableProps) {
+function UsersTable({ users }: UsersTableProps) {
   const [isUserDetailsModalOpen, setIsUserDetailsModalOpen] = useState<boolean>(false);
   const [userDetails, setUserDetails] = useState<any>(undefined);
   const data = React.useMemo(() => JSON.parse(JSON.stringify(users)), []);
@@ -198,63 +198,33 @@ function UserTable({ users }: UserTableProps) {
           })}
         </tbody>
       </table>
-      <div className='dashboard-user__nav-container'>
-        <nav>
-          <ul className='dashboard-user__nav-list'>
-            <li>
-              <button
-                onClick={() => gotoPage(0)}
-                disabled={!canPreviousPage}
-                className='dashboard-user__nav-btn-first'
-              >
-                {'<<'}
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => previousPage()}
-                disabled={!canPreviousPage}
-                className='dashboard-user__nav-btn-prev'
-              >
-                {'<'}
-              </button>
-            </li>
-            {pageRange().map((pageItem: any, i: number) => {
-              return (
-                <li key={i}>
-                  <button
-                    onClick={() => gotoPage(pageItem - 1)}
-                    className={`dashboard-user__nav-page-number${
-                      pageItem == pageIndex + 1 && '--active'
-                    }`}
-                  >
-                    {pageItem}
-                  </button>
-                </li>
-              );
-            })}
-            <li>
-              <button
-                onClick={() => nextPage()}
-                disabled={!canNextPage}
-                className='dashboard-user__nav-btn-next'
-              >
-                {'>'}
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => gotoPage(pageCount - 1)}
-                disabled={!canNextPage}
-                className='dashboard-user__nav-btn-last'
-              >
-                {'>>'}
-              </button>
-            </li>
-          </ul>
-        </nav>
-
-        <span>
+      <div className='dashboard-user__nav'>
+        <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+          {'<<'}
+        </button>
+        <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+          {'<'}
+        </button>
+        {pageRange().map((pageItem: any, i: number) => {
+          return (
+            <button
+              key={i}
+              onClick={() => gotoPage(pageItem - 1)}
+              className={`${pageItem == pageIndex + 1 && 'dashboard-user__nav--active'}`}
+            >
+              {pageItem}
+            </button>
+          );
+        })}
+        <button onClick={() => nextPage()} disabled={!canNextPage}>
+          {'>'}
+        </button>
+        <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+          {'>>'}
+        </button>
+      </div>
+      <div style={{ textAlign: 'center'}}>
+        <span style={{ marginRight: '1rem' }}>
           Page <strong>{pageIndex + 1}</strong> of <strong>{pageOptions.length}</strong>
         </span>
         <select

@@ -1,8 +1,8 @@
-import { Fragment } from 'react';
-import { GamePanel } from './GamePanel';
-import { UserPanel } from './UserPanel';
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import { GamesStatsPanel } from './GamesStatsPanel';
+import { UsersPanel } from './UsersPanel';
+import { NewDropsPanel } from './NewDropsPanel';
 
 export function DashBoardPage() {
   return (
@@ -14,13 +14,13 @@ export function DashBoardPage() {
           <Tab>Users</Tab>
         </TabList>
         <TabPanel className='dashboard-panel'>
-          <GamePanel />
+          <NewDropsPanel />
         </TabPanel>
         <TabPanel className='dashboard-panel'>
-          <GamePanel />
+          <GamesStatsPanel />
         </TabPanel>
         <TabPanel className='dashboard-panel'>
-          <UserPanel />
+          <UsersPanel />
         </TabPanel>
       </Tabs>
     </div>
