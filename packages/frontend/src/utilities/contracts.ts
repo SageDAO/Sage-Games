@@ -1,5 +1,4 @@
 import { BigNumber, Contract, ethers, Signer } from 'ethers';
-import { Provider } from '@ethersproject/providers/src.ts/';
 import Rewards from '@/constants/abis/Rewards/Rewards.sol/Rewards.json';
 import Lottery from '@/constants/abis/Lottery/Lottery.sol/Lottery.json';
 import Auction from '@/constants/abis/Auction/Auction.sol/Auction.json';
@@ -16,7 +15,7 @@ import { toast } from 'react-toastify';
 
 const { REWARDS_ADDRESS, LOTTERY_ADDRESS, AUCTION_ADDRESS } = parameters;
 
-export type SignerOrProvider = Signer | Provider;
+export type SignerOrProvider = Signer | Signer['provider'];
 
 type URNContracts = 'lottery' | 'auction' | 'points';
 
@@ -46,16 +45,18 @@ interface ContractDetails {
 
 interface ContractInstanceArgs {
   contractDetails: ContractDetails;
-  signerOrProvider: SignerOrProvider;
+  signerOrProvider?: SignerOrProvider;
 }
 
 var ContractFactory = (function () {
   var instances = new Map<string, Contract>();
   async function createInstance({ contractDetails, signerOrProvider }: ContractInstanceArgs) {
     console.log(`Creating contract instance for address ${contractDetails.address}`);
-    // const connection = await web3Modal.connect();
-    // const provider = new ethers.providers.Web3Provider(connection);
-    return new ethers.Contract(contractDetails.address, contractDetails.abi, signerOrProvider);
+    return new ethers.Contract(
+      contractDetails.address,
+      contractDetails.abi,
+      signerOrProvider || ethers.getDefaultProvider()
+    );
   }
   return {
     getInstance: async function ({ contractDetails, signerOrProvider }: ContractInstanceArgs) {
@@ -70,7 +71,7 @@ var ContractFactory = (function () {
 })();
 
 export async function getLotteryContract(
-  signerOrProvider: SignerOrProvider
+  signerOrProvider?: SignerOrProvider
 ): Promise<LotteryContract> {
   const contractDetails = contractMap['lottery'];
   return (await ContractFactory.getInstance({
@@ -80,7 +81,7 @@ export async function getLotteryContract(
 }
 
 export async function getAuctionContract(
-  signerOrProvider: SignerOrProvider
+  signerOrProvider?: SignerOrProvider
 ): Promise<AuctionContract> {
   const contractDetails = contractMap['auction'];
   return (await ContractFactory.getInstance({
@@ -90,7 +91,7 @@ export async function getAuctionContract(
 }
 
 export async function getRewardsContract(
-  signerOrProvider: SignerOrProvider
+  signerOrProvider?: SignerOrProvider
 ): Promise<RewardsContract> {
   const contractDetails = contractMap['points'];
   return (await ContractFactory.getInstance({
