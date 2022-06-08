@@ -17,13 +17,13 @@ const { REWARDS_ADDRESS, LOTTERY_ADDRESS, AUCTION_ADDRESS } = parameters;
 
 export type SignerOrProvider = Signer | Signer['provider'];
 
-type URNContracts = 'lottery' | 'auction' | 'points';
+type AppContracts = 'lottery' | 'auction' | 'points';
 
-type URNContractMap = {
-  [key in URNContracts]: ContractDetails;
+type AppContractMap = {
+  [key in AppContracts]: ContractDetails;
 };
 
-const contractMap: URNContractMap = {
+const contractMap: AppContractMap = {
   lottery: {
     address: LOTTERY_ADDRESS,
     abi: Lottery.abi,

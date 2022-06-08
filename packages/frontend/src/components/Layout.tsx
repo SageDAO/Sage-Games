@@ -17,7 +17,7 @@ export default function Layout({ children, router }: Props) {
   return (
     <div className='layout'>
       <Head>
-        <title>URN Marketplace</title>
+        <title>SAGE Marketplace</title>
         <link rel='icon' href='/' />
       </Head>
       <ToastContainer
