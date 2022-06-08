@@ -72,10 +72,8 @@ function lottery({ drop, lottery, auctions, lotteries, drawings, artist }: Props
     fetchTimestamp();
   }, []);
   const toTimestamp = (aDate: any) => Date.parse(aDate) / 1000;
-  const hasStarted =
-    lottery && lottery.blockchainCreatedAt && blockchainTimestamp > toTimestamp(lottery.startTime);
-  const hasEnded =
-    lottery && lottery.blockchainCreatedAt && blockchainTimestamp > toTimestamp(lottery.endTime);
+  const hasStarted = lottery && blockchainTimestamp > toTimestamp(lottery.startTime);
+  const hasEnded = lottery && blockchainTimestamp > toTimestamp(lottery.endTime);
   const displayBuyTicketButton = hasStarted && !hasEnded;
 
   const handleClaimLotteryPrizeClick = async (index: number) => {

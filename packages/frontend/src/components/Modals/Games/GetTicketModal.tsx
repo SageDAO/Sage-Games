@@ -9,6 +9,7 @@ import { useAccount, useSigner } from 'wagmi';
 import GetTicketsButton from '@/components/Games/GetTicketsButton';
 import Status from '@/components/Status';
 import { SignerOrProvider } from '@/utilities/contracts';
+import { useGetEarnedPointsQuery } from '@/store/services/pointsReducer';
 
 interface Props extends ModalProps {
   lottery: Lottery_include_Nft;
@@ -20,9 +21,13 @@ interface Props extends ModalProps {
 //@scss : '@/styles/components/_games-modal.scss'
 function GetTicketModal({ isOpen, closeModal, lottery, dropName, artist, nft }: Props) {
   const [desiredTicketAmount, setDesiredTicketAmount] = useState<number>(1);
+  const { data: accountData } = useAccount();
   const { data: sessionData } = useSession();
   const [buyTickets, { isLoading }] = useBuyTicketsMutation();
-  const { data: accountData } = useAccount();
+  const { data: earnedPoints } = useGetEarnedPointsQuery(sessionData?.address as string, {
+    skip: !sessionData,
+  });
+  console.log('earned points: ', earnedPoints);
   const { data: signer } = useSigner();
   const hasMaxTicketsPerUser: boolean = lottery.maxTicketsPerUser > 0;
   console.log(lottery);
@@ -93,6 +98,7 @@ function GetTicketModal({ isOpen, closeModal, lottery, dropName, artist, nft }: 
       totalPointsEarned,
       proof,
       signerOrProvider: signer as SignerOrProvider,
+      earnedPoints: earnedPoints,
     };
     console.log('buyTickets input: ', request);
     await buyTickets(request);
