@@ -9,6 +9,7 @@ import { useState } from 'react';
 import useAsync from '@/hooks/useAsync';
 import { useAccount, useBalance, useSigner } from 'wagmi';
 import PlaceBidButton from '@/components/Games/PlaceBidButton';
+import { Signer } from 'ethers';
 
 interface Props extends ModalProps {
   auction: Auction_include_Nft;
@@ -41,7 +42,7 @@ function PlaceBidModal({ isOpen, closeModal, auction, artist }: Props) {
       toast.error('Bid too low');
       return;
     }
-    call({ auctionId: auction.id, amount: desiredBidValue, signer });
+    call({ auctionId: auction.id, amount: desiredBidValue, signer: signer as Signer });
   }
 
   function handleMaxButtonClick() {

@@ -59,10 +59,8 @@ function auction({ auction, auctions, lotteries, artist, drawings, drop }: Props
     fetchTimestamp();
   }, []);
   const toTimestamp = (aDate: any) => Date.parse(aDate) / 1000;
-  const hasStarted =
-    auction && auction.blockchainCreatedAt && blockchainTimestamp > toTimestamp(auction.startTime);
-  const hasEnded =
-    auction && auction.blockchainCreatedAt && blockchainTimestamp > auctionState?.endTime!;
+  const hasStarted = auction && blockchainTimestamp > toTimestamp(auction.startTime);
+  const hasEnded = auction && blockchainTimestamp > auctionState?.endTime!;
   const displayPlaceBidButton = hasStarted && !hasEnded && !auctionState?.settled;
   const displayClaimButton =
     !auction?.winnerAddress &&
