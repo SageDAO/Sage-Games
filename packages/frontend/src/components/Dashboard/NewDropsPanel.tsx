@@ -27,7 +27,7 @@ export function NewDropsPanel() {
         }}
       >
         {drops?.map((drop) => (
-          <NewDropCard drop={drop} />
+          <NewDropCard key={drop.id} drop={drop} />
         ))}
       </div>
     </>

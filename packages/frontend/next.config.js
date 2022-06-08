@@ -5,7 +5,7 @@ const nextConfig = {
   reactStrictMode: true,
   images: {
     domains: [
-      'sage.dev.s3.us-east-2.amazonaws.com',
+      'dev-sage.s3.us-east-2.amazonaws.com',
     ],
   },
   webpack: (config) => {

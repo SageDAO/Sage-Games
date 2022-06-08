@@ -1,6 +1,7 @@
 import { DropWithArtist } from '@/prisma/types';
-import { useApproveDropMutation } from '@/store/services/dashboardReducer';
+import { useApproveDropMutation } from '@/store/services/dropsReducer';
 import Image from 'next/image';
+import { toast } from 'react-toastify';
 
 interface Props {
   drop: DropWithArtist;
@@ -9,7 +10,10 @@ interface Props {
 export default function NewDropCard({ drop }: Props) {
   const [approveDrop] = useApproveDropMutation();
 
-  const handleApproveDropClick = async () => {};
+  const handleApproveDropClick = async () => {
+    await approveDrop(drop.id);
+    toast.success('Drop Approved!');
+  };
 
   return (
     <>
@@ -28,7 +32,7 @@ export default function NewDropCard({ drop }: Props) {
         <button
           className='interact__claimbutton'
           onClick={handleApproveDropClick}
-          style={{ width: '100%' }}
+          style={{ width: '100%', lineHeight: '30px', cursor: 'pointer' }}
         >
           Approve Drop
         </button>
