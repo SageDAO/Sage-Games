@@ -11,13 +11,13 @@ export const targetConfig: Configuration = {
   localhost: {
     ENDPOINT_URL: 'http://localhost:3001/api/dropUploadEndpoint/',
   },
-  'URN Dev': {
+  'SAGE Dev': {
     ENDPOINT_URL: 'https://sage-dev.vercel.app/api/dropUploadEndpoint/',
   },
-  'URN Staging': {
+  'SAGE Staging': {
     ENDPOINT_URL: 'https://sage-dev.vercel.app/api/dropUploadEndpoint/',
   },
-  'URN Production': {
+  'SAGE Production': {
     ENDPOINT_URL: 'https://sage-dev.vercel.app/api/dropUploadEndpoint/',
   },
 };

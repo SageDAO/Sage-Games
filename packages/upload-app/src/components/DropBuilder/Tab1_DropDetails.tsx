@@ -43,9 +43,9 @@ export const Tab1_DropDetails = ({ ...props }: Props) => {
                     <select className="form-select py-0" name="target" id="target" onChange={handleFieldChange}>
                         <option value=""> -- Select -- </option>
                         <option value="localhost">Dev Localhost</option>
-                        <option value="URN Dev">URN Dev</option>
-                        {/* <option value="URN Staging">URN Staging</option>
-                        <option value="URN Production">URN Production</option> */}
+                        <option value="SAGE Dev">SAGE Dev</option>
+                        {/* <option value="SAGE Staging">SAGE Staging</option>
+                        <option value="SAGE Production">SAGE Production</option> */}
                     </select>
                 </div>
                 <div className="col">
