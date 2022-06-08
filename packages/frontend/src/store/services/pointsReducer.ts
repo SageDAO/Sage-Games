@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { getRewardsContract } from '@/utilities/contracts';
+import { EarnedPoints } from '@prisma/client';
 
 var escrowPoints: number = 0;
 
@@ -8,7 +9,7 @@ export const pointsApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
   tagTypes: ['UserPoints', 'EscrowPoints'],
   endpoints: (builder) => ({
-    getEarnedPointsAndProof: builder.query<{ totalPointsEarned: string; proof: string }, string>({
+    getEarnedPoints: builder.query<EarnedPoints, string>({
       query: (walletAddress) => `points?walletAddress=${walletAddress}`,
     }),
     getPointsBalance: builder.query<number, void>({
@@ -57,7 +58,7 @@ const getTotalPointsUsed = async (walletAddress: string) => {
 };
 
 export const {
-  useGetEarnedPointsAndProofQuery,
+  useGetEarnedPointsQuery,
   useGetEscrowPointsQuery,
   useGetPointsBalanceQuery,
   useReleaseEscrowPointsMutation,
