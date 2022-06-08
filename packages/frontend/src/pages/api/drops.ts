@@ -6,7 +6,7 @@ async function handler(request: NextApiRequest, response: NextApiResponse) {
   const {
     query: { action },
   } = request;
-  const session = await getSession();
+  const session = await getSession({ req: request });
   const { address: walletAddress } = session!;
   if (!session) {
     response.status(401).end('Please Sign In');
