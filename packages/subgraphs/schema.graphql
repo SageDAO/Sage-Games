@@ -13,17 +13,11 @@ type Lottery @entity {
   refunds: [Refund!]!
 }
 
-enum TicketTier {
-  Member
-  NonMember
-}
-
 type Ticket @entity {
   id: ID!
   lottery: Lottery!
   ticketNumber: Int!
   address: Bytes!
-  tier: TicketTier!
 }
 
 type ClaimedPrize @entity {
