@@ -55,4 +55,5 @@ type Bid @entity {
   bidder: Bytes! # address
   amount: BigInt!
   endTime: Int!
+  blockTimestamp: BigInt!
 }

@@ -1,5 +1,5 @@
 specVersion: 0.0.4
-description: URN Game Events on Rinkeby
+description: SAGE Game Events on Rinkeby
 schema:
   file: ./schema.graphql
 dataSources:

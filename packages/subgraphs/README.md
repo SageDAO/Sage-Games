@@ -3,7 +3,7 @@
 ## Install & Init
 
 - `npm install -g @graphprotocol/graph-cli`
-- `graph init --studio urndrops`
+- `graph init --studio sage-rinkeby`
 
 ## Auth
 
@@ -11,9 +11,9 @@
 
 ## Build
 
-- `cd urndrops`
+- `cd sage-rinkeby`
 - `graph codegen && graph build`
 
 ## Deploy
 
-- `graph deploy --studio urndrops`
+- `graph deploy --studio sage-rinkeby`

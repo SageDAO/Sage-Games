@@ -1,13 +1,13 @@
 {
-  "name": "urn-subgraph",
+  "name": "sage-rinkeby-subgraph",
   "license": "UNLICENSED",
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ urn",
-    "create-local": "graph create --node http://localhost:8020/ urn",
-    "remove-local": "graph remove --node http://localhost:8020/ urn",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 urn"
+    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ sage-rinkeby",
+    "create-local": "graph create --node http://localhost:8020/ sage-rinkeby",
+    "remove-local": "graph remove --node http://localhost:8020/ sage-rinkeby",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sage-rinkeby"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.30.1",

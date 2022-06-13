@@ -46,6 +46,7 @@ export function handleBidPlaced(event: BidPlaced): void {
   bid.bidder = event.params.bidder;
   bid.endTime = event.params.newEndTime.toI32();
   bid.auction = auctionId;
+  bid.blockTimestamp = event.block.timestamp;
   let bids = auction.bids;
   bids.push(bidId);
   auction.bids = bids;
