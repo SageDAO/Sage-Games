@@ -24,7 +24,7 @@ type ClaimedPrize @entity {
   id: ID!
   lottery: Lottery!
   address: Bytes!
-  prizeId: Int!
+  nftId: Int!
 }
 
 type Refund @entity {

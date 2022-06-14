@@ -44,12 +44,13 @@ export function handlePrizeClaimed(event: PrizeClaimed): void {
   if (!lottery) {
     lottery = createLottery(lotteryId);
   }
-  const prizeId = event.params.prizeId.toHex();
-  let prize = new ClaimedPrize(prizeId);
+  const id = event.transaction.hash.toHex() + "-" + event.logIndex.toString();
+  let prize = new ClaimedPrize(id);
+  prize.nftId = event.params.prizeId.toI32();
   prize.address = event.params.participantAddress;
   prize.lottery = lotteryId;
   let prizes = lottery.claimedPrizes;
-  prizes.push(prizeId);
+  prizes.push(id);
   lottery.claimedPrizes = prizes;
   prize.save();
   lottery.save();
