@@ -168,17 +168,6 @@ export const AuctionGameEntry = ({ ...props }: Props) => {
               onChange={handleFieldChange}
               value={props.data.minPrice}
             />
-            <label className="mt-3">
-              <CursorClickIcon width="20" style={{ marginRight: 5 }} />
-              Buy Now Price
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              name="buyNowPrice"
-              onChange={handleFieldChange}
-              value={props.data.buyNowPrice}
-            />
           </div>
         </div>
       </div>

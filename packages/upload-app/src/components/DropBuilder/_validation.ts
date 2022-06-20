@@ -115,7 +115,6 @@ export function validate(data: any): string[] {
       if (!checkRequired(a.endDate)) err.push(`[Auction Games] Auction ${i + 1}: End Date is required`);
       if (a.endDate <= a.startDate) err.push(`[Auction Games] Auction ${i + 1}: End Date must be after Start Date`);
       if (!checkReqPosNumber(a.minPrice)) err.push(`[Auction Games] Auction ${i + 1}: Minimum Price must be a number`);
-      if (!checkPosNumber(a.buyNowPrice)) err.push('[Auction Games] Buy Now Price must be a number');
     }
   };
 
