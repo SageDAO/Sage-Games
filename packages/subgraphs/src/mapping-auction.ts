@@ -42,12 +42,13 @@ export function handleBidPlaced(event: BidPlaced): void {
   }
   const bidId = event.transaction.hash.toHex() + "-" + event.logIndex.toString();
   const bid = new Bid(bidId);
+  bid.txnHash = event.transaction.hash;
   bid.amount = event.params.bidAmount;
   bid.bidder = event.params.bidder;
   bid.endTime = event.params.newEndTime.toI32();
   bid.auction = auctionId;
   bid.blockTimestamp = event.block.timestamp;
-  let bids = auction.bids;
+  const bids = auction.bids;
   bids.push(bidId);
   auction.bids = bids;
   auction.highestBid = bid.amount;

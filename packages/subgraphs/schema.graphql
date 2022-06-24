@@ -15,6 +15,7 @@ type Lottery @entity {
 
 type Ticket @entity {
   id: ID!
+  txnHash: Bytes!
   lottery: Lottery!
   ticketNumber: Int!
   address: Bytes!
@@ -22,6 +23,7 @@ type Ticket @entity {
 
 type ClaimedPrize @entity {
   id: ID!
+  txnHash: Bytes!
   lottery: Lottery!
   address: Bytes!
   nftId: Int!
@@ -29,6 +31,7 @@ type ClaimedPrize @entity {
 
 type Refund @entity {
   id: ID!
+  txnHash: Bytes!
   lottery: Lottery!
   address: Bytes!
   amount: BigInt!
@@ -51,6 +54,7 @@ type Auction @entity {
 
 type Bid @entity {
   id: ID! # tx id
+  txnHash: Bytes!
   auction: Auction!
   bidder: Bytes! # address
   amount: BigInt!

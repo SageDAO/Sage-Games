@@ -27,11 +27,12 @@ export function handleTicketSold(event: TicketSold): void {
     lottery = createLottery(lotteryId);
   }
   const ticketId = event.transaction.hash.toHex() + "-" + event.logIndex.toString();
-  let ticket = new Ticket(ticketId);
+  const ticket = new Ticket(ticketId);
+  ticket.txnHash = event.transaction.hash;
   ticket.address = event.params.participantAddress;
   ticket.ticketNumber = event.params.ticketNumber.toI32();
   ticket.lottery = lotteryId;
-  let tickets = lottery.tickets;
+  const tickets = lottery.tickets;
   tickets.push(ticketId);
   lottery.tickets = tickets;
   ticket.save();
@@ -45,11 +46,12 @@ export function handlePrizeClaimed(event: PrizeClaimed): void {
     lottery = createLottery(lotteryId);
   }
   const id = event.transaction.hash.toHex() + "-" + event.logIndex.toString();
-  let prize = new ClaimedPrize(id);
+  const prize = new ClaimedPrize(id);
+  prize.txnHash = event.transaction.hash;
   prize.nftId = event.params.prizeId.toI32();
   prize.address = event.params.participantAddress;
   prize.lottery = lotteryId;
-  let prizes = lottery.claimedPrizes;
+  const prizes = lottery.claimedPrizes;
   prizes.push(id);
   lottery.claimedPrizes = prizes;
   prize.save();
@@ -63,11 +65,12 @@ export function handleRefunded(event: Refunded): void {
     lottery = createLottery(lotteryId);
   }
   const refundId = event.transaction.hash.toHex() + "-" + event.logIndex.toString();
-  let refund = new Refund(refundId);
+  const refund = new Refund(refundId);
+  refund.txnHash = event.transaction.hash;
   refund.address = event.params.participantAddress;
   refund.amount = event.params.refundAmount;
   refund.lottery = lotteryId;
-  let refunds = lottery.refunds;
+  const refunds = lottery.refunds;
   refunds.push(refundId);
   lottery.refunds = refunds;
   refund.save();
