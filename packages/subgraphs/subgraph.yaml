@@ -36,7 +36,7 @@ dataSources:
     name: auction
     network: rinkeby
     source:
-      address: "0xCa9Fb63e13410Be1aD2AF42DFc9D14E1D70fF902"
+      address: "0xd476b328e4705Abe246cedB43C1DD7AbAd95Ef22"
       abi: AuctionContract
       startBlock: 10739975
     mapping:
