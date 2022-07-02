@@ -2,7 +2,6 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '@/prisma/client';
 import aws from 'aws-sdk';
 import NextCors from 'nextjs-cors';
-import { getSession } from 'next-auth/react';
 import { Role } from '@prisma/client';
 import { createUcanRequestToken } from '@/utilities/nftStorage';
 
@@ -30,16 +29,6 @@ async function handler(request: NextApiRequest, response: NextApiResponse) {
       break;
     case 'CreateNftStorageRequestToken':
       await createNftStorageRequestToken(response);
-      break;
-    case 'ApproveDrop':
-      const session = await getSession();
-      const { address: walletAddress } = session!;
-      if (!session) {
-        response.status(401).end('Please Sign In');
-        response.end();
-        return;
-      }
-      await updateDropApproval(request.body.id as number, walletAddress as string, response);
       break;
     case 'InsertDrop':
       await insertDrop(request.body, response);
@@ -102,27 +91,6 @@ async function createS3SignedUrl(dropBucket: string, filename: string, response:
   const uploadUrl = s3.getSignedUrl('putObject', params);
   const getUrl = `https://${process.env.S3_BUCKET}.s3.${region}.amazonaws.com/${dropBucket}/${filename}`;
   response.json({ uploadUrl, getUrl });
-  response.end();
-}
-
-async function updateDropApproval(id: number, walletAddress: string, response: NextApiResponse) {
-  console.log(`updateDropApproval(${id}, ${walletAddress})`);
-  let now = new Date();
-  try {
-    const { approvedAt, approvedBy } = await prisma.drop.update({
-      where: {
-        id: Number(id),
-      },
-      data: {
-        approvedAt: now,
-        approvedBy: walletAddress,
-      },
-    });
-    response.json({ approvedAt, approvedBy });
-  } catch (e) {
-    console.log({ e });
-    response.status(500);
-  }
   response.end();
 }
 
@@ -200,7 +168,6 @@ async function insertAuction(data: any, response: NextApiResponse) {
             id: Number(data.dropId),
           },
         },
-        erc20Address: data.token,
         minimumPrice: data.minPrice,
         buyNowPrice: data.buyNowPrice ? data.buyNowPrice : null,
         startTime: new Date(Number(data.startDate) * 1000),
@@ -273,11 +240,8 @@ async function insertDrawing(data: any, response: NextApiResponse) {
     var record = await prisma.lottery.create({
       data: {
         dropId: Number(data.dropId),
-        vipCostPerTicketCoins: toNumber(data.ticketCostCoinsVIP),
-        vipCostPerTicketPoints: toNumber(data.ticketCostPointsVIP),
-        memberCostPerTicketCoins: toNumber(data.ticketCostCoinsMember),
-        memberCostPerTicketPoints: toNumber(data.ticketCostPointsMember),
-        nonMemberCostPerTicketCoins: toNumber(data.ticketCostCoins),
+        costPerTicketTokens: toNumber(data.ticketCostCoins),
+        costPerTicketPoints: toNumber(data.ticketCostPoints),
         maxTickets: toNumber(data.maxTickets),
         maxTicketsPerUser: toNumber(data.maxTicketsPerUser),
         endTime: new Date(Number(data.endDate) * 1000),

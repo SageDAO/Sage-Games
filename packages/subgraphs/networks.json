@@ -1,0 +1,10 @@
+{
+  "rinkeby": {
+    "lottery": {
+      "address": "0x4732D73D8526E4b05E2dEdaC1E65f7eC1F544686"
+    },
+    "auction": {
+      "address": "0xd476b328e4705Abe246cedB43C1DD7AbAd95Ef22"
+    }
+  }
+}

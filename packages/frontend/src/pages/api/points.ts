@@ -13,24 +13,20 @@ const handler = async (req: NextApiRequest, response: NextApiResponse) => {
   const { method } = req;
   switch (method) {
     case 'GET':
-      await getEarnedPointsAndProof(walletAddress as string, response);
+      await getEarnedPoints(walletAddress as string, response);
       return;
     default:
       response.status(500).end();
   }
 };
 
-async function getEarnedPointsAndProof(walletAddress: string, response: NextApiResponse) {
+async function getEarnedPoints(walletAddress: string, response: NextApiResponse) {
   const dbPoints: EarnedPoints | null = await prisma.earnedPoints.findUnique({
     where: {
       address: walletAddress,
     },
   });
-  response.status(200).json({
-    totalPointsEarned: dbPoints ? dbPoints.totalPointsEarned.toString() : '0',
-    proof: dbPoints ? dbPoints.proof : '',
-    walletAddress,
-  });
+  response.status(200).json(dbPoints);
   response.end();
 }
 

@@ -26,7 +26,7 @@ export default function Footer() {
       </div>
       <div className='links'>
         <ul className='column'>
-          <li className='title'>contact URN</li>
+          <li className='title'>contact SAGE</li>
           <li>Contact for artists</li>
           <li>Contact for new business</li>
           <li>Email us</li>

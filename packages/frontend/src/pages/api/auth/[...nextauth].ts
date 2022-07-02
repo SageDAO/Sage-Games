@@ -25,7 +25,12 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
         try {
           const siwe = new SiweMessage(JSON.parse(credentials?.message || '{}'));
           const nextAuthUrl = new URL(process.env.NEXTAUTH_URL as string);
-          if (siwe.domain !== nextAuthUrl.host) {
+
+          //verify SIWE request origin if in production
+          if (
+            siwe.domain !== nextAuthUrl.host &&
+            process.env.NEXT_PUBLIC_APP_MODE === 'production'
+          ) {
             return null;
           }
 

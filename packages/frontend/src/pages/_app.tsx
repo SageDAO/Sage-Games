@@ -7,14 +7,11 @@ import type { AppProps } from 'next/app';
 import MaintenancePage from '@/components/MaintenancePage';
 import { AnimatePresence } from 'framer-motion';
 import Layout from '@/components/Layout';
-
 import { createClient, Provider as WagmiProvider, chain } from 'wagmi';
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
-
-//ftm testnet
-
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 
 // set up connectors
 const connectors = [
@@ -33,10 +30,14 @@ const connectors = [
   }),
 ];
 
-//create wagmi client with configs
-const client = createClient({
+const wagmiClient = createClient({
   connectors,
   autoConnect: true,
+});
+
+const apolloClient = new ApolloClient({
+  uri: 'https://api.studio.thegraph.com/query/28124/urndrops/v0.0.10',
+  cache: new InMemoryCache(),
 });
 
 function App({ Component, pageProps, router }: AppProps) {
@@ -44,13 +45,15 @@ function App({ Component, pageProps, router }: AppProps) {
 
   return (
     <ReduxProvider store={store}>
-      <WagmiProvider client={client}>
+      <WagmiProvider client={wagmiClient}>
         <SessionProvider session={pageProps.session} refetchInterval={0}>
-          <AnimatePresence>
-            <Layout router={router}>
-              <Component {...pageProps} />
-            </Layout>
-          </AnimatePresence>
+          <ApolloProvider client={apolloClient}>
+            <AnimatePresence>
+              <Layout router={router}>
+                <Component {...pageProps} />
+              </Layout>
+            </AnimatePresence>
+          </ApolloProvider>
         </SessionProvider>
       </WagmiProvider>
     </ReduxProvider>

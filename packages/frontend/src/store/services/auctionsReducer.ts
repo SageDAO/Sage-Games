@@ -1,9 +1,14 @@
-import { GamePrize, AuctionNftWithArtist } from '@/prisma/types';
-import { extractErrorMessage, getAuctionContract } from '@/utilities/contracts';
+import { GamePrize } from '@/prisma/types';
+import {
+  approveERC20Transfer,
+  extractErrorMessage,
+  getAuctionContract,
+} from '@/utilities/contracts';
 import { playErrorSound, playPrizeClaimedSound, playTxSuccessSound } from '@/utilities/sounds';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { toast } from 'react-toastify';
 import { Auction_include_Nft } from '@/prisma/types';
+import { ethers, Signer } from 'ethers';
 
 export interface AuctionState {
   highestBidder: string; // wallet address
@@ -73,12 +78,15 @@ export async function getAuctionContractState(
   if (stateUpdateCallback) {
     setupBidListener(auctionId, stateUpdateCallback);
   }
-  return {
+
+  const auctionState: AuctionState = {
     highestBid: +auctionStruct.highestBid,
     highestBidder: auctionStruct.highestBidder,
-    settled: auctionStruct['5'],
+    settled: auctionStruct.settled,
     endTime: auctionStruct.endTime,
-  } as AuctionState;
+  };
+
+  return auctionState;
 }
 
 /*
@@ -106,12 +114,17 @@ async function setupBidListener(auctionId: number, stateUpdateCallback: () => vo
   }
 }
 
-export async function bid(auctionId: number, amount: number) {
+export type BidArgs = { auctionId: number; amount: number; signer: Signer };
+
+export async function bid({ auctionId, amount, signer }: BidArgs) {
   console.log(`bid(${auctionId}, ${amount})`);
+  const weiValue = ethers.utils.parseEther(amount.toString());
   try {
-    const tx = await (
-      await getAuctionContract()
-    ).bid(auctionId, amount.toString(), { value: amount.toString() });
+    const erc20AddressASH = '0x64d91f12ece7362f91a6f8e7940cd55f05060b92';
+    const erc20AddressMOCK = '0x20c99f1F5bdf00e3270572177C6e30FC6213cEfe';
+    await approveERC20Transfer(erc20AddressMOCK);
+    const auctionContract = await getAuctionContract(signer);
+    var tx = await auctionContract.bid(auctionId, weiValue);
     toast.promise(tx.wait(), {
       pending: 'Request submitted to the blockchain, awaiting confirmation...',
       success: `Success! You are now the highest bidder!`,
@@ -120,6 +133,7 @@ export async function bid(auctionId: number, amount: number) {
     await tx.wait();
     playTxSuccessSound();
   } catch (e) {
+    console.log(e);
     const errMsg = extractErrorMessage(e);
     toast.error(`Failure! ${errMsg}`);
     playErrorSound();

@@ -164,7 +164,7 @@ async function getPrizesByUserAndLottery(
  */
 async function getPrizesStats(response: NextApiResponse) {
   interface IResult {
-    [collectionId: string]: IResultItem;
+    [lotteryId: string]: IResultItem;
   }
 
   interface IResultItem {
@@ -175,14 +175,14 @@ async function getPrizesStats(response: NextApiResponse) {
   let prizesStats: IResult = {};
   try {
     const result = await prisma.$queryRaw<any[]>(
-      Prisma.sql`select a."collectionId", a."drawn", b."claimed" from
-      (select "collectionId", count(*) as "drawn" from "PrizeProof" group by "collectionId") as a
+      Prisma.sql`select a."lotteryId", a."drawn", b."claimed" from
+      (select "lotteryId", count(*) as "drawn" from "PrizeProof" group by "lotteryId") as a
       left join
-      (select "collectionId", count(*) as "claimed" from "PrizeProof" where ("claimedAt" is not null) group by "collectionId") as b
-      on (a."collectionId" = b."collectionId")`
+      (select "lotteryId", count(*) as "claimed" from "PrizeProof" where ("claimedAt" is not null) group by "lotteryId") as b
+      on (a."lotteryId" = b."lotteryId")`
     );
     result.forEach((row) => {
-      prizesStats[row.collectionId] = {
+      prizesStats[row.lotteryId] = {
         numPrizesDrawn: row.drawn,
         numPrizesClaimed: row.claimed ? row.claimed : 0,
       };

@@ -1,4 +1,3 @@
-import { getCsrfToken, signIn, signOut } from 'next-auth/react';
 import {
   useConnect,
   useAccount,
@@ -12,8 +11,9 @@ import Modal, { Props as ModalProps } from '@/components/Modals';
 import type { Dispatch, SetStateAction } from 'react';
 import Loader from 'react-loader-spinner';
 import shortenAddress from '@/utilities/shortenAddress';
-import { useSession } from 'next-auth/react';
+import { getCsrfToken, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import { useSignInMutation, useSignOutMutation } from '@/store/services/user';
 
 interface Props extends ModalProps {
   isLoading: boolean;
@@ -22,13 +22,16 @@ interface Props extends ModalProps {
 
 export default function AccountModal({ isOpen, closeModal, isLoading, setIsLoading }: Props) {
   const { data: accountData } = useAccount();
-  const { data: sessionData } = useSession();
+  const { data: sessionData, status: sessionStatus } = useSession();
   const { connectors, connectAsync, activeConnector } = useConnect();
+  const [signIn, { isLoading: isSigningIn }] = useSignInMutation();
+  const [signOut] = useSignOutMutation();
   const { signMessageAsync } = useSignMessage();
   const { activeChain } = useNetwork();
   const { disconnect } = useDisconnect();
   const router = useRouter();
-  const handleSignIn = async () => {
+
+  const handleSignInClick = async () => {
     try {
       setIsLoading(true);
       const nonce = await getCsrfToken();
@@ -44,11 +47,7 @@ export default function AccountModal({ isOpen, closeModal, isLoading, setIsLoadi
       const signature = await signMessageAsync({
         message: message.prepareMessage(),
       });
-      signIn('credentials', {
-        message: JSON.stringify(message),
-        redirect: false,
-        signature,
-      });
+      signIn({ message, signature });
       setIsLoading(false);
     } catch (error) {
       console.error(error);
@@ -56,7 +55,7 @@ export default function AccountModal({ isOpen, closeModal, isLoading, setIsLoadi
     }
   };
 
-  async function handleConnect(c: Connector<any, any>) {
+  async function handleConnectClick(c: Connector<any, any>) {
     try {
       setIsLoading(true);
       await connectAsync(c);
@@ -88,7 +87,7 @@ export default function AccountModal({ isOpen, closeModal, isLoading, setIsLoadi
                 <button className='connectors__option' key={c.name}>
                   <h1
                     onClick={() => {
-                      handleConnect(c);
+                      handleConnectClick(c);
                     }}
                   >
                     {c.name}
@@ -114,22 +113,18 @@ export default function AccountModal({ isOpen, closeModal, isLoading, setIsLoadi
               : `Sign In With Ethereum`}
           </h1>
           {sessionData ? (
-            <button
-              className='accountmodal__sign-out-btn'
-              onClick={() => signOut({ redirect: false })}
-            >
+            <button className='accountmodal__sign-out-btn' onClick={() => signOut(null)}>
               Sign Out
             </button>
           ) : (
             <button
               className='accountmodal__sign-in-btn'
-              onClick={handleSignIn}
-              disabled={isLoading || !accountData}
+              onClick={handleSignInClick}
+              disabled={isLoading || !accountData || isSigningIn}
             >
               Sign In
             </button>
           )}
-
           <button
             className='accountmodal__profile-btn'
             onClick={() => router.push('/profile')}

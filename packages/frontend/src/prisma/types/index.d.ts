@@ -1,7 +1,7 @@
-import { Prisma, Drop, User } from '@prisma/client';
+import { Prisma, Drop, User, Nft } from '@prisma/client';
 import type { DropWhereInput } from '@prisma/client';
 
-export type { User, Drop };
+export type { User, Drop, Nft };
 
 export type SafeUserUpdate = Partial<
   Pick<User, 'displayName' | 'username' | 'email' | 'bio' | 'profilePicture'>
@@ -13,7 +13,7 @@ export type DropWithArtist = Prisma.DropGetPayload<{
   };
 }>;
 
-export type DropWithGamesAndArtist = Prisma.DropGetPayload<{
+export type Drop_include_GamesAndArtist = Prisma.DropGetPayload<{
   include: {
     Lotteries: {
       include: {
@@ -60,6 +60,18 @@ export type AuctionNftWithArtist = Prisma.AuctionGetPayload<{
 export type Lottery_include_Nft = Prisma.LotteryGetPayload<{
   include: { Nfts: true };
 }>;
+
+export type LotteryWithNftsAndArtist = Prisma.LotteryGetPayload<{
+  include: {
+    Nfts: true;
+    Drop: {
+      include: {
+        Artist: true;
+      };
+    };
+  };
+}>;
+
 export interface GamePrize {
   nftId: number;
   dropId: number;
