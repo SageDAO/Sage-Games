@@ -19,7 +19,7 @@ const DropBuilder = () => {
         <a onClick={populateWithTestData} className="mx-2">
           <BeakerIcon width={24} />
         </a>
-        Drop Builder
+        SAGE Drop Builder
       </h1>
       <Tabs forceRenderTabPanel={true} className="mt-4">
         <TabList>
