@@ -1,4 +1,4 @@
-import { CloudUploadIcon, CogIcon, DatabaseIcon, KeyIcon, PhotographIcon, PuzzleIcon } from '@heroicons/react/outline';
+import { CloudUploadIcon, CogIcon, DatabaseIcon, PhotographIcon, PuzzleIcon } from '@heroicons/react/outline';
 import { NFTStorage } from 'nft.storage';
 import { toast } from 'react-toastify';
 import { targetConfig } from './config';
@@ -8,6 +8,7 @@ var assert = require('assert');
 var endpoint = null;
 
 export async function handleDropUpload(data: any, setCurrentProgressPercent: (pct: number) => void) {
+  const clonedData = structuredClone(data);
   console.log(`handleDropUpload() :: target = ${data.target}`);
   endpoint = targetConfig[data.target].ENDPOINT_URL;
   console.log(`handleDropUpload() :: endpoint = ${endpoint}`);
@@ -23,8 +24,8 @@ export async function handleDropUpload(data: any, setCurrentProgressPercent: (pc
     { icon: <PhotographIcon />, funct: createNftMetadataOnArweave, desc: 'Creating NFT metadata on Arweave' },
     { icon: <PuzzleIcon />, funct: dbUpdateMetadataCid, desc: "Updating drop's content identifier (CID)" },
   ];
-  await runTasks(tasks, data, setCurrentProgressPercent);
-  toast.success(`Success! Drop created with id ${data.dropId}`);
+  await runTasks(tasks, clonedData, setCurrentProgressPercent);
+  toast.success(`Success! Drop created with id ${clonedData.dropId}`);
   playSoundFile('/chime.mp3');
 }
 
@@ -244,19 +245,32 @@ async function dbInsertDrawingGames(data: any) {
     }
     drawing.drawingId = drawingId;
     console.log(`dbInsertDrawingGames() :: Drawing ${i + 1} ID = ${drawingId}`);
-    const editionsInDrop = drawing.nfts.reduce((accum: number, nft: any) => accum + nft.numberOfEditions, 0);
     // Insert NFTs
+    const unfoldedNfts = [];
     for (let nft of drawing.nfts) {
       nft.drawingId = drawing.drawingId;
-      const probabilityOfPull = Number(((nft.numberOfEditions / editionsInDrop) * 100).toFixed(2));
-      nft.rarity = `${nft.numberOfEditions} Edition${
-        nft.numberOfEditions > 1 ? 's' : ''
-      } | ${probabilityOfPull}% Chance`;
-      await dbInsertNft(nft);
-      if (nft.isDefaultPrize) {
-        await updateDefaultDrawingPrize(drawing, nft);
+      if (nft.numberOfEditions > 1) {
+        // Unfold each edition into a new NFT
+        for (let i = 1; i <= nft.numberOfEditions; i++) {
+          let nftEdition = { ...nft };
+          if (nftEdition.description) {
+            nftEdition.description += ` - ${i}/${nft.numberOfEditions}`;
+          } else {
+            nftEdition.description = `${i}/${nft.numberOfEditions}`;
+          }
+          await dbInsertNft(nftEdition);
+          unfoldedNfts.push(nftEdition);
+        }
+      } else {
+        await dbInsertNft(nft);
+        if (nft.isDefaultPrize) {
+          await updateDefaultDrawingPrize(drawing, nft);
+        }
       }
     }
+    // Replace single NFTs that have multiple editions by their unique unfolded pieces
+    drawing.nfts = drawing.nfts.filter((item: any) => item.nftId);
+    Array.prototype.push.apply(drawing.nfts, unfoldedNfts);
   }
 }
 
