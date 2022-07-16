@@ -34,10 +34,10 @@ export const DrawingGameNftEntry = ({ ...props }: Props) => {
     props.onFieldChange(props.nftIndex, e.target.name, val);
   };
 
-  const handleDefaultPrizeClick = (e: any) => {
-    handleFieldChange(e);
-    // TODO logic to disable others on same group
-  };
+  // const handleDefaultPrizeClick = (e: any) => {
+  //   handleFieldChange(e);
+  //   // TODO logic to disable others on same group
+  // };
 
   return (
     <div className='d-flex border border-grey mt-3 px-2 py-1 pb-2'>
@@ -128,6 +128,7 @@ export const DrawingGameNftEntry = ({ ...props }: Props) => {
         </div>
       </div>
 
+            {/*
       <div className='col' style={{ textAlign: 'center' }}>
         <div className='row'>
           <div className='col'>
@@ -145,6 +146,7 @@ export const DrawingGameNftEntry = ({ ...props }: Props) => {
           </div>
         </div>
       </div>
+  */}
     </div>
   );
 };
