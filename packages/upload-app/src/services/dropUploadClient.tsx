@@ -1,6 +1,5 @@
-import { CloudUploadIcon, CogIcon, DatabaseIcon, PhotographIcon, PuzzleIcon } from '@heroicons/react/outline';
-import { NFTStorage } from 'nft.storage';
 import { toast } from 'react-toastify';
+import { CloudUploadIcon, CogIcon, DatabaseIcon, PhotographIcon } from '@heroicons/react/outline';
 import { targetConfig } from './config';
 import { TaskStatus, ToastContent } from '../components/ToastContent/ToastContent';
 
@@ -13,16 +12,11 @@ export async function handleDropUpload(data: any, setCurrentProgressPercent: (pc
   endpoint = targetConfig[data.target].ENDPOINT_URL;
   console.log(`handleDropUpload() :: endpoint = ${endpoint}`);
   const tasks = [
-    // { icon: <KeyIcon />, funct: fetchNftStorageRequestToken, desc: 'Fetching nft.storage request token' },
     { icon: <CloudUploadIcon />, funct: uploadMediaFilesToS3Bucket, desc: 'Uploading media files to S3 bucket' },
-    //{ icon: <CloudUploadIcon />, funct: uploadNftFilesToNftStorage, desc: 'Uploading media files to IPFS' },
     { icon: <CloudUploadIcon />, funct: uploadNftMediaFilesToArweave, desc: 'Uploading NFT files to Arweave' },
     { icon: <DatabaseIcon />, funct: dbInsertDrop, desc: 'Inserting drop in database' },
-    { icon: <CogIcon />, funct: dbInsertAuctionGames, desc: 'Inserting auction games in database' },
-    { icon: <CogIcon />, funct: dbInsertDrawingGames, desc: 'Inserting drawing games in database' },
-    //{ icon: <PhotographIcon />, funct: createNftMetadataOnNftStorage, desc: 'Creating NFTs in IPFS' },
-    { icon: <PhotographIcon />, funct: createNftMetadataOnArweave, desc: 'Creating NFT metadata on Arweave' },
-    { icon: <PuzzleIcon />, funct: dbUpdateMetadataCid, desc: "Updating drop's content identifier (CID)" },
+    { icon: <CogIcon />, funct: dbInsertAuctionGames, desc: 'Creating auction games' },
+    { icon: <CogIcon />, funct: dbInsertDrawingGames, desc: 'Creating drawing games' },
   ];
   await runTasks(tasks, clonedData, setCurrentProgressPercent);
   toast.success(`Success! Drop created with id ${clonedData.dropId}`);
@@ -152,10 +146,11 @@ async function copyFromS3toArweave(s3Path: string): Promise<string> {
     throw new Error(error);
   }
   console.log(`Arweave balance = ${balance}`);
-  return `https://arweave.net/${id}`;
+  return `ar://${id}`;
 }
 
 function buildNftMetadata(item: any): string {
+  // TODO: metadata for video files should be different, check https://docs.opensea.io/docs/metadata-standards
   return JSON.stringify({
     name: item.name,
     description: item.description,
@@ -163,28 +158,18 @@ function buildNftMetadata(item: any): string {
   });
 }
 
-async function createNftMetadataOnArweave(data: any) {
+async function createNftMetadataOnArweave(nft: any) {
   console.log('createNftMetadataOnArweave()');
-  var nftMetadata = new Array<any>();
-  // Add auction NFTs to content
-  for (let auction of data.auctionGames) {
-    nftMetadata.push({ filename: auction.nftId.toString(), data: buildNftMetadata(auction) });
-  }
-  // Add drawing NFTs to content
-  for (let drawing of data.drawingGames) {
-    for (let nft of drawing.nfts) {
-      nftMetadata.push({ filename: nft.nftId.toString(), data: buildNftMetadata(nft) });
-    }
-  }
-  const response = await postJSON(`${endpoint}?action=UploadNftMetadataToArweave`, JSON.stringify(nftMetadata));
+  const metadata = JSON.stringify({ filename: nft.nftFilename, data: buildNftMetadata(nft) });
+  console.log(metadata);
+  const response = await postJSON(`${endpoint}?action=UploadNftMetadataToArweave`, metadata);
   const { id, balance, error } = await response.json();
   if (error) {
     console.log(error);
     throw new Error(error);
   }
-  data.dropMetadataCid = id;
-  console.log(`Arweave balance = ${balance}`);
-  console.log(`createNftMetadataOnArweave() :: CID = ${data.dropMetadataCid}`);
+  console.log(`createNftMetadataOnArweave() :: ${nft.nftFilename} metadata saved to ${id} (balance = ${balance})`);
+  return id;
 }
 
 //
@@ -194,12 +179,13 @@ async function createNftMetadataOnArweave(data: any) {
 async function dbInsertDrop(data: any) {
   console.log(`dbInsertDrop()`);
   const response = await postJSON(`${endpoint}?action=InsertDrop`, JSON.stringify(data, ignoreFiles));
-  const { dropId, error } = await response.json();
+  const { dropId, nftContractAddress, error } = await response.json();
   if (error) {
     console.log(error);
     throw new Error(error);
   }
   data.dropId = dropId;
+  data.nftContractAddress = nftContractAddress;
   console.log(`dbInsertDrop() :: Drop ID = ${dropId}`);
 }
 
@@ -208,6 +194,8 @@ async function dbInsertAuctionGames(data: any) {
   assert(data.dropId && data.dropId != 0);
   for (const [i, auction] of data.auctionGames.entries()) {
     auction.dropId = data.dropId;
+    const arweaveId = await createNftMetadataOnArweave(auction);
+    auction.metadataPath = `https://arweave.net/${arweaveId}`;
     const response = await postJSON(`${endpoint}?action=InsertAuction`, JSON.stringify(auction, ignoreFiles));
     const { auctionId, nftId, error } = await response.json();
     if (error) {
@@ -258,41 +246,21 @@ async function dbInsertDrawingGames(data: any) {
           } else {
             nftEdition.description = `${i}/${nft.numberOfEditions}`;
           }
+          const arweaveId = await createNftMetadataOnArweave(nftEdition);
+          nftEdition.metadataPath = `https://arweave.net/${arweaveId}`;
           await dbInsertNft(nftEdition);
           unfoldedNfts.push(nftEdition);
         }
       } else {
+        const arweaveId = await createNftMetadataOnArweave(nft);
+        nft.metadataPath = `https://arweave.net/${arweaveId}`;
         await dbInsertNft(nft);
-        if (nft.isDefaultPrize) {
-          await updateDefaultDrawingPrize(drawing, nft);
-        }
       }
     }
     // Replace single NFTs that have multiple editions by their unique unfolded pieces
     drawing.nfts = drawing.nfts.filter((item: any) => item.nftId);
     Array.prototype.push.apply(drawing.nfts, unfoldedNfts);
   }
-}
-
-async function updateDefaultDrawingPrize(drawing: any, nft: any) {
-  console.log(`updateDefaultDrawingPrize(${drawing.drawingId}, ${nft.nftId})`);
-  await postJSON(
-    `${endpoint}?action=UpdateDefaultPrize`,
-    JSON.stringify({ drawingId: drawing.drawingId, nftId: nft.nftId })
-  );
-}
-
-async function dbUpdateMetadataCid(data: any) {
-  assert(data.dropId);
-  assert(data.dropMetadataCid);
-  console.log(`dbUpdateMetadataCid(cid: ${data.dropMetadataCid})`);
-  await postJSON(
-    `${endpoint}?action=UpdateMetadataCid`,
-    JSON.stringify({
-      dropId: data.dropId,
-      dropMetadataCid: data.dropMetadataCid,
-    })
-  );
 }
 
 //
@@ -318,79 +286,4 @@ function playSoundFile(fileUrl: string) {
  */
 function ignoreFiles(_: string, value: any) {
   return value instanceof File ? undefined : value;
-}
-
-//
-// NFT.Storage functions ===========================================================================================
-//
-
-/**
- * @deprecated in favor of Arweave
- */
-async function fetchNftStorageRequestToken(data: any) {
-  console.log('fetchNftStorageRequestToken()');
-  const request = await fetch(`${endpoint}?action=CreateNftStorageRequestToken`);
-  const { token, error } = await request.json();
-  if (error) {
-    console.log(error);
-    throw new Error(error);
-  }
-  data.nftStorageToken = token;
-  console.log(`fetchNftStorageRequestToken() :: ${token.substring(0, 10)}...`);
-}
-
-/**
- * @deprecated in favor of Arweave
- */
-async function uploadNftFilesToNftStorage(data: any) {
-  console.log(`uploadNftFilesToNftStorage()`);
-  assert(data.nftStorageToken);
-  const nftStorageClient = new NFTStorage({ token: data.nftStorageToken });
-  // Upload Auctions' NFT files
-  for (const [i, auction] of data.auctionGames.entries()) {
-    let cid = await nftStorageClient.storeBlob(new Blob([auction.nftFile]));
-    auction.ipfsPath = `https://${cid}.ipfs.dweb.link`;
-    console.log(`uploadNftFilesToNftStorage() :: Auction ${i + 1} NFT uploaded to ${auction.ipfsPath}`);
-  }
-  // Upload Drawings' NFT files
-  for (const [i, drawing] of data.drawingGames.entries()) {
-    for (const [j, nft] of drawing.nfts.entries()) {
-      let cid = await nftStorageClient.storeBlob(new Blob([nft.nftFile]));
-      nft.ipfsPath = `https://${cid}.ipfs.dweb.link`;
-      console.log(`uploadNftFilesToNftStorage() :: Drawing ${i + 1} NFT ${j + 1} uploaded to ${nft.ipfsPath}`);
-    }
-  }
-}
-
-/**
- * @deprecated in favor of Arweave
- */
-async function createNftMetadataOnNftStorage(data: any) {
-  console.log('createNftMetadataOnNftStorage()');
-  const nftStorageClient = new NFTStorage({ token: data.nftStorageToken });
-  var nftFiles: File[] = Array();
-  // Add auction NFTs to content
-  for (let auction of data.auctionGames) {
-    const jsonData = JSON.stringify({
-      name: auction.name,
-      description: auction.description,
-      image: auction.ipfsPath,
-    });
-    const jsonFile = new File([jsonData], auction.nftId.toString(), { type: 'application/json' });
-    nftFiles.push(jsonFile);
-  }
-  // Add drawing NFTs to content
-  for (let drawing of data.drawingGames) {
-    for (let nft of drawing.nfts) {
-      const jsonData = JSON.stringify({
-        name: nft.name,
-        description: nft.description,
-        image: nft.ipfsPath,
-      });
-      const jsonFile = new File([jsonData], nft.nftId.toString(), { type: 'application/json' });
-      nftFiles.push(jsonFile);
-    }
-  }
-  data.dropMetadataCid = await nftStorageClient.storeDirectory(nftFiles);
-  console.log(`createNftMetadataOnNftStorage() :: CID = ${data.dropMetadataCid}`);
 }
