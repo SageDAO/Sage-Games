@@ -161,7 +161,6 @@ function buildNftMetadata(item: any): string {
 async function createNftMetadataOnArweave(nft: any) {
   console.log('createNftMetadataOnArweave()');
   const metadata = JSON.stringify({ filename: nft.nftFilename, data: buildNftMetadata(nft) });
-  console.log(metadata);
   const response = await postJSON(`${endpoint}?action=UploadNftMetadataToArweave`, metadata);
   const { id, balance, error } = await response.json();
   if (error) {
