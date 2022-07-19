@@ -146,7 +146,7 @@ async function copyFromS3toArweave(s3Path: string): Promise<string> {
     throw new Error(error);
   }
   console.log(`Arweave balance = ${balance}`);
-  return `ar://${id}`;
+  return `https://arweave.net/${id}`;
 }
 
 function buildNftMetadata(item: any): string {
