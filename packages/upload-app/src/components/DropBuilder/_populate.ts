@@ -24,7 +24,7 @@ export const populateWithTestData = () => {
     nativeInputValueSetter.call(element, idx);
     element.dispatchEvent(new Event("change", { bubbles: true }));
   };
-  setInputVal("name", "Winter Test Drop");
+  setInputVal("name", "Test Drop");
   setInputVal("artistWallet", "0x19596e1D6cd97916514B5DBaA4730781eFE49975");
   setInputVal("tags", "tag1 tag tag3 tag4");
   setInputVal(
@@ -34,7 +34,7 @@ export const populateWithTestData = () => {
   setSelectedIndex("target", 1);
   setInputVal("pmySalesSplit1", "100");
   setInputVal("pmySalesSplitAddr1", "0x19596e1D6cd97916514B5DBaA4730781eFE49975");
-  setInputVal("rltyPercent", "12");
+  setInputVal("rltyPercent", "10");
   setInputVal("rltySplit1", "100");
   setInputVal("rltySplitAddr1", "0x19596e1D6cd97916514B5DBaA4730781eFE49975");
   document.getElementById("addDrawingGameTab").click();
