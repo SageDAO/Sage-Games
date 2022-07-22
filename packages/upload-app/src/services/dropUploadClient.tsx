@@ -9,7 +9,7 @@ var assert = require('assert');
 var endpoint = null;
 
 export async function handleDropUpload(data: any, setCurrentProgressPercent: (pct: number) => void) {
-  const dataCopy = copy(data);
+  const dataCopy = structuredClone ? structuredClone(data) : copy(data);
   console.log(`handleDropUpload() :: target = ${dataCopy.target}`);
   endpoint = targetConfig[dataCopy.target].ENDPOINT_URL;
   console.log(`handleDropUpload() :: endpoint = ${endpoint}`);
