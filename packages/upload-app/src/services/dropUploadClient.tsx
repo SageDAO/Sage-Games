@@ -222,6 +222,7 @@ async function dbInsertDrawingGames(data: any) {
     drawing.drawingId = drawingId;
     console.log(`dbInsertDrawingGames() :: Drawing ${i + 1} ID = ${drawingId}`);
     for (const nft of drawing.nfts) {
+      nft.drawingId = drawingId;
       await dbInsertNft(nft);
     }
   }
