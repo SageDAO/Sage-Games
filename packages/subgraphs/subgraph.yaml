@@ -7,7 +7,7 @@ dataSources:
     name: lottery
     network: rinkeby
     source:
-      address: "0x4732D73D8526E4b05E2dEdaC1E65f7eC1F544686"
+      address: "0x86295B8B322dBCA2f132FDb6390BbcEBd6573Ed4"
       abi: LotteryContract
       startBlock: 10739971
     mapping:
@@ -36,7 +36,7 @@ dataSources:
     name: auction
     network: rinkeby
     source:
-      address: "0xd476b328e4705Abe246cedB43C1DD7AbAd95Ef22"
+      address: "0x26b5bB9352edbe338ef77cF90c69cB2a715974e1"
       abi: AuctionContract
       startBlock: 10739975
     mapping:
