@@ -2,10 +2,9 @@ import { ByteArray } from "@graphprotocol/graph-ts";
 import {
   LotteryStatusChanged,
   PrizeClaimed,
-  Refunded,
   TicketSold,
 } from "../generated/lottery/LotteryContract";
-import { ClaimedPrize, Lottery, Ticket, Refund } from "../generated/schema";
+import { ClaimedPrize, Lottery, Ticket } from "../generated/schema";
 
 export function handleLotteryStatusChanged(event: LotteryStatusChanged): void {
   const lotteryId = event.params.lotteryId.toHex();
@@ -58,29 +57,9 @@ export function handlePrizeClaimed(event: PrizeClaimed): void {
   lottery.save();
 }
 
-export function handleRefunded(event: Refunded): void {
-  const lotteryId = event.params.lotteryId.toHex();
-  let lottery = Lottery.load(lotteryId);
-  if (!lottery) {
-    lottery = createLottery(lotteryId);
-  }
-  const refundId = event.transaction.hash.toHex() + "-" + event.logIndex.toString();
-  const refund = new Refund(refundId);
-  refund.txnHash = event.transaction.hash;
-  refund.address = event.params.participantAddress;
-  refund.amount = event.params.refundAmount;
-  refund.lottery = lotteryId;
-  const refunds = lottery.refunds;
-  refunds.push(refundId);
-  lottery.refunds = refunds;
-  refund.save();
-  lottery.save();
-}
-
 function createLottery(lotteryId: string): Lottery {
   const lottery = new Lottery(lotteryId);
   lottery.tickets = new Array<string>();
-  lottery.refunds = new Array<string>();
   lottery.claimedPrizes = new Array<string>();
   lottery.status = "Created";
   return lottery;

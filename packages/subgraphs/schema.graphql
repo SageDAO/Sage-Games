@@ -10,7 +10,6 @@ type Lottery @entity {
   status: LotteryStatus!
   tickets: [Ticket!]!
   claimedPrizes: [ClaimedPrize!]!
-  refunds: [Refund!]!
 }
 
 type Ticket @entity {
@@ -27,14 +26,6 @@ type ClaimedPrize @entity {
   lottery: Lottery!
   address: Bytes!
   nftId: Int!
-}
-
-type Refund @entity {
-  id: ID!
-  txnHash: Bytes!
-  lottery: Lottery!
-  address: Bytes!
-  amount: BigInt!
 }
 
 enum AuctionStatus {
@@ -57,6 +48,7 @@ type Bid @entity {
   txnHash: Bytes!
   auction: Auction!
   bidder: Bytes! # address
+  prevBidder: Bytes # address
   amount: BigInt!
   endTime: Int!
   blockTimestamp: BigInt!

@@ -44,7 +44,8 @@ export function handleBidPlaced(event: BidPlaced): void {
   const bid = new Bid(bidId);
   bid.txnHash = event.transaction.hash;
   bid.amount = event.params.bidAmount;
-  bid.bidder = event.params.bidder;
+  bid.bidder = event.params.newBidder;
+  bid.prevBidder = event.params.previousBidder;
   bid.endTime = event.params.newEndTime.toI32();
   bid.auction = auctionId;
   bid.blockTimestamp = event.block.timestamp;
