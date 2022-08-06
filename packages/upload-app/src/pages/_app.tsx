@@ -1,10 +1,11 @@
-import React from "react";
-import type { AppProps } from "next/app";
-import "bootstrap/dist/css/bootstrap.min.css";
-//import "../styles/globals.css";
-import "../styles/styles.scss";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import React from 'react';
+import type { AppProps } from 'next/app';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-tabs/style/react-tabs.css';
+import 'react-datepicker/dist/react-datepicker.css';
+import '../styles/styles.scss';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

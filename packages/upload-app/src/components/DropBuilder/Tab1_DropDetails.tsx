@@ -1,76 +1,77 @@
 import {
-    DocumentTextIcon,
-    FolderIcon,
-    LocationMarkerIcon,
-    PencilAltIcon,
-    PhotographIcon,
-    TagIcon,
-} from "@heroicons/react/outline";
+  DocumentTextIcon,
+  FolderIcon,
+  LocationMarkerIcon,
+  PencilAltIcon,
+  PhotographIcon,
+  TagIcon,
+} from '@heroicons/react/outline';
 
 type Props = {
-    formData: any;
-    setFormData: (formData: any) => void;
+  formData: any;
+  setFormData: (formData: any) => void;
 };
 
 export const Tab1_DropDetails = ({ ...props }: Props) => {
-    const handleBannerFileChange = (e: any) => {
-        if (!e.target.files?.length) return;
-        props.setFormData((prevData: any) => ({ ...prevData, bannerImageFile: e.target.files[0] }));
-    };
+  const handleBannerFileChange = (e: any) => {
+    if (!e.target.files?.length) return;
+    props.setFormData((prevData: any) => ({ ...prevData, bannerImageFile: e.target.files[0] }));
+  };
 
-    const handleFieldChange = (e: any) => {
-        const { name, value } = e.target;
-        props.setFormData((prevData: any) => ({ ...prevData, [name]: value }));
-    };
+  const handleFieldChange = (e: any) => {
+    const { name, value } = e.target;
+    props.setFormData((prevData: any) => ({ ...prevData, [name]: value }));
+  };
 
-    const handleWhitelistSelectChange = (e: any) => {
-        const isNewEntry = "new" == e.target.value;
-        let newEntryDiv = document.getElementById("newWhitelistEntryDiv");
-        if (newEntryDiv) {
-            newEntryDiv.style.display = isNewEntry ? "inline" : "none";
-        }
-        handleFieldChange(e);
-    };
+  const handleWhitelistSelectChange = (e: any) => {
+    const isNewEntry = 'new' == e.target.value;
+    let newEntryDiv = document.getElementById('newWhitelistEntryDiv');
+    if (newEntryDiv) {
+      newEntryDiv.style.display = isNewEntry ? 'inline' : 'none';
+    }
+    handleFieldChange(e);
+  };
 
-    return (
-        <div className="mt-4 container-lg px-4">
-            <div className="row">
-                <div className="col">
-                    <label>
-                        <LocationMarkerIcon width="20" style={{ marginRight: 5 }} />
-                        Target System *
-                    </label>
-                    <select className="form-select py-0" name="target" id="target" onChange={handleFieldChange}>
-                        <option value=""> -- Select -- </option>
-                        <option value="localhost">Dev Localhost</option>
-                        <option value="SAGE Dev">SAGE Dev</option>
-                        {/* <option value="SAGE Staging">SAGE Staging</option>
+  return (
+    <div className='container-lg mt-5 px-5'>
+      <div className='row'>
+        <div className='col'>
+          <label>
+            <LocationMarkerIcon width='20' style={{ marginRight: 5 }} />
+            Target System *
+          </label>
+          <select className='form-select py-0' name='target' id='target' onChange={handleFieldChange}>
+            <option value=''> -- Select -- </option>
+            <option value='localhost'>Dev Localhost</option>
+            <option value='SAGE Dev'>SAGE Dev</option>
+            {/* <option value="SAGE Staging">SAGE Staging</option>
                         <option value="SAGE Production">SAGE Production</option> */}
-                    </select>
-                </div>
-                <div className="col">
-                    <label>
-                        <FolderIcon width="20" style={{ marginRight: 5 }} />
-                        Drop Name *
-                    </label>
-                    <input type="text" className="form-control" name="name" id="name" onChange={handleFieldChange} />
-                </div>
-            </div>
+          </select>
+        </div>
+        <div className='col'>
+          <label>
+            <FolderIcon width='20' style={{ marginRight: 5 }} />
+            Drop Name *
+          </label>
+          <input type='text' className='form-control' name='name' id='name' onChange={handleFieldChange} />
+        </div>
+      </div>
 
-            <div className="row mt-4">
-                <div className="col">
-                    <label>
-                        <PencilAltIcon width="20" style={{ marginRight: 5 }} />
-                        Artist Wallet Address *
-                    </label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        name="artistWallet"
-                        id="artistWallet"
-                        onChange={handleFieldChange}
-                    />
-                </div>
+      <div className='row mt-4'>
+        <div className='col'>
+          <label>
+            <PencilAltIcon width='20' style={{ marginRight: 5 }} />
+            Artist Wallet Address *
+          </label>
+          <input
+            type='text'
+            className='form-control'
+            name='artistWallet'
+            id='artistWallet'
+            onChange={handleFieldChange}
+          />
+        </div>
+        {/*
                 <div className="col">
                     <label>
                         <TagIcon width="20" style={{ marginRight: 5 }} />
@@ -85,22 +86,23 @@ export const Tab1_DropDetails = ({ ...props }: Props) => {
                         onChange={handleFieldChange}
                     />
                 </div>
-            </div>
+                    */}
+      </div>
 
-            <label className="mt-4">
-                <DocumentTextIcon width="20" style={{ marginRight: 5 }} />
-                Description
-            </label>
-            <textarea
-                className="form-control md-textarea"
-                name="description"
-                id="description"
-                rows={2}
-                placeholder=""
-                onChange={handleFieldChange}
-            />
+      <label className='mt-4'>
+        <DocumentTextIcon width='20' style={{ marginRight: 5 }} />
+        Description
+      </label>
+      <textarea
+        className='form-control md-textarea'
+        name='description'
+        id='description'
+        rows={2}
+        placeholder=''
+        onChange={handleFieldChange}
+      />
 
-            {/*
+      {/*
       <label className="mt-2">
         <HandIcon width="20" style={{ marginRight: 5 }} />
         Whitelist
@@ -135,16 +137,16 @@ export const Tab1_DropDetails = ({ ...props }: Props) => {
       </div>
       */}
 
-            <label className="mt-4">
-                <PhotographIcon width="20" style={{ marginRight: 5 }} />
-                Home Page Banner Image *
-            </label>
-            <input
-                type="file"
-                className="form-control form-control-sm form-control-file"
-                name="bannerImageFile"
-                onChange={handleBannerFileChange}
-            />
-        </div>
-    );
+      <label className='mt-4'>
+        <PhotographIcon width='20' style={{ marginRight: 5 }} />
+        Banner Image *
+      </label>
+      <input
+        type='file'
+        className='form-control form-control-sm form-control-file'
+        name='bannerImageFile'
+        onChange={handleBannerFileChange}
+      />
+    </div>
+  );
 };

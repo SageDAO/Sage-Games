@@ -26,17 +26,17 @@ export const populateWithTestData = () => {
   };
   setInputVal("name", "Test Drop");
   setInputVal("artistWallet", "0x19596e1D6cd97916514B5DBaA4730781eFE49975");
-  setInputVal("tags", "tag1 tag tag3 tag4");
+  //setInputVal("tags", "tag1 tag tag3 tag4");
   setInputVal(
     "description",
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In pretium leo vitae elementum aliquet."
   );
   setSelectedIndex("target", 1);
-  setInputVal("pmySalesSplit1", "100");
-  setInputVal("pmySalesSplitAddr1", "0x19596e1D6cd97916514B5DBaA4730781eFE49975");
-  setInputVal("rltyPercent", "10");
-  setInputVal("rltySplit1", "100");
-  setInputVal("rltySplitAddr1", "0x19596e1D6cd97916514B5DBaA4730781eFE49975");
+  //setInputVal("pmySalesSplit1", "100");
+  //setInputVal("pmySalesSplitAddr1", "0x19596e1D6cd97916514B5DBaA4730781eFE49975");
+  //setInputVal("rltyPercent", "10");
+  //setInputVal("rltySplit1", "100");
+  //setInputVal("rltySplitAddr1", "0x19596e1D6cd97916514B5DBaA4730781eFE49975");
   document.getElementById("addDrawingGameTab").click();
   setTimeout(() => {
     setInputVal("drawingStartDate", getDate(1));

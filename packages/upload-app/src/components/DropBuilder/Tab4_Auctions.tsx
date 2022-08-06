@@ -1,14 +1,14 @@
-import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
-import { AuctionGameEntry } from "./AuctionGameEntry";
+import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
+import { AuctionGameEntry } from './AuctionGameEntry';
 
 type Props = {
-  formData: any,
-  setFormData: (formData: any) => void,
-}
+  formData: any;
+  setFormData: (formData: any) => void;
+};
 
 export function Tab4_Auctions({ ...props }: Props) {
   const handleAddGameClick = () => {
-    document.getElementById("auctionInputFile").click();
+    document.getElementById('auctionInputFile').click();
   };
 
   const handleHiddenInputFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,12 +32,12 @@ export function Tab4_Auctions({ ...props }: Props) {
   };
 
   return (
-    <div className="container-lg mt-4 px-4">
+    <div className='container-lg mt-5 px-5'>
       <input
-        type="file"
-        id="auctionInputFile"
-        style={{ display: "none" }}
-        accept="image/png, image/gif, image/jpeg, video/mp4"
+        type='file'
+        id='auctionInputFile'
+        style={{ display: 'none' }}
+        accept='image/png, image/gif, image/jpeg, video/mp4'
         multiple={false}
         onChange={handleHiddenInputFileChange}
       />
@@ -46,7 +46,7 @@ export function Tab4_Auctions({ ...props }: Props) {
           {props.formData.auctionGames.map((_: any, i: number) => {
             return (
               <Tab key={i}>
-                <img src="/icon_auction_outline.svg" width={20} className="mx-1" alt="" />
+                <img src='/icon_auction_outline.svg' width={20} className='mx-1' alt='' />
                 Auction {i + 1}
               </Tab>
             );

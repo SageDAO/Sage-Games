@@ -7,6 +7,7 @@ import {
   TagIcon,
   TrashIcon,
 } from '@heroicons/react/outline';
+import Tags from './Tags';
 
 type Props = {
   drawingIndex: number; // index of parent drawing on drawings array
@@ -33,6 +34,10 @@ export const DrawingGameNftEntry = ({ ...props }: Props) => {
     const val = e.target.hasOwnProperty('checked') ? e.target.checked.toString() : e.target.value;
     props.onFieldChange(props.nftIndex, e.target.name, val);
   };
+
+  const onTagsChange = (newValue: string) => {
+    props.onFieldChange(props.nftIndex, 'tags', newValue);
+  }
 
   // const handleDefaultPrizeClick = (e: any) => {
   //   handleFieldChange(e);
@@ -87,14 +92,7 @@ export const DrawingGameNftEntry = ({ ...props }: Props) => {
               <TagIcon width='20' style={{ marginRight: 5 }} />
               Tags
             </label>
-            <input
-              type='text'
-              className='form-control'
-              name='tags'
-              placeholder='tag1 tag2 tag3'
-              onChange={handleFieldChange}
-              value={props.data.tags}
-            />
+            <Tags onTagsChange={onTagsChange} />
           </div>
         </div>
 
@@ -128,7 +126,7 @@ export const DrawingGameNftEntry = ({ ...props }: Props) => {
         </div>
       </div>
 
-            {/*
+      {/*
       <div className='col' style={{ textAlign: 'center' }}>
         <div className='row'>
           <div className='col'>

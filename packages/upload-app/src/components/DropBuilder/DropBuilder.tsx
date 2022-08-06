@@ -1,45 +1,41 @@
-import { useState } from "react";
-import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import "react-tabs/style/react-tabs.css";
-import "react-datepicker/dist/react-datepicker.css";
-import { BeakerIcon, CashIcon, ClipboardListIcon, CloudUploadIcon, TicketIcon } from "@heroicons/react/solid";
-import { Tab1_DropDetails } from "./Tab1_DropDetails";
-import { Tab2_SalesSplits } from "./Tab2_SalesSplits";
-import { Tab3_Drawings } from "./Tab3_Drawings";
-import { Tab4_Auctions } from "./Tab4_Auctions";
-import { Tab5_Review } from "./Tab5_Review";
-import { populateWithTestData } from "./_populate";
+import { useState } from 'react';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import { BeakerIcon, CashIcon, ClipboardListIcon, CloudUploadIcon, TicketIcon } from '@heroicons/react/solid';
+import { Tab1_DropDetails } from './Tab1_DropDetails';
+import { Tab2_SalesSplits } from './Tab2_SalesSplits';
+import { Tab3_Drawings } from './Tab3_Drawings';
+import { Tab4_Auctions } from './Tab4_Auctions';
+import { Tab5_Review } from './Tab5_Review';
+import { populateWithTestData } from './_populate';
 
-const DropBuilder = () => {
+export function DropBuilder() {
   const [formData, setFormData] = useState({ drawingGames: [], auctionGames: [] });
 
   return (
-    <div className="container-lg mt-5">
+    <div className='container-lg mt-5'>
       <h1>
-        <a onClick={populateWithTestData} className="mx-2">
-          <BeakerIcon width={24} />
-        </a>
+        <BeakerIcon width={24} onClick={populateWithTestData} className='mx-2' />
         SAGE Drop Builder
       </h1>
-      <Tabs forceRenderTabPanel={true} className="mt-4">
+      <Tabs forceRenderTabPanel={true} className='mt-5'>
         <TabList>
           <Tab>
-            <ClipboardListIcon width={20} className="mx-1" /> Drop Details
+            <ClipboardListIcon width={20} className='mx-1' /> Drop Details
           </Tab>
-          <Tab>
-            <CashIcon width={20} className="mx-1" />
+          <Tab disabled={true}>
+            <CashIcon width={20} className='mx-1' />
             Sales &amp; Splits
           </Tab>
           <Tab>
-            <TicketIcon width={20} className="mx-1" />
+            <TicketIcon width={20} className='mx-1' />
             Drawing Games
           </Tab>
           <Tab>
-            <img src="/icon_auction_solid.svg" width={20} className="mx-1" alt="" />
+            <img src='/icon_auction_solid.svg' width={20} className='mx-1' alt='' />
             Auction Games
           </Tab>
           <Tab>
-            <CloudUploadIcon width={20} className="mx-1" />
+            <CloudUploadIcon width={20} className='mx-1' />
             Review &amp; Submit
           </Tab>
         </TabList>
@@ -61,6 +57,4 @@ const DropBuilder = () => {
       </Tabs>
     </div>
   );
-};
-
-export default DropBuilder;
+}

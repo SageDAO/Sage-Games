@@ -1,6 +1,6 @@
-import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
-import { TicketIcon } from "@heroicons/react/outline";
-import { DrawingGameEntry } from "./DrawingGameEntry";
+import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
+import { TicketIcon } from '@heroicons/react/outline';
+import { DrawingGameEntry } from './DrawingGameEntry';
 
 type Props = {
   formData: any;
@@ -28,18 +28,22 @@ export const Tab3_Drawings = ({ ...props }: Props) => {
   };
 
   return (
-    <div className="container-lg mt-4 px-4">
+    <div className='container-lg mt-5 px-5'>
       <Tabs forceRenderTabPanel={true}>
         <TabList>
           {props.formData.drawingGames.map((_: any, i: number) => {
             return (
               <Tab key={i}>
-                <TicketIcon width={20} className="mx-1" />
+                <TicketIcon width={20} className='mx-1' />
                 Drawing {i + 1}
               </Tab>
             );
           })}
-          <Tab><a id="addDrawingGameTab" onClick={handleAddGameClick}>+ Add Drawing Game</a></Tab>
+          <Tab>
+            <a id='addDrawingGameTab' onClick={handleAddGameClick}>
+              + Add Drawing Game
+            </a>
+          </Tab>
         </TabList>
         {props.formData.drawingGames.map((drawing: any, i: number) => {
           return (

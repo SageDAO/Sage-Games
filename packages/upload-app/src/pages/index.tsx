@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import DropBuilder from "../components/DropBuilder/DropBuilder";
+import { DropBuilder } from "../components/DropBuilder/DropBuilder";
 
 const Home: NextPage = () => {
   return <DropBuilder />;
