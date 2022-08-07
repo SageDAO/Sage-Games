@@ -4,8 +4,7 @@ export function validate(data: any): string[] {
   const err = [];
 
   const checkRequired = (val: string): boolean => {
-    if (!(typeof val == 'string')) {
-      console.log(typeof val)
+    if (typeof val !== 'string') {
       return false;
     }
     return val && val.trim().length > 0;
