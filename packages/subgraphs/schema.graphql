@@ -1,3 +1,6 @@
+
+# LOTTERY ===================================================
+
 enum LotteryStatus {
   Created
   Cancelled
@@ -9,7 +12,7 @@ type Lottery @entity {
   id: ID!
   status: LotteryStatus!
   tickets: [Ticket!]!
-  claimedPrizes: [ClaimedPrize!]!
+  claimedPrizes: [Prize!]!
 }
 
 type Ticket @entity {
@@ -18,15 +21,19 @@ type Ticket @entity {
   lottery: Lottery!
   ticketNumber: Int!
   address: Bytes!
+  blockTimestamp: BigInt!
 }
 
-type ClaimedPrize @entity {
+type Prize @entity {
   id: ID!
   txnHash: Bytes!
   lottery: Lottery!
   address: Bytes!
   nftId: Int!
+  blockTimestamp: BigInt!
 }
+
+# AUCTION ===================================================
 
 enum AuctionStatus {
   Created
@@ -51,5 +58,18 @@ type Bid @entity {
   prevBidder: Bytes # address
   amount: BigInt!
   endTime: Int!
+  blockTimestamp: BigInt!
+}
+
+# MARKET ====================================================
+
+type NftSale @entity {
+  id: ID! # tx id
+  txnHash: Bytes!
+  seller: Bytes! # address
+  buyer: Bytes! # address
+  contract: Bytes! # address
+  nftId: Int!
+  price: BigInt!
   blockTimestamp: BigInt!
 }

@@ -4,7 +4,7 @@ import {
   PrizeClaimed,
   TicketSold,
 } from "../generated/lottery/LotteryContract";
-import { ClaimedPrize, Lottery, Ticket } from "../generated/schema";
+import { Prize, Lottery, Ticket } from "../generated/schema";
 
 export function handleLotteryStatusChanged(event: LotteryStatusChanged): void {
   const lotteryId = event.params.lotteryId.toHex();
@@ -30,6 +30,7 @@ export function handleTicketSold(event: TicketSold): void {
   ticket.txnHash = event.transaction.hash;
   ticket.address = event.params.participantAddress;
   ticket.ticketNumber = event.params.ticketNumber.toI32();
+  ticket.blockTimestamp = event.block.timestamp;
   ticket.lottery = lotteryId;
   const tickets = lottery.tickets;
   tickets.push(ticketId);
@@ -45,11 +46,12 @@ export function handlePrizeClaimed(event: PrizeClaimed): void {
     lottery = createLottery(lotteryId);
   }
   const id = event.transaction.hash.toHex() + "-" + event.logIndex.toString();
-  const prize = new ClaimedPrize(id);
+  const prize = new Prize(id);
   prize.txnHash = event.transaction.hash;
   prize.nftId = event.params.prizeId.toI32();
   prize.address = event.params.participantAddress;
   prize.lottery = lotteryId;
+  prize.blockTimestamp = event.block.timestamp;
   const prizes = lottery.claimedPrizes;
   prizes.push(id);
   lottery.claimedPrizes = prizes;

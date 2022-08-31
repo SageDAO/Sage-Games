@@ -5,6 +5,9 @@
     },
     "auction": {
       "address": "0x26b5bB9352edbe338ef77cF90c69cB2a715974e1"
+    },
+    "marketplace": {
+      "address": "0xEfbc3Af631Db2a6F94C2c6336A02b08480e12A61"
     }
   }
 }

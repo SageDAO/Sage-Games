@@ -1,5 +1,5 @@
 specVersion: 0.0.4
-description: SAGE Game Events on Rinkeby
+description: SAGE Platform Events
 schema:
   file: ./schema.graphql
 dataSources:
@@ -9,7 +9,7 @@ dataSources:
     source:
       address: "0x86295B8B322dBCA2f132FDb6390BbcEBd6573Ed4"
       abi: LotteryContract
-      startBlock: 10739971
+      startBlock: 11053664 
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -36,7 +36,7 @@ dataSources:
     source:
       address: "0x26b5bB9352edbe338ef77cF90c69cB2a715974e1"
       abi: AuctionContract
-      startBlock: 10739975
+      startBlock: 11053666
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -59,3 +59,23 @@ dataSources:
         - event: BidPlaced(indexed uint256,indexed address,indexed address,uint256,uint256)
           handler: handleBidPlaced
       file: ./src/mapping-auction.ts
+  - kind: ethereum
+    name: marketplace
+    network: rinkeby
+    source:
+      address: "0xEfbc3Af631Db2a6F94C2c6336A02b08480e12A61"
+      abi: MarketplaceContract
+      startBlock: 11126736
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - NftSale
+      abis:
+        - name: MarketplaceContract
+          file: ./abis/Marketplace.json
+      eventHandlers:
+        - event: ListedNFTSold(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleListedNftSold
+      file: ./src/mapping-marketplace.ts
