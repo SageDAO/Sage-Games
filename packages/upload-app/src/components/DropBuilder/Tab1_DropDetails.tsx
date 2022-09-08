@@ -44,8 +44,8 @@ export const Tab1_DropDetails = ({ ...props }: Props) => {
             <option value=''> -- Select -- </option>
             <option value='localhost'>Dev Localhost</option>
             <option value='SAGE Dev'>SAGE Dev</option>
-            {/* <option value="SAGE Staging">SAGE Staging</option>
-                        <option value="SAGE Production">SAGE Production</option> */}
+            <option value='SAGE Staging'>SAGE Staging</option>
+            <option value='SAGE Production'>SAGE Production</option>
           </select>
         </div>
         <div className='col'>

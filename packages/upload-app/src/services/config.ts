@@ -15,7 +15,7 @@ export const targetConfig: Configuration = {
     ENDPOINT_URL: 'https://sage-dev.vercel.app/api/dropUploadEndpoint/',
   },
   'SAGE Staging': {
-    ENDPOINT_URL: 'https://sage-dev.vercel.app/api/dropUploadEndpoint/',
+    ENDPOINT_URL: 'https://sage-staging.vercel.app/api/dropUploadEndpoint/',
   },
   'SAGE Production': {
     ENDPOINT_URL: 'https://sage-dev.vercel.app/api/dropUploadEndpoint/',
