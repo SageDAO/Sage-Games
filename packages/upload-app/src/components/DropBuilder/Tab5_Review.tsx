@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { BadgeCheckIcon, CloudUploadIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
-import { ProgressBar } from '../ProgressBar/ProgressBar';
+import { ProgressBar } from '../ProgressBar';
 import { validate } from './_validation';
 import { handleDropUpload } from '../../services/dropUploadClient';
 import Confetti from 'react-confetti';
@@ -56,6 +56,11 @@ export const Tab5_Review = ({ ...props }: Props) => {
     (e.target as HTMLButtonElement).disabled = false;
   };
 
+  const nftsInDrop = props.formData.auctionGames.slice(0);
+  for (const d of props.formData.drawingGames) {
+    Array.prototype.push.apply(nftsInDrop, d.nfts);
+  }
+
   return (
     <div className='mt-5'>
       {displayConfetti && <Confetti width={width} height={height} recycle={recycleConfetti} />}
@@ -68,6 +73,11 @@ export const Tab5_Review = ({ ...props }: Props) => {
       })}
       {errors.length == 0 && (
         <div className='text-center'>
+          <div className='flex items-center'>
+            {nftsInDrop.map((nft: any, i: number) => (
+              <NftPreview nft={nft} key={i} />
+            ))}
+          </div>
           <div className='mx-auto alert alert-primary mt-5' role='alert' style={{ width: '50%' }}>
             <BadgeCheckIcon width='20' stroke='#084298' /> &nbsp; Everything looks good!
           </div>
@@ -87,3 +97,13 @@ export const Tab5_Review = ({ ...props }: Props) => {
     </div>
   );
 };
+
+function NftPreview({ nft }) {
+  return (
+    <div style={{ display: 'inline-block', padding: '10px'}}>
+      {nft.preview} <b>{nft.name}</b>
+      <br />
+      <span style={{ fontSize: '12px' }}>editions: {nft.numberOfEditions || 1}</span>
+    </div>
+  );
+}

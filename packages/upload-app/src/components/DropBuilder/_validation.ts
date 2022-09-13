@@ -105,7 +105,7 @@ export function validate(data: any): string[] {
       if (d.nfts.length == 0) err.push(`[Drawing Games] Drawing ${i + 1}: Must have at least one NFT`);
       for (const [j, n] of d.nfts.entries()) {
         if (!checkRequired(n.name)) err.push(`[Drawing Games] Drawing ${i + 1} NFT ${j + 1}: Name is required`);
-        if (!checkRequired(n.name)) err.push(`[Drawing Games] Drawing ${i + 1} NFT ${j + 1}: NFT must have at least one tag`);
+        if (!checkRequired(n.tags)) err.push(`[Drawing Games] Drawing ${i + 1} NFT ${j + 1}: NFT must have at least one tag`);
         if (!checkReqPosInt(n.numberOfEditions))
           err.push(`[Drawing Games] Drawing ${i + 1} NFT ${j + 1}: Editions must be an integer`);
       }

@@ -1,39 +1,19 @@
-import { useEffect, useState } from 'react';
-import {
-  CalendarIcon,
-  CurrencyDollarIcon,
-  CursorClickIcon,
-  DocumentTextIcon,
-  PhotographIcon,
-  TagIcon,
-  TrendingUpIcon,
-} from '@heroicons/react/outline';
+import { useState } from 'react';
+import { CalendarIcon, DocumentTextIcon, PhotographIcon, TagIcon, TrendingUpIcon } from '@heroicons/react/outline';
 import DatePicker from 'react-datepicker';
 import { format as formatDate } from 'date-fns';
 import Tags from './Tags';
 
 type Props = {
   index: number; // index of this entry on parent array
-  data: any; // entry data
+  data: any; // auction entry data
   onDelete: (index: number) => void; // callback for when user deletes this entry
-  onFieldChange: (index: number, name: string, value: any) => void; // callback to update form data upon field change
+  onFieldChange: (index: number, name: string, value: any) => void; // callback to update global form data upon field change
 };
 
 export const AuctionGameEntry = ({ ...props }: Props) => {
   const [startDate, setStateStartDate] = useState<Date>(); // state var used by datepicker component
   const [endDate, setStateEndDate] = useState<Date>(); // state var used by datepicker component
-
-  useEffect(() => {
-    const displayThumbnail = () => {
-      const isVideo = props.data.nftFile.name.toLowerCase().endsWith('mp4');
-      const targetId = (isVideo ? 'auctionVidThumb_' : 'auctionImgThumb_') + props.index;
-      let e = document.getElementById(targetId);
-      (e as HTMLImageElement | HTMLVideoElement).src = URL.createObjectURL(props.data.nftFile);
-      e.style.display = 'block';
-      props.onFieldChange(props.index, 'isVideo', isVideo.toString());
-    };
-    displayThumbnail(); // upon component load, display thumbnail preview of selected upload file
-  }, [props.data.nftFile, props.index]);
 
   const handleFieldChange = (e: any) => {
     props.onFieldChange(props.index, e.target.name, e.target.value);
@@ -41,7 +21,7 @@ export const AuctionGameEntry = ({ ...props }: Props) => {
 
   const onTagsChange = (newValue: string) => {
     props.onFieldChange(props.index, 'tags', newValue);
-  }
+  };
 
   const setStartDate = (d: Date) => {
     setStateStartDate(d);
@@ -61,28 +41,7 @@ export const AuctionGameEntry = ({ ...props }: Props) => {
 
   return (
     <div className='container-lg mt-4 d-flex'>
-      <div>
-        <img
-          id={`auctionImgThumb_${props.index}`}
-          className='border border-dark rounded mt-4'
-          width={100}
-          style={{ display: 'none' }}
-          alt=''
-        />
-        <video
-          id={`auctionVidThumb_${props.index}`}
-          autoPlay
-          muted
-          loop
-          playsInline
-          className='border border-dark rounded mt-4'
-          width={100}
-          style={{ display: 'none' }}
-        >
-          <source id={`auctionVidThumb_${props.index}_src`} src='' type='video/mp4'></source>
-        </video>
-      </div>
-
+      {props.data.preview}
       <div className='col-8 mx-4'>
         <div className='row mt-2'>
           <div className='col'>
@@ -106,7 +65,6 @@ export const AuctionGameEntry = ({ ...props }: Props) => {
             <Tags onTagsChange={onTagsChange} />
           </div>
         </div>
-
         <div className='row mt-3'>
           <div className='col'>
             <label>
@@ -151,7 +109,6 @@ export const AuctionGameEntry = ({ ...props }: Props) => {
           </div>
         </div>
       </div>
-
       <div className='col'>
         <div className='row'>
           <div className='col'>

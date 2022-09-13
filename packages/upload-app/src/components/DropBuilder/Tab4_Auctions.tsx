@@ -1,4 +1,5 @@
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
+import MediaPreview from '../MediaPreview';
 import { AuctionGameEntry } from './AuctionGameEntry';
 
 type Props = {
@@ -13,7 +14,10 @@ export function Tab4_Auctions({ ...props }: Props) {
 
   const handleHiddenInputFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.length) return;
-    const newGame = { nftFile: e.target.files[0] };
+    const newGame = { 
+      nftFile: e.target.files[0],
+      preview: <MediaPreview file={e.target.files[0]} />
+    };
     props.setFormData((prevData: any) => ({ ...prevData, auctionGames: [...props.formData.auctionGames, newGame] }));
   };
 
@@ -26,7 +30,7 @@ export function Tab4_Auctions({ ...props }: Props) {
 
   const handleFieldChange = (srcIndex: number, name: string, value: any) => {
     let updatedGameArray = props.formData.auctionGames.map((game: any, index: number) =>
-      index === srcIndex ? { ...game, [name]: value } : game
+      index == srcIndex ? { ...game, [name]: value } : game
     );
     props.setFormData((prevData: any) => ({ ...prevData, auctionGames: updatedGameArray }));
   };

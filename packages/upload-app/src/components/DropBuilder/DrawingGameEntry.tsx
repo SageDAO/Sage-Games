@@ -1,15 +1,9 @@
 import { useState } from 'react';
-import {
-  CalendarIcon,
-  ColorSwatchIcon,
-  CurrencyDollarIcon,
-  ReceiptRefundIcon,
-  StarIcon,
-  UserGroupIcon,
-} from '@heroicons/react/outline';
+import { CalendarIcon, ColorSwatchIcon, CurrencyDollarIcon, StarIcon, UserGroupIcon } from '@heroicons/react/outline';
 import DatePicker from 'react-datepicker';
 import { format as formatDate } from 'date-fns';
 import { DrawingGameNftEntry } from './DrawingGameNftEntry';
+import MediaPreview from '../MediaPreview';
 
 type Props = {
   formData: any;
@@ -29,7 +23,10 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
 
   const handleHiddenInputFileChange = (e: React.ChangeEvent<HTMLInputElement>, srcIndex: number) => {
     if (!e.target.files?.length) return;
-    const newNftEntry = { nftFile: e.target.files[0] };
+    const newNftEntry = { 
+      nftFile: e.target.files[0],
+      preview: <MediaPreview file={e.target.files[0]} />
+    };
     const updatedGameArray = [...props.formData.drawingGames];
     updatedGameArray[srcIndex].nfts.push(newNftEntry);
     props.setFormData((prevData: any) => ({ ...prevData, drawingGames: updatedGameArray }));
@@ -174,20 +171,6 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
             value={props.data.maxTicketsPerUser}
           />
         </div>
-        <div className='col'>
-          <label>
-            <ReceiptRefundIcon width='20' style={{ marginRight: 5 }} />
-            Refundable
-            <input
-              type='checkbox'
-              name='isRefundable'
-              style={{ marginLeft: 10, verticalAlign: 'middle' }}
-              onChange={handleFieldChange}
-              checked={'true' == props.data.isRefundable}
-            />
-          </label>
-        </div>
-        <div className='col'></div>
       </div>
 
       {props.formData.drawingGames[props.index].nfts.map((nft: any, i: number) => (

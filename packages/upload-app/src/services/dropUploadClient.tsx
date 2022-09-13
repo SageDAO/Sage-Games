@@ -1,7 +1,7 @@
 import { toast } from 'react-toastify';
 import { BookOpenIcon, CloudUploadIcon, CogIcon, DatabaseIcon, PhotographIcon } from '@heroicons/react/outline';
 import { targetConfig } from './config';
-import { TaskStatus, ToastContent } from '../components/ToastContent/ToastContent';
+import { TaskStatus, ToastContent } from '../components/ToastContent';
 import { createBucketName, uploadFileToS3Bucket } from '../utilities/awsS3';
 import { copyFromS3toArweave, createNftMetadataOnArweave } from '../utilities/arweave';
 
@@ -137,7 +137,8 @@ async function uploadNftMetadataFilesToArweave(data: any) {
 }
 
 async function _createNftMetadataOnArweave(nft: any): Promise<string> {
-  return await createNftMetadataOnArweave(endpoint, nft.name, nft.description, nft.ipfsPath, nft.isVideo);
+  const isVideo = nft.file.name.toLowerCase().endsWith('mp4');
+  return await createNftMetadataOnArweave(endpoint, nft.name, nft.description, nft.ipfsPath, isVideo);
 }
 
 async function unfoldDrawingNfts(drawing: any) {
@@ -168,7 +169,7 @@ async function unfoldDrawingNfts(drawing: any) {
 
 async function dbInsertDrop(data: any) {
   console.log(`dbInsertDrop()`);
-  const response = await postJSON(`${endpoint}?action=InsertDrop`, JSON.stringify(data, ignoreFiles));
+  const response = await postJSON(`${endpoint}?action=InsertDrop`, JSON.stringify(data, jsonReplacer));
   const { dropId, nftContractAddress, error } = await response.json();
   if (error) {
     console.log(error);
@@ -184,7 +185,7 @@ async function dbInsertAuctionGames(data: any) {
   assert(data.dropId && data.dropId != 0);
   for (const [i, auction] of data.auctionGames.entries()) {
     auction.dropId = data.dropId;
-    const response = await postJSON(`${endpoint}?action=InsertAuction`, JSON.stringify(auction, ignoreFiles));
+    const response = await postJSON(`${endpoint}?action=InsertAuction`, JSON.stringify(auction, jsonReplacer));
     const { auctionId, nftId, error } = await response.json();
     if (error) {
       console.log(error);
@@ -197,7 +198,7 @@ async function dbInsertAuctionGames(data: any) {
 }
 
 async function dbInsertNft(nftData: any) {
-  const response = await postJSON(`${endpoint}?action=InsertNft`, JSON.stringify(nftData, ignoreFiles));
+  const response = await postJSON(`${endpoint}?action=InsertNft`, JSON.stringify(nftData, jsonReplacer));
   const { nftId, error } = await response.json();
   if (error) {
     console.log(error);
@@ -213,7 +214,7 @@ async function dbInsertDrawingGames(data: any) {
   for (const [i, drawing] of data.drawingGames.entries()) {
     // Insert drawing
     drawing.dropId = data.dropId;
-    const response = await postJSON(`${endpoint}?action=InsertDrawing`, JSON.stringify(drawing, ignoreFiles));
+    const response = await postJSON(`${endpoint}?action=InsertDrawing`, JSON.stringify(drawing, jsonReplacer));
     const { drawingId, error } = await response.json();
     if (error) {
       console.log(error);
@@ -247,8 +248,11 @@ function playSoundFile(fileUrl: string) {
 }
 
 /**
- * When stringifying to JSON, ignore File objects (as they contain binary data)
+ * When stringifying to JSON, ignore File and preview objects
  */
-function ignoreFiles(_: string, value: any) {
+function jsonReplacer(key: string, value: any) {
+  if (key == 'preview') {
+    return undefined;
+  }
   return value instanceof File ? undefined : value;
 }

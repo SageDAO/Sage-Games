@@ -1,13 +1,6 @@
-import { useEffect } from 'react';
-import {
-  BookmarkIcon,
-  DocumentTextIcon,
-  DuplicateIcon,
-  PhotographIcon,
-  TagIcon,
-  TrashIcon,
-} from '@heroicons/react/outline';
+import { DocumentTextIcon, DuplicateIcon, PhotographIcon, TagIcon, TrashIcon } from '@heroicons/react/outline';
 import Tags from './Tags';
+import MediaPreview from '../MediaPreview';
 
 type Props = {
   drawingIndex: number; // index of parent drawing on drawings array
@@ -18,18 +11,6 @@ type Props = {
 };
 
 export const DrawingGameNftEntry = ({ ...props }: Props) => {
-  useEffect(() => {
-    const displayThumbnail = () => {
-      const isVideo = props.data.nftFile.name.toLowerCase().endsWith('mp4');
-      const targetId = `drawingNft${isVideo ? 'Vid' : 'Img'}Thumb_${props.drawingIndex}_${props.nftIndex}`;
-      let e = document.getElementById(targetId);
-      (e as HTMLImageElement | HTMLVideoElement).src = URL.createObjectURL(props.data.nftFile);
-      e.style.display = 'block';
-      props.onFieldChange(props.nftIndex, 'isVideo', isVideo.toString());
-    };
-    displayThumbnail(); // upon component load, display thumbnail preview of selected upload file
-  }, [props.data.nftFile]);
-
   const handleFieldChange = (e: any) => {
     const val = e.target.hasOwnProperty('checked') ? e.target.checked.toString() : e.target.value;
     props.onFieldChange(props.nftIndex, e.target.name, val);
@@ -37,41 +18,16 @@ export const DrawingGameNftEntry = ({ ...props }: Props) => {
 
   const onTagsChange = (newValue: string) => {
     props.onFieldChange(props.nftIndex, 'tags', newValue);
-  }
-
-  // const handleDefaultPrizeClick = (e: any) => {
-  //   handleFieldChange(e);
-  //   // TODO logic to disable others on same group
-  // };
+  };
 
   return (
     <div className='d-flex border border-grey mt-3 px-2 py-1 pb-2'>
       <div className='mx-4'>
-        <img
-          id={`drawingNftImgThumb_${props.drawingIndex}_${props.nftIndex}`}
-          className='border border-dark rounded mt-4'
-          width={100}
-          style={{ display: 'none' }}
-          alt=''
-        />
-        <video
-          id={`drawingNftVidThumb_${props.drawingIndex}_${props.nftIndex}`}
-          autoPlay
-          muted
-          loop
-          playsInline
-          className='border border-dark rounded mt-4'
-          width={100}
-          style={{ display: 'none' }}
-        >
-          <source type='video/mp4'></source>
-        </video>
-
+        {props.data.preview}
         <div className='mt-2 text-center'>
           <TrashIcon width='20' role='button' onClick={() => props.onDelete(props.nftIndex)} />
         </div>
       </div>
-
       <div className='col-8 mx-4'>
         <div className='row'>
           <div className='col'>
@@ -95,7 +51,6 @@ export const DrawingGameNftEntry = ({ ...props }: Props) => {
             <Tags onTagsChange={onTagsChange} />
           </div>
         </div>
-
         <div className='row'>
           <div className='col'>
             <label className='mt-2'>
@@ -125,26 +80,6 @@ export const DrawingGameNftEntry = ({ ...props }: Props) => {
           </div>
         </div>
       </div>
-
-      {/*
-      <div className='col' style={{ textAlign: 'center' }}>
-        <div className='row'>
-          <div className='col'>
-            <label className='mt-2'>
-              <BookmarkIcon width='20' style={{ marginRight: 5 }} />
-              Default Prize
-            </label>
-            <input
-              type='checkbox'
-              name='isDefaultPrize'
-              onChange={handleDefaultPrizeClick}
-              style={{ marginLeft: 10, verticalAlign: 'middle' }}
-              checked={'true' == props.data.isDefaultPrize}
-            />
-          </div>
-        </div>
-      </div>
-  */}
     </div>
   );
 };
