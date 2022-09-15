@@ -8,7 +8,7 @@ export interface Configuration {
 
 export const targetConfig: Configuration = {
   // IMPORTANT: URLs must end with a forward slash ("/") - or NextJS will redirect, causing CORS errors
-  localhost: {
+  'localhost': {
     ENDPOINT_URL: 'http://localhost:3001/api/dropUploadEndpoint/',
   },
   'SAGE Dev': {

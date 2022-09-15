@@ -4,6 +4,7 @@ import { targetConfig } from './config';
 import { TaskStatus, ToastContent } from '../components/ToastContent';
 import { createBucketName, uploadFileToS3Bucket } from '../utilities/awsS3';
 import { copyFromS3toArweave, createNftMetadataOnArweave } from '../utilities/arweave';
+import { ethers } from 'ethers';
 
 var assert = require('assert');
 var endpoint = null;
@@ -13,6 +14,7 @@ export async function handleDropUpload(data: any, setCurrentProgressPercent: (pc
   console.log(`handleDropUpload() :: target = ${data.target}`);
   endpoint = targetConfig[data.target].ENDPOINT_URL;
   console.log(`handleDropUpload() :: endpoint = ${endpoint}`);
+  await checkArtistWalletAdress(data.artistWallet);
   const tasks = [
     { icon: <CloudUploadIcon />, funct: uploadMediaFilesToS3Bucket, desc: 'Uploading media files to S3 bucket' },
     { icon: <PhotographIcon />, funct: uploadNftMediaFilesToArweave, desc: 'Uploading NFT files to Arweave' },
@@ -24,6 +26,19 @@ export async function handleDropUpload(data: any, setCurrentProgressPercent: (pc
   await runTasks(tasks, data, setCurrentProgressPercent);
   toast.success(`Success! Drop created with id ${data.dropId}`);
   playSoundFile('/chime.mp3');
+}
+
+async function checkArtistWalletAdress(artistWallet: string) {
+  try {
+    const result = await fetch(`${endpoint}?action=GetArtistNftContractAddress&artistAddress=${artistWallet}`);
+    const { nftContractAddress } = await result.json();
+    console.log(`checkArtistWalletAdress(${artistWallet}) :: ${nftContractAddress}`);
+    ethers.utils.getAddress(nftContractAddress); // this generates an error in case the address is invalid
+  } catch (e) {
+    console.log(e);
+    toast.error('Unable to validate artist wallet. Make sure artist has deployed a SAGE NFT Contract.');
+    throw new Error();
+  }
 }
 
 function copy(aObject: any): any {

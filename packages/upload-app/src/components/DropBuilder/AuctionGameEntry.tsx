@@ -11,8 +11,23 @@ type Props = {
 };
 
 export const AuctionGameEntry = ({ ...props }: Props) => {
-  const [startDate, setStateStartDate] = useState<Date>(); // state var used by datepicker component
-  const [endDate, setStateEndDate] = useState<Date>(); // state var used by datepicker component
+
+  interface State {
+    startDate: Date | null;
+    endDate: Date | null;
+  }
+
+  const [state, setState] = useState<State>({ startDate: null, endDate: null }); // used by datepicker component
+
+  const setStartDate = (d: Date) => {
+    setState({ ...state, startDate: d });
+    setDateFieldAsTimestamp('startDate', d);
+  };
+
+  const setEndDate = (d: Date) => {
+    setState({ ...state, endDate: d });
+    setDateFieldAsTimestamp('endDate', d);
+  };
 
   const handleFieldChange = (e: any) => {
     props.onFieldChange(props.index, e.target.name, e.target.value);
@@ -21,21 +36,6 @@ export const AuctionGameEntry = ({ ...props }: Props) => {
   // const onTagsChange = (newValue: string) => {
   //   props.onFieldChange(props.index, 'tags', newValue);
   // };
-
-  const setStartDate = (d: Date) => {
-    setStateStartDate(d);
-    setDateFieldAsTimestamp('startDate', d);
-    // if (!endDate) {
-    //   var tomorrow = new Date(d);
-    //   tomorrow.setHours(tomorrow.getHours() + 24);
-    //   setEndDate(tomorrow);
-    // }
-  };
-
-  const setEndDate = (d: Date) => {
-    setStateEndDate(d);
-    setDateFieldAsTimestamp('endDate', d);
-  };
 
   const setDateFieldAsTimestamp = (name: string, d: Date) => {
     if (d) {
@@ -65,26 +65,24 @@ export const AuctionGameEntry = ({ ...props }: Props) => {
               Start Date *
             </label>
             <DatePicker
-              selected={startDate}
               placeholderText='Click to select a date'
               minDate={new Date()}
               onChange={setStartDate}
               showTimeSelect
               className='form-control'
-              value={startDate ? formatDate(startDate.getTime(), 'MM/dd/yyyy hh:mm aa') : ''}
+              value={state.startDate ? formatDate(state.startDate.getTime(), 'MM/dd/yyyy hh:mm aa') : ''}
             />
             <label className='mt-3'>
               <CalendarIcon width='20' style={{ marginRight: 5 }} />
               End Date *
             </label>
             <DatePicker
-              selected={endDate}
               placeholderText='Click to select a date'
-              minDate={startDate || new Date()}
+              minDate={state.startDate || new Date()}
               onChange={setEndDate}
               showTimeSelect
               className='form-control'
-              value={endDate ? formatDate(endDate.getTime(), 'MM/dd/yyyy hh:mm aa') : ''}
+              value={state.endDate ? formatDate(state.endDate.getTime(), 'MM/dd/yyyy hh:mm aa') : ''}
             />
           </td>
           <td width='35%'>

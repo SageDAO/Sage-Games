@@ -1,17 +1,19 @@
 import { useState } from 'react';
-import { BadgeCheckIcon, CloudUploadIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
+import { BadgeCheckIcon, CloudUploadIcon, ExclamationCircleIcon, TicketIcon } from '@heroicons/react/outline';
 import { ProgressBar } from '../ProgressBar';
 import { validate } from './_validation';
 import { handleDropUpload } from '../../services/dropUploadClient';
 import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
+import { format as formatDate } from 'date-fns';
+import { toNamespacedPath } from 'path';
 
 type Props = {
   formData: any;
 };
 
 export const Tab5_Review = ({ ...props }: Props) => {
-  const [currentProgressPercent, setCurrentProgressPercent] = useState<number>();
+  const [currentProgressPercent, setCurrentProgressPercent] = useState<number>(0);
   const [displayConfetti, setDisplayConfetti] = useState<boolean>(false);
   const [recycleConfetti, setRecycleConfetti] = useState<boolean>(true);
   const { width, height } = useWindowSize();
@@ -56,11 +58,6 @@ export const Tab5_Review = ({ ...props }: Props) => {
     (e.target as HTMLButtonElement).disabled = false;
   };
 
-  const nftsInDrop = props.formData.auctionGames.slice(0);
-  for (const d of props.formData.drawingGames) {
-    Array.prototype.push.apply(nftsInDrop, d.nfts);
-  }
-
   return (
     <div className='mt-5'>
       {displayConfetti && <Confetti width={width} height={height} recycle={recycleConfetti} />}
@@ -74,8 +71,13 @@ export const Tab5_Review = ({ ...props }: Props) => {
       {errors.length == 0 && (
         <div className='text-center'>
           <div className='flex items-center'>
-            {nftsInDrop.map((nft: any, i: number) => (
-              <NftPreview nft={nft} key={i} />
+            {props.formData.drawingGames.map((drawing: any) =>
+              drawing.nfts.map((nft: any, i: number) => (
+                <NftPreview game={drawing} nft={nft} gameType='drawing' key={i} />
+              ))
+            )}
+            {props.formData.auctionGames.map((auction: any, i: number) => (
+              <NftPreview game={auction} nft={auction} gameType='auction' key={i} />
             ))}
           </div>
           <div className='mx-auto alert alert-primary mt-5' role='alert' style={{ width: '50%' }}>
@@ -98,14 +100,46 @@ export const Tab5_Review = ({ ...props }: Props) => {
   );
 };
 
-function NftPreview({ nft }) {
+function NftPreview({ game, gameType, nft }) {
   return (
-    <div style={{ display: 'inline-block', padding: '10px' }}>
-      {nft.preview}
-      <br />
-      <b>{nft.name}</b>
-      <br />
-      <span style={{ fontSize: '12px' }}>editions: {nft.numberOfEditions || 1}</span>
-    </div>
+    <table style={{ marginLeft: 'auto', marginRight: 'auto', width: '50%' }} cellPadding={'5px'}>
+      <tbody>
+        <tr>
+          <td width='150'>
+            <div style={{ marginRight: '25px' }}>{nft.preview}</div>
+          </td>
+          <td style={{ textAlign: 'left', verticalAlign: 'middle', borderLeft: '1px solid gray' }}>
+            <div style={{ marginLeft: '25px' }}>
+              <div style={{ marginBottom: '5px' }}>
+                {gameType == 'auction' ? <img src='/icon_auction_outline.svg' width={20} /> : <TicketIcon width='20' />}
+              </div>
+              <b>{nft.name}</b>{' '}
+              <span style={{ fontSize: '12px' }}>
+                | {nft.numberOfEditions || 1} edition(s)
+                <br />
+                start date: {formatDate(game.startDate * 1000, 'MM/dd/yyyy hh:mm aa')}
+                <br />
+                end date: {formatDate(game.endDate * 1000, 'MM/dd/yyyy hh:mm aa')}
+                <br />
+                description: {nft.description}
+                <br />
+                {gameType == 'auction' ? (
+                  <>min price: {game.minPrice} ASH</>
+                ) : (
+                  <>
+                    ticket cost: {game.ticketCostTokens} ASH + {game.ticketCostPoints || 0} PIXEL <br />
+                    max tickets: {game.maxTickets|| 0} total, {game.maxTicketsPerUser || 0} per user
+                    <br />
+                  </>
+                )}
+              </span>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td height={15}></td>
+        </tr>
+      </tbody>
+    </table>
   );
 }

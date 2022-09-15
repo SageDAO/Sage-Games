@@ -15,8 +15,23 @@ type Props = {
 };
 
 export const DrawingGameEntry = ({ ...props }: Props) => {
-  const [startDate, setStateStartDate] = useState<Date | null>(null);
-  const [endDate, setStateEndDate] = useState<Date | null>(null);
+  interface State {
+    startDate: Date | null;
+    endDate: Date | null;
+  }
+
+  const [state, setState] = useState<State>({ startDate: null, endDate: null });
+
+  const setStartDate = (d: Date) => {
+    setState({ ...state, startDate: d });
+    setDateFieldAsTimestamp('startDate', d);
+  };
+
+  const setEndDate = (d: Date) => {
+    setState({ ...state, endDate: d });
+    setDateFieldAsTimestamp('endDate', d);
+  };
+  
   const handleAddNftEntryClick = () => {
     document.getElementById(`nftInputFile_${props.index}`).click();
   };
@@ -52,20 +67,7 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
     props.setFormData((prevData: any) => ({ ...prevData, drawingGames: updatedGameArray }));
   };
 
-  const setStartDate = (d: Date) => {
-    setStateStartDate(d);
-    setDateFieldAsTimestamp('startDate', d);
-    if (!endDate) {
-      var tomorrow = new Date(d);
-      tomorrow.setHours(tomorrow.getHours() + 24);
-      setEndDate(tomorrow);
-    }
-  };
 
-  const setEndDate = (d: Date) => {
-    setStateEndDate(d);
-    setDateFieldAsTimestamp('endDate', d);
-  };
 
   const setDateFieldAsTimestamp = (name: string, d: Date) => {
     if (d) {
@@ -92,13 +94,12 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
           </label>
           <DatePicker
             id='drawingStartDate'
-            selected={startDate}
             placeholderText='Click to select a date'
             minDate={new Date()}
             onChange={setStartDate}
             showTimeSelect
             className='form-control'
-            value={startDate ? formatDate(startDate.getTime(), 'MM/dd/yyyy hh:mm aa') : ''}
+            value={state.startDate ? formatDate(state.startDate.getTime(), 'MM/dd/yyyy hh:mm aa') : ''}
           />
         </div>
         <div className='col'>
@@ -108,13 +109,12 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
           </label>
           <DatePicker
             id='drawingEndDate'
-            selected={endDate}
             placeholderText='Click to select a date'
             minDate={new Date()}
             onChange={setEndDate}
             showTimeSelect
             className='form-control'
-            value={endDate ? formatDate(endDate.getTime(), 'MM/dd/yyyy hh:mm aa') : ''}
+            value={state.endDate ? formatDate(state.endDate.getTime(), 'MM/dd/yyyy hh:mm aa') : ''}
           />
         </div>
         <div className='col'>
