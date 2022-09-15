@@ -105,7 +105,7 @@ export function validate(data: any): string[] {
       if (d.nfts.length == 0) err.push(`[Drawing Games] Drawing ${i + 1}: Must have at least one NFT`);
       for (const [j, n] of d.nfts.entries()) {
         if (!checkRequired(n.name)) err.push(`[Drawing Games] Drawing ${i + 1} NFT ${j + 1}: Name is required`);
-        if (!checkRequired(n.tags)) err.push(`[Drawing Games] Drawing ${i + 1} NFT ${j + 1}: NFT must have at least one tag`);
+        // if (!checkRequired(n.tags)) err.push(`[Drawing Games] Drawing ${i + 1} NFT ${j + 1}: NFT must have at least one tag`);
         if (!checkReqPosInt(n.numberOfEditions))
           err.push(`[Drawing Games] Drawing ${i + 1} NFT ${j + 1}: Editions must be an integer`);
       }
@@ -117,7 +117,7 @@ export function validate(data: any): string[] {
       if (!checkRequired(a.name)) err.push(`[Auction Games] Auction ${i + 1}: NFT Name is required`);
       if (!checkRequired(a.startDate)) err.push(`[Auction Games] Auction ${i + 1}: Start Date is required`);
       if (!checkRequired(a.endDate)) err.push(`[Auction Games] Auction ${i + 1}: End Date is required`);
-      if (!checkRequired(a.tags)) err.push(`[Auction Games] Auction ${i + 1}: NFT must have at least one tag`);
+      // if (!checkRequired(a.tags)) err.push(`[Auction Games] Auction ${i + 1}: NFT must have at least one tag`);
       if (a.endDate <= a.startDate) err.push(`[Auction Games] Auction ${i + 1}: End Date must be after Start Date`);
       if (!checkReqPosNumber(a.minPrice)) err.push(`[Auction Games] Auction ${i + 1}: Minimum Price must be a number`);
     }

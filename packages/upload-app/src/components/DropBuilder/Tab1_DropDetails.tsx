@@ -71,22 +71,6 @@ export const Tab1_DropDetails = ({ ...props }: Props) => {
             onChange={handleFieldChange}
           />
         </div>
-        {/*
-                <div className="col">
-                    <label>
-                        <TagIcon width="20" style={{ marginRight: 5 }} />
-                        Tags
-                    </label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        name="tags"
-                        id="tags"
-                        placeholder="tag1 tag2 tag3"
-                        onChange={handleFieldChange}
-                    />
-                </div>
-                    */}
       </div>
 
       <label className='mt-4'>

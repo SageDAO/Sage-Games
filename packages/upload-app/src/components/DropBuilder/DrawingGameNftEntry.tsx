@@ -16,22 +16,22 @@ export const DrawingGameNftEntry = ({ ...props }: Props) => {
     props.onFieldChange(props.nftIndex, e.target.name, val);
   };
 
-  const onTagsChange = (newValue: string) => {
-    props.onFieldChange(props.nftIndex, 'tags', newValue);
-  };
+  // const onTagsChange = (newValue: string) => {
+  //   props.onFieldChange(props.nftIndex, 'tags', newValue);
+  // };
 
   return (
-    <div className='d-flex border border-grey mt-3 px-2 py-1 pb-2'>
-      <div className='mx-4'>
-        {props.data.preview}
-        <div className='mt-2 text-center'>
-          <TrashIcon width='20' role='button' onClick={() => props.onDelete(props.nftIndex)} />
-        </div>
-      </div>
-      <div className='col-8 mx-4'>
-        <div className='row'>
-          <div className='col'>
-            <label className='mt-2'>
+    <table cellPadding={20} style={{ border: '1px solid #ddd' }}>
+      <tbody>
+        <tr>
+          <td width='16%'>
+            {props.data.preview}
+            <div className='mt-2 text-center'>
+              <TrashIcon width='20' role='button' onClick={() => props.onDelete(props.nftIndex)} />
+            </div>
+          </td>
+          <td width='42%' style={{ verticalAlign: 'top' }}>
+            <label>
               <PhotographIcon width='20' style={{ marginRight: 5 }} />
               NFT Name *
             </label>
@@ -42,18 +42,7 @@ export const DrawingGameNftEntry = ({ ...props }: Props) => {
               onChange={handleFieldChange}
               value={props.data.name}
             />
-          </div>
-          <div className='col-8'>
-            <label style={{ marginTop: 10 }}>
-              <TagIcon width='20' style={{ marginRight: 5 }} />
-              Tags
-            </label>
-            <Tags onTagsChange={onTagsChange} />
-          </div>
-        </div>
-        <div className='row'>
-          <div className='col'>
-            <label className='mt-2'>
+            <label className='mt-3'>
               <DuplicateIcon width='20' style={{ marginRight: 5 }} />
               Editions *
             </label>
@@ -64,22 +53,22 @@ export const DrawingGameNftEntry = ({ ...props }: Props) => {
               onChange={handleFieldChange}
               value={props.data.numberOfEditions}
             />
-          </div>
-          <div className='col-8'>
-            <label className='mt-2'>
+          </td>
+          <td width='42%' style={{ verticalAlign: 'top' }}>
+            <label>
               <DocumentTextIcon width='20' style={{ marginRight: 5 }} />
               Description
             </label>
             <textarea
               className='form-control md-textarea'
               name='description'
-              rows={2}
+              rows={3}
               onChange={handleFieldChange}
               value={props.data.description}
             />
-          </div>
-        </div>
-      </div>
-    </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   );
 };

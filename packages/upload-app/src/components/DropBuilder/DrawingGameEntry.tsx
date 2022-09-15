@@ -23,9 +23,9 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
 
   const handleHiddenInputFileChange = (e: React.ChangeEvent<HTMLInputElement>, srcIndex: number) => {
     if (!e.target.files?.length) return;
-    const newNftEntry = { 
+    const newNftEntry = {
       nftFile: e.target.files[0],
-      preview: <MediaPreview file={e.target.files[0]} />
+      preview: <MediaPreview file={e.target.files[0]} />,
     };
     const updatedGameArray = [...props.formData.drawingGames];
     updatedGameArray[srcIndex].nfts.push(newNftEntry);
@@ -55,6 +55,11 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
   const setStartDate = (d: Date) => {
     setStateStartDate(d);
     setDateFieldAsTimestamp('startDate', d);
+    if (!endDate) {
+      var tomorrow = new Date(d);
+      tomorrow.setHours(tomorrow.getHours() + 24);
+      setEndDate(tomorrow);
+    }
   };
 
   const setEndDate = (d: Date) => {
@@ -93,7 +98,7 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
             onChange={setStartDate}
             showTimeSelect
             className='form-control'
-            value={props.data.startDate ? formatDate(+props.data.startDate * 1000, 'MM/dd/yyyy hh:mm aa') : ''}
+            value={startDate ? formatDate(startDate.getTime(), 'MM/dd/yyyy hh:mm aa') : ''}
           />
         </div>
         <div className='col'>
@@ -109,13 +114,13 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
             onChange={setEndDate}
             showTimeSelect
             className='form-control'
-            value={props.data.endDate ? formatDate(+props.data.endDate * 1000, 'MM/dd/yyyy hh:mm aa') : ''}
+            value={endDate ? formatDate(endDate.getTime(), 'MM/dd/yyyy hh:mm aa') : ''}
           />
         </div>
         <div className='col'>
           <label>
             <CurrencyDollarIcon width='20' style={{ marginRight: 5 }} />
-            Ticket Cost (Tokens) *
+            ASH Cost *
           </label>
           <input
             type='text'
@@ -129,7 +134,7 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
         <div className='col'>
           <label>
             <StarIcon width='20' style={{ marginRight: 5 }} />
-            Ticket Cost (Points) *
+            PIXEL Cost *
           </label>
           <input
             type='text'
@@ -186,9 +191,11 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
 
       <div className='row mt-3 mb-5 text-center align-middle'>
         <div className='col text-center align-middle'>
-          <button className='btn btn-outline-dark' onClick={handleAddNftEntryClick}>
-            + Add NFT
-          </button>
+          {props.formData.drawingGames[props.index].nfts.length == 0 && (
+            <button className='btn btn-outline-dark' onClick={handleAddNftEntryClick}>
+              + Add NFT
+            </button>
+          )}
         </div>
         <div className='col'></div>
         <div className='col'>

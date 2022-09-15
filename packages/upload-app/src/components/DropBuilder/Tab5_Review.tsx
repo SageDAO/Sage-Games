@@ -100,8 +100,10 @@ export const Tab5_Review = ({ ...props }: Props) => {
 
 function NftPreview({ nft }) {
   return (
-    <div style={{ display: 'inline-block', padding: '10px'}}>
-      {nft.preview} <b>{nft.name}</b>
+    <div style={{ display: 'inline-block', padding: '10px' }}>
+      {nft.preview}
+      <br />
+      <b>{nft.name}</b>
       <br />
       <span style={{ fontSize: '12px' }}>editions: {nft.numberOfEditions || 1}</span>
     </div>

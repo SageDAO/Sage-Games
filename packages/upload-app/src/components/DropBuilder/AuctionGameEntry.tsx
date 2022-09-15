@@ -1,8 +1,7 @@
 import { useState } from 'react';
-import { CalendarIcon, DocumentTextIcon, PhotographIcon, TagIcon, TrendingUpIcon } from '@heroicons/react/outline';
+import { CalendarIcon, CurrencyDollarIcon, DocumentTextIcon, PhotographIcon } from '@heroicons/react/outline';
 import DatePicker from 'react-datepicker';
 import { format as formatDate } from 'date-fns';
-import Tags from './Tags';
 
 type Props = {
   index: number; // index of this entry on parent array
@@ -19,13 +18,18 @@ export const AuctionGameEntry = ({ ...props }: Props) => {
     props.onFieldChange(props.index, e.target.name, e.target.value);
   };
 
-  const onTagsChange = (newValue: string) => {
-    props.onFieldChange(props.index, 'tags', newValue);
-  };
+  // const onTagsChange = (newValue: string) => {
+  //   props.onFieldChange(props.index, 'tags', newValue);
+  // };
 
   const setStartDate = (d: Date) => {
     setStateStartDate(d);
     setDateFieldAsTimestamp('startDate', d);
+    // if (!endDate) {
+    //   var tomorrow = new Date(d);
+    //   tomorrow.setHours(tomorrow.getHours() + 24);
+    //   setEndDate(tomorrow);
+    // }
   };
 
   const setEndDate = (d: Date) => {
@@ -40,11 +44,11 @@ export const AuctionGameEntry = ({ ...props }: Props) => {
   };
 
   return (
-    <div className='container-lg mt-4 d-flex'>
-      {props.data.preview}
-      <div className='col-8 mx-4'>
-        <div className='row mt-2'>
-          <div className='col'>
+    <table cellPadding={10}>
+      <tbody>
+        <tr>
+          <td width='15%' style={{ verticalAlign: 'middle' }}>{props.data.preview}</td>
+          <td width='35%'>
             <label>
               <PhotographIcon width='20' style={{ marginRight: 5 }} />
               NFT Name *
@@ -56,18 +60,7 @@ export const AuctionGameEntry = ({ ...props }: Props) => {
               onChange={handleFieldChange}
               value={props.data.name}
             />
-          </div>
-          <div className='col-8'>
-            <label>
-              <TagIcon width='20' style={{ marginRight: 5 }} />
-              Tags
-            </label>
-            <Tags onTagsChange={onTagsChange} />
-          </div>
-        </div>
-        <div className='row mt-3'>
-          <div className='col'>
-            <label>
+            <label className='mt-3'>
               <CalendarIcon width='20' style={{ marginRight: 5 }} />
               Start Date *
             </label>
@@ -78,7 +71,7 @@ export const AuctionGameEntry = ({ ...props }: Props) => {
               onChange={setStartDate}
               showTimeSelect
               className='form-control'
-              value={props.data.startDate ? formatDate(+props.data.startDate * 1000, 'MM/dd/yyyy hh:mm aa') : ''}
+              value={startDate ? formatDate(startDate.getTime(), 'MM/dd/yyyy hh:mm aa') : ''}
             />
             <label className='mt-3'>
               <CalendarIcon width='20' style={{ marginRight: 5 }} />
@@ -91,30 +84,13 @@ export const AuctionGameEntry = ({ ...props }: Props) => {
               onChange={setEndDate}
               showTimeSelect
               className='form-control'
-              value={props.data.endDate ? formatDate(+props.data.endDate * 1000, 'MM/dd/yyyy hh:mm aa') : ''}
+              value={endDate ? formatDate(endDate.getTime(), 'MM/dd/yyyy hh:mm aa') : ''}
             />
-          </div>
-          <div className='col-8'>
-            <label className='mt-2'>
-              <DocumentTextIcon width='20' style={{ marginRight: 5 }} />
-              Description
-            </label>
-            <textarea
-              className='form-control md-textarea'
-              name='description'
-              rows={2}
-              onChange={handleFieldChange}
-              value={props.data.description}
-            />
-          </div>
-        </div>
-      </div>
-      <div className='col'>
-        <div className='row'>
-          <div className='col'>
-            <label className='mt-2'>
-              <TrendingUpIcon width='20' style={{ marginRight: 5 }} />
-              Minimum Price (ASH) *
+          </td>
+          <td width='35%'>
+            <label>
+              <CurrencyDollarIcon width='20' style={{ marginRight: 5 }} />
+              Minimum ASH Price *
             </label>
             <input
               type='text'
@@ -123,14 +99,25 @@ export const AuctionGameEntry = ({ ...props }: Props) => {
               onChange={handleFieldChange}
               value={props.data.minPrice}
             />
-          </div>
-        </div>
-        <div className='text-center mx-auto'>
-          <button className='btn btn-outline-danger mt-5' onClick={() => props.onDelete(props.index)}>
-            Delete Game
-          </button>
-        </div>
-      </div>
-    </div>
+            <label className='mt-3'>
+              <DocumentTextIcon width='20' style={{ marginRight: 5 }} />
+              Description
+            </label>
+            <textarea
+              className='form-control md-textarea'
+              name='description'
+              rows={3}
+              onChange={handleFieldChange}
+              value={props.data.description}
+            />
+          </td>
+          <td width='15%' style={{ verticalAlign: 'middle' }}>
+            <button className='btn btn-outline-danger' onClick={() => props.onDelete(props.index)}>
+              Delete Game
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   );
 };
