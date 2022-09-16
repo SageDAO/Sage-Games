@@ -14,9 +14,9 @@ export function Tab4_Auctions({ ...props }: Props) {
 
   const handleHiddenInputFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.length) return;
-    const newGame = { 
+    const newGame = {
       nftFile: e.target.files[0],
-      preview: <MediaPreview file={e.target.files[0]} />
+      preview: <MediaPreview file={e.target.files[0]} />,
     };
     props.setFormData((prevData: any) => ({ ...prevData, auctionGames: [...props.formData.auctionGames, newGame] }));
   };
@@ -41,7 +41,7 @@ export function Tab4_Auctions({ ...props }: Props) {
         type='file'
         id='auctionInputFile'
         style={{ display: 'none' }}
-        accept='image/png, image/gif, image/jpeg, video/mp4'
+        accept='image/png, image/gif, image/jpeg, image/tiff, video/mp4'
         multiple={false}
         onChange={handleHiddenInputFileChange}
       />

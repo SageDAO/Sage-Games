@@ -17,7 +17,7 @@ export async function uploadFileToS3Bucket(endpoint: string, bucket: string, fil
 
 async function fetchS3SignedUrl(endpoint: string, bucket: string, filename: string): Promise<any> {
   console.log(`fetchS3SignedUrl()`);
-  const request = await fetch(`${endpoint}?action=CreateS3SignedUrl&bucket=${bucket}&filename=${filename}`);
+  const request = await fetch(`${endpoint}dropUpload/?action=CreateS3SignedUrl&bucket=${bucket}&filename=${filename}`);
   const response = await request.json();
   console.log(`fetchS3SignedUrl() :: ${response.uploadUrl}`);
   return response;

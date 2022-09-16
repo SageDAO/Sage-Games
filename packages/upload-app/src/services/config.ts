@@ -9,15 +9,15 @@ export interface Configuration {
 export const targetConfig: Configuration = {
   // IMPORTANT: URLs must end with a forward slash ("/") - or NextJS will redirect, causing CORS errors
   'localhost': {
-    ENDPOINT_URL: 'http://localhost:3001/api/dropUploadEndpoint/',
+    ENDPOINT_URL: 'http://localhost:3001/api/endpoints/',
   },
   'SAGE Dev': {
-    ENDPOINT_URL: 'https://sage-dev.vercel.app/api/dropUploadEndpoint/',
+    ENDPOINT_URL: 'https://sage-dev.vercel.app/api/endpoints/',
   },
   'SAGE Staging': {
-    ENDPOINT_URL: 'https://sage-staging.vercel.app/api/dropUploadEndpoint/',
+    ENDPOINT_URL: 'https://sage-staging.vercel.app/api/endpoints/',
   },
   'SAGE Production': {
-    ENDPOINT_URL: 'https://sage-dev.vercel.app/api/dropUploadEndpoint/',
+    ENDPOINT_URL: 'https://sage-dev.vercel.app/api/endpoints/',
   },
 };

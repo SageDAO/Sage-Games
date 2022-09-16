@@ -31,7 +31,7 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
     setState({ ...state, endDate: d });
     setDateFieldAsTimestamp('endDate', d);
   };
-  
+
   const handleAddNftEntryClick = () => {
     document.getElementById(`nftInputFile_${props.index}`).click();
   };
@@ -81,7 +81,7 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
         type='file'
         id={`nftInputFile_${props.index}`}
         style={{ display: 'none' }}
-        accept='image/png, image/gif, image/jpeg, video/mp4'
+        accept='image/png, image/gif, image/jpeg, image/tiff, video/mp4'
         multiple={false}
         onChange={(e) => handleHiddenInputFileChange(e, props.index)}
       />

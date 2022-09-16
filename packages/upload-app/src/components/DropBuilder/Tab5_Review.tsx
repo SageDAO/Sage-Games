@@ -91,11 +91,11 @@ export const Tab5_Review = ({ ...props }: Props) => {
           </div>
         </div>
       )}
-      {/* <br />
+      <br />
       <br />
       <div className='mx-auto' role='alert' style={{ width: '50%' }}>
         <pre>{JSON.stringify(props.formData, null, 2)}</pre>
-      </div> */}
+      </div>
     </div>
   );
 };

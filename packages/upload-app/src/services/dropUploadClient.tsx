@@ -30,7 +30,7 @@ export async function handleDropUpload(data: any, setCurrentProgressPercent: (pc
 
 async function checkArtistWalletAdress(artistWallet: string) {
   try {
-    const result = await fetch(`${endpoint}?action=GetArtistNftContractAddress&artistAddress=${artistWallet}`);
+    const result = await fetch(`${endpoint}dropUpload/?action=GetArtistNftContractAddress&artistAddress=${artistWallet}`);
     const { nftContractAddress } = await result.json();
     console.log(`checkArtistWalletAdress(${artistWallet}) :: ${nftContractAddress}`);
     ethers.utils.getAddress(nftContractAddress); // this generates an error in case the address is invalid
@@ -184,7 +184,7 @@ async function unfoldDrawingNfts(drawing: any) {
 
 async function dbInsertDrop(data: any) {
   console.log(`dbInsertDrop()`);
-  const response = await postJSON(`${endpoint}?action=InsertDrop`, JSON.stringify(data, jsonReplacer));
+  const response = await postJSON(`${endpoint}dropUpload/?action=InsertDrop`, JSON.stringify(data, jsonReplacer));
   const { dropId, nftContractAddress, error } = await response.json();
   if (error) {
     console.log(error);
@@ -200,7 +200,7 @@ async function dbInsertAuctionGames(data: any) {
   assert(data.dropId && data.dropId != 0);
   for (const [i, auction] of data.auctionGames.entries()) {
     auction.dropId = data.dropId;
-    const response = await postJSON(`${endpoint}?action=InsertAuction`, JSON.stringify(auction, jsonReplacer));
+    const response = await postJSON(`${endpoint}dropUpload/?action=InsertAuction`, JSON.stringify(auction, jsonReplacer));
     const { auctionId, nftId, error } = await response.json();
     if (error) {
       console.log(error);
@@ -213,7 +213,7 @@ async function dbInsertAuctionGames(data: any) {
 }
 
 async function dbInsertNft(nftData: any) {
-  const response = await postJSON(`${endpoint}?action=InsertNft`, JSON.stringify(nftData, jsonReplacer));
+  const response = await postJSON(`${endpoint}dropUpload/?action=InsertNft`, JSON.stringify(nftData, jsonReplacer));
   const { nftId, error } = await response.json();
   if (error) {
     console.log(error);
@@ -229,7 +229,7 @@ async function dbInsertDrawingGames(data: any) {
   for (const [i, drawing] of data.drawingGames.entries()) {
     // Insert drawing
     drawing.dropId = data.dropId;
-    const response = await postJSON(`${endpoint}?action=InsertDrawing`, JSON.stringify(drawing, jsonReplacer));
+    const response = await postJSON(`${endpoint}dropUpload/?action=InsertDrawing`, JSON.stringify(drawing, jsonReplacer));
     const { drawingId, error } = await response.json();
     if (error) {
       console.log(error);

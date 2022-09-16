@@ -4,7 +4,7 @@ import { buildNftMetadata } from './nftMetadata';
  * Replicates to Arweave a file that was uploaded to AWS S3.
  */
 export async function copyFromS3toArweave(endpoint: string, s3Path: string): Promise<string> {
-  const response = await fetch(`${endpoint}?action=CopyFromS3toArweave&s3Path=${s3Path}`);
+  const response = await fetch(`${endpoint}dropUpload/?action=CopyFromS3toArweave&s3Path=${s3Path}`);
   const { id, balance, error } = await response.json();
   if (error) {
     console.log(error);
@@ -29,7 +29,7 @@ export async function createNftMetadataOnArweave(
     filename: name,
     data: buildNftMetadata(name, description, mediaURL, isVideo),
   });
-  const response = await fetch(`${endpoint}?action=UploadNftMetadataToArweave`, {
+  const response = await fetch(`${endpoint}dropUpload/?action=UploadNftMetadataToArweave`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: metadata,
