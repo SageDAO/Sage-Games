@@ -30,7 +30,6 @@ export default function MediaPreview({ file, onGeneratePreview }: Props) {
         .then((s3PathOptimized) => {
           if (s3PathOptimized) {
             if (onGeneratePreview) {
-              console.log(`onGeneratePreview() :: ${s3PathOptimized}`);
               onGeneratePreview(s3PathOptimized);
             }
             setSrc(s3PathOptimized);
@@ -43,6 +42,9 @@ export default function MediaPreview({ file, onGeneratePreview }: Props) {
           setSrc(ERROR_IMG);
         });
     } else {
+      if (onGeneratePreview) {
+        onGeneratePreview(null);
+      }
       setSrc(URL.createObjectURL(file));
     }
   }, [file]);
