@@ -73,11 +73,11 @@ export const Tab5_Review = ({ ...props }: Props) => {
           <div className='flex items-center'>
             {props.formData.drawingGames.map((drawing: any) =>
               drawing.nfts.map((nft: any, i: number) => (
-                <NftPreview game={drawing} nft={nft} gameType='drawing' key={i} />
+                <GameReviewItem game={drawing} nft={nft} gameType='drawing' key={i} />
               ))
             )}
             {props.formData.auctionGames.map((auction: any, i: number) => (
-              <NftPreview game={auction} nft={auction} gameType='auction' key={i} />
+              <GameReviewItem game={auction} nft={auction} gameType='auction' key={i} />
             ))}
           </div>
           <div className='mx-auto alert alert-primary mt-5' role='alert' style={{ width: '50%' }}>
@@ -91,16 +91,16 @@ export const Tab5_Review = ({ ...props }: Props) => {
           </div>
         </div>
       )}
-      <br />
+      {/* <br />
       <br />
       <div className='mx-auto' role='alert' style={{ width: '50%' }}>
         <pre>{JSON.stringify(props.formData, null, 2)}</pre>
-      </div>
+      </div> */}
     </div>
   );
 };
 
-function NftPreview({ game, gameType, nft }) {
+function GameReviewItem({ game, gameType, nft }) {
   return (
     <table style={{ marginLeft: 'auto', marginRight: 'auto', width: '50%' }} cellPadding={'5px'}>
       <tbody>

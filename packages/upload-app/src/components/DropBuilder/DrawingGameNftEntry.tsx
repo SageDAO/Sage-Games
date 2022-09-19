@@ -25,7 +25,7 @@ export const DrawingGameNftEntry = ({ ...props }: Props) => {
       <tbody>
         <tr>
           <td width='16%'>
-            {props.data.preview}
+            {props.data.previewJSX}
             <div className='mt-2 text-center'>
               <TrashIcon width='20' role='button' onClick={() => props.onDelete(props.nftIndex)} />
             </div>

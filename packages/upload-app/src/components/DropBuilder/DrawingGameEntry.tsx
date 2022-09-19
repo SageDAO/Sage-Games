@@ -4,6 +4,7 @@ import DatePicker from 'react-datepicker';
 import { format as formatDate } from 'date-fns';
 import { DrawingGameNftEntry } from './DrawingGameNftEntry';
 import MediaPreview from '../MediaPreview';
+import { createNftEntry } from './DropBuilder';
 
 type Props = {
   formData: any;
@@ -38,12 +39,8 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
 
   const handleHiddenInputFileChange = (e: React.ChangeEvent<HTMLInputElement>, srcIndex: number) => {
     if (!e.target.files?.length) return;
-    const newNftEntry = {
-      nftFile: e.target.files[0],
-      preview: <MediaPreview file={e.target.files[0]} />,
-    };
     const updatedGameArray = [...props.formData.drawingGames];
-    updatedGameArray[srcIndex].nfts.push(newNftEntry);
+    updatedGameArray[srcIndex].nfts.push(createNftEntry(e.target.files[0]));
     props.setFormData((prevData: any) => ({ ...prevData, drawingGames: updatedGameArray }));
   };
 
@@ -66,8 +63,6 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
     updatedGameArray[props.index].nfts[nftIndex][name] = value;
     props.setFormData((prevData: any) => ({ ...prevData, drawingGames: updatedGameArray }));
   };
-
-
 
   const setDateFieldAsTimestamp = (name: string, d: Date) => {
     if (d) {

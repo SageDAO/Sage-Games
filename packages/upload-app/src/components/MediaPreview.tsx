@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 interface Props {
   file: File;
-  onGeneratePreviewFile?: (s3PathOptimized: string) => void;
+  onGeneratePreview?: (s3PathOptimized: string) => void;
 }
 
 async function uploadTiffFile(file: File): Promise<string> {
@@ -16,9 +16,10 @@ async function uploadTiffFile(file: File): Promise<string> {
   return s3PathOptimized;
 }
 
-export default function MediaPreview({ file, onGeneratePreviewFile }: Props) {
+export default function MediaPreview({ file, onGeneratePreview }: Props) {
   const [src, setSrc] = useState<string>();
-  const LOADING_IMG = '/loading.gif', ERROR_IMG = '/error.webp';
+  const LOADING_IMG = '/loading.gif',
+    ERROR_IMG = '/error.webp';
   const extension = file.name.toLowerCase().split('.').pop();
   const isVideo = extension == 'mp4';
   const isTiff = extension == 'tiff' || extension == 'tif';
@@ -26,19 +27,22 @@ export default function MediaPreview({ file, onGeneratePreviewFile }: Props) {
   useEffect(() => {
     if (isTiff) {
       setSrc(LOADING_IMG);
-      uploadTiffFile(file).then((s3PathOptimized) => {
-        if (s3PathOptimized) {
-          if (onGeneratePreviewFile) {
-            onGeneratePreviewFile(s3PathOptimized);
+      uploadTiffFile(file)
+        .then((s3PathOptimized) => {
+          if (s3PathOptimized) {
+            if (onGeneratePreview) {
+              console.log(`onGeneratePreview() :: ${s3PathOptimized}`);
+              onGeneratePreview(s3PathOptimized);
+            }
+            setSrc(s3PathOptimized);
+          } else {
+            setSrc(ERROR_IMG);
           }
-          setSrc(s3PathOptimized);
-        } else {
+        })
+        .catch((error) => {
+          console.log(error);
           setSrc(ERROR_IMG);
-        }
-      }).catch((error) => {
-        console.log(error);
-        setSrc(ERROR_IMG);
-      });
+        });
     } else {
       setSrc(URL.createObjectURL(file));
     }

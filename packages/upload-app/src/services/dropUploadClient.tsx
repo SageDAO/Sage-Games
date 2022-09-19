@@ -266,7 +266,7 @@ function playSoundFile(fileUrl: string) {
  * When stringifying to JSON, ignore File and preview objects
  */
 function jsonReplacer(key: string, value: any) {
-  if (key == 'preview') {
+  if (key == 'previewJSX') {
     return undefined;
   }
   return value instanceof File ? undefined : value;

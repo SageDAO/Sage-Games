@@ -7,6 +7,24 @@ import { Tab3_Drawings } from './Tab3_Drawings';
 import { Tab4_Auctions } from './Tab4_Auctions';
 import { Tab5_Review } from './Tab5_Review';
 import { populateWithTestData } from './_populate';
+import MediaPreview from '../MediaPreview';
+
+export function createNftEntry(file: File) {
+  const nftEntry = {
+    file,
+    s3PathOptimized: null,
+    previewJSX: null,
+  };
+  nftEntry.previewJSX = (
+    <MediaPreview
+      file={nftEntry.file}
+      onGeneratePreview={(_s3PathOptimized: string) => {
+        nftEntry.s3PathOptimized = _s3PathOptimized;
+      }}
+    />
+  );
+  return nftEntry;
+}
 
 export function DropBuilder() {
   const [formData, setFormData] = useState({ drawingGames: [], auctionGames: [] });

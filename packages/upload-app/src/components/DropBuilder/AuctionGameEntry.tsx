@@ -47,7 +47,7 @@ export const AuctionGameEntry = ({ ...props }: Props) => {
     <table cellPadding={10}>
       <tbody>
         <tr>
-          <td width='15%' style={{ verticalAlign: 'middle' }}>{props.data.preview}</td>
+          <td width='15%' style={{ verticalAlign: 'middle' }}>{props.data.previewJSX}</td>
           <td width='35%'>
             <label>
               <PhotographIcon width='20' style={{ marginRight: 5 }} />

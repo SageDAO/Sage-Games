@@ -1,6 +1,7 @@
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
 import MediaPreview from '../MediaPreview';
 import { AuctionGameEntry } from './AuctionGameEntry';
+import { createNftEntry } from './DropBuilder';
 
 type Props = {
   formData: any;
@@ -14,11 +15,10 @@ export function Tab4_Auctions({ ...props }: Props) {
 
   const handleHiddenInputFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.length) return;
-    const newGame = {
-      nftFile: e.target.files[0],
-      preview: <MediaPreview file={e.target.files[0]} />,
-    };
-    props.setFormData((prevData: any) => ({ ...prevData, auctionGames: [...props.formData.auctionGames, newGame] }));
+    props.setFormData((prevData: any) => ({
+      ...prevData,
+      auctionGames: [...props.formData.auctionGames, createNftEntry(e.target.files[0])],
+    }));
   };
 
   const handleDeleteGameClick = (delIndex: number) => {
