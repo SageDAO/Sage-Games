@@ -20,9 +20,8 @@ export default function MediaPreview({ file, onGeneratePreview }: Props) {
   const [src, setSrc] = useState<string>();
   const LOADING_IMG = '/loading.gif',
     ERROR_IMG = '/error.webp';
-  const extension = file.name.toLowerCase().split('.').pop();
-  const isVideo = extension == 'mp4';
-  const isTiff = extension == 'tiff' || extension == 'tif';
+  const isVideo: boolean = file?.type == 'video/mp4';
+  const isTiff: boolean = file?.type == 'image/tiff';
 
   useEffect(() => {
     if (isTiff) {
