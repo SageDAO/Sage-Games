@@ -7,7 +7,7 @@ dataSources:
     name: lottery
     network: rinkeby
     source:
-      address: "0x86295B8B322dBCA2f132FDb6390BbcEBd6573Ed4"
+      address: "0xc057dd2Dc853CCd555902231EE5669279EF27906"
       abi: LotteryContract
       startBlock: 11053664 
     mapping:
@@ -29,12 +29,14 @@ dataSources:
           handler: handlePrizeClaimed
         - event: TicketSold(indexed uint256,uint256,indexed address)
           handler: handleTicketSold
+        - event: Refunded(indexed uint256,indexed address,uint256)
+          handler: handleRefunded
       file: ./src/mapping-lottery.ts
   - kind: ethereum
     name: auction
     network: rinkeby
     source:
-      address: "0x26b5bB9352edbe338ef77cF90c69cB2a715974e1"
+      address: "0x18034a13fA7a0BD3a4aC9C5c39DE8480Db5791d7"
       abi: AuctionContract
       startBlock: 11053666
     mapping:
@@ -63,7 +65,7 @@ dataSources:
     name: marketplace
     network: rinkeby
     source:
-      address: "0xEfbc3Af631Db2a6F94C2c6336A02b08480e12A61"
+      address: "0x5344d50C739C699b33377778763A03484875cd72"
       abi: MarketplaceContract
       startBlock: 11126736
     mapping:

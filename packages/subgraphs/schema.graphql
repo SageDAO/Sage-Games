@@ -13,6 +13,7 @@ type Lottery @entity {
   status: LotteryStatus!
   tickets: [Ticket!]!
   claimedPrizes: [Prize!]!
+  refunds: [Refund!]!
 }
 
 type Ticket @entity {
@@ -31,6 +32,14 @@ type Prize @entity {
   address: Bytes!
   nftId: Int!
   blockTimestamp: BigInt!
+}
+
+type Refund @entity {
+  id: ID!
+  txnHash: Bytes!
+  lottery: Lottery!
+  address: Bytes!
+  amount: BigInt!
 }
 
 # AUCTION ===================================================
