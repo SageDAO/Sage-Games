@@ -9,15 +9,15 @@ import { Tab5_Review } from './Tab5_Review';
 import { populateWithTestData } from './_populate';
 import MediaPreview from '../MediaPreview';
 
-export function createNftEntry(file: File) {
+export function createNftEntry(nftFile: File) {
   const nftEntry = {
-    file,
+    nftFile,
     s3PathOptimized: null,
     previewJSX: null,
   };
   nftEntry.previewJSX = (
     <MediaPreview
-      file={nftEntry.file}
+      file={nftEntry.nftFile}
       onGeneratePreview={(_s3PathOptimized: string) => {
         nftEntry.s3PathOptimized = _s3PathOptimized;
       }}
