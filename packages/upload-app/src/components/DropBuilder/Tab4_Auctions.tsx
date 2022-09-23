@@ -1,5 +1,4 @@
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
-import MediaPreview from '../MediaPreview';
 import { AuctionGameEntry } from './AuctionGameEntry';
 import { createNftEntry } from './DropBuilder';
 

@@ -106,7 +106,7 @@ function GameReviewItem({ game, gameType, nft }) {
       <tbody>
         <tr>
           <td width='150'>
-            <div style={{ marginRight: '25px' }}>{nft.preview}</div>
+            <div style={{ marginRight: '25px' }}>{nft.previewJSX}</div>
           </td>
           <td style={{ textAlign: 'left', verticalAlign: 'middle', borderLeft: '1px solid gray' }}>
             <div style={{ marginLeft: '25px' }}>

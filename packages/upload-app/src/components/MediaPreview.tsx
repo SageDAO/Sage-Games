@@ -5,17 +5,6 @@ interface Props {
   onGeneratePreview?: (s3PathOptimized: string) => void;
 }
 
-async function uploadTiffFile(file: File): Promise<string> {
-  const formData = new FormData();
-  formData.append('file', file);
-  const result = await fetch(`https://sage-dev.vercel.app/api/endpoints/tiffUpload/`, {
-    method: 'POST',
-    body: formData,
-  });
-  const { s3PathOptimized } = await result.json();
-  return s3PathOptimized;
-}
-
 export default function MediaPreview({ file, onGeneratePreview }: Props) {
   const [src, setSrc] = useState<string>();
   const LOADING_IMG = '/loading.gif',
@@ -56,4 +45,15 @@ export default function MediaPreview({ file, onGeneratePreview }: Props) {
   ) : (
     <img src={src} className='border border-dark rounded' width={150} />
   );
+}
+
+async function uploadTiffFile(file: File): Promise<string> {
+  const formData = new FormData();
+  formData.append('file', file);
+  const result = await fetch(`https://sage-dev.vercel.app/api/endpoints/tiffUpload/?${new Date().getTime()}`, {
+    method: 'POST',
+    body: formData,
+  });
+  const { s3PathOptimized } = await result.json();
+  return s3PathOptimized;
 }
