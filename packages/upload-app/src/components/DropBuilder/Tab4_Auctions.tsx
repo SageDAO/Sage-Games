@@ -40,7 +40,7 @@ export function Tab4_Auctions({ ...props }: Props) {
         type='file'
         id='auctionInputFile'
         style={{ display: 'none' }}
-        accept='image/png, image/gif, image/jpeg, image/tiff, video/mp4'
+        accept='image/png, image/gif, image/jpeg, video/mp4'
         multiple={false}
         onChange={handleHiddenInputFileChange}
       />
