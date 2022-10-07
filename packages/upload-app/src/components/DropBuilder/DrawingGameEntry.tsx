@@ -85,7 +85,7 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
         <div className='col'>
           <label>
             <CalendarIcon width='20' style={{ marginRight: 5 }} />
-            Start Date *
+            Start Date ({Intl.DateTimeFormat().resolvedOptions().timeZone}) *
           </label>
           <DatePicker
             id='drawingStartDate'
@@ -100,7 +100,7 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
         <div className='col'>
           <label>
             <CalendarIcon width='20' style={{ marginRight: 5 }} />
-            End Date *
+            End Date ({Intl.DateTimeFormat().resolvedOptions().timeZone}) *
           </label>
           <DatePicker
             id='drawingEndDate'

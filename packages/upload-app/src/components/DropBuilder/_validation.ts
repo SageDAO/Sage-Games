@@ -77,6 +77,7 @@ export function validate(data: any): string[] {
     }
     if (!checkAddress(data.artistWallet)) err.push('[Drop Details] Artist Wallet Address is not valid');
     if (!checkRequired(data.bannerImageFile?.name)) err.push('[Drop Details] Home Page Banner Image is required');
+    if (!checkRequired(data.description)) err.push('[Drop Details] Drop description is required');
   };
 
   const validateTab2 = (data: any) => {
@@ -94,6 +95,18 @@ export function validate(data: any): string[] {
   };
 
   const validateTab3 = (data: any) => {
+    for (const [i, a] of data.auctionGames.entries()) {
+      if (!checkRequired(a.name)) err.push(`[Auction Games] Auction ${i + 1}: NFT Name is required`);
+      if (!checkRequired(a.startDate)) err.push(`[Auction Games] Auction ${i + 1}: Start Date is required`);
+      // if (!checkRequired(a.endDate)) err.push(`[Auction Games] Auction ${i + 1}: End Date is required`);
+      // if (!checkRequired(a.tags)) err.push(`[Auction Games] Auction ${i + 1}: NFT must have at least one tag`);
+      if (a.endDate <= a.startDate) err.push(`[Auction Games] Auction ${i + 1}: End Date must be after Start Date`);
+      if (!checkReqPosNumber(a.minPrice)) err.push(`[Auction Games] Auction ${i + 1}: Minimum Price must be a number`);
+      if (!checkRequired(a.description))  err.push(`[Auction Games] Auction ${i + 1}: Description is required`);
+}
+  };
+
+  const validateTab4 = (data: any) => {
     for (const [i, d] of data.drawingGames.entries()) {
       if (!checkRequired(d.startDate)) err.push(`[Drawing Games] Drawing ${i + 1}: Start Date is required`);
       if (!checkRequired(d.endDate)) err.push(`[Drawing Games] Drawing ${i + 1}: End Date is required`);
@@ -108,18 +121,9 @@ export function validate(data: any): string[] {
         // if (!checkRequired(n.tags)) err.push(`[Drawing Games] Drawing ${i + 1} NFT ${j + 1}: NFT must have at least one tag`);
         if (!checkReqPosInt(n.numberOfEditions))
           err.push(`[Drawing Games] Drawing ${i + 1} NFT ${j + 1}: Editions must be an integer`);
+        if (!checkRequired(n.description))
+          err.push(`[Drawing Games] Drawing ${i + 1} NFT ${j + 1}: Description is required`);
       }
-    }
-  };
-
-  const validateTab4 = (data: any) => {
-    for (const [i, a] of data.auctionGames.entries()) {
-      if (!checkRequired(a.name)) err.push(`[Auction Games] Auction ${i + 1}: NFT Name is required`);
-      if (!checkRequired(a.startDate)) err.push(`[Auction Games] Auction ${i + 1}: Start Date is required`);
-      if (!checkRequired(a.endDate)) err.push(`[Auction Games] Auction ${i + 1}: End Date is required`);
-      // if (!checkRequired(a.tags)) err.push(`[Auction Games] Auction ${i + 1}: NFT must have at least one tag`);
-      if (a.endDate <= a.startDate) err.push(`[Auction Games] Auction ${i + 1}: End Date must be after Start Date`);
-      if (!checkReqPosNumber(a.minPrice)) err.push(`[Auction Games] Auction ${i + 1}: Minimum Price must be a number`);
     }
   };
 

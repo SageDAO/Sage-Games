@@ -3,9 +3,10 @@ import { useEffect, useState } from 'react';
 interface Props {
   file: File;
   onGeneratePreview?: (s3PathOptimized: string) => void;
+  width?: number;
 }
 
-export default function MediaPreview({ file, onGeneratePreview }: Props) {
+export default function MediaPreview({ file, onGeneratePreview, width }: Props) {
   const [src, setSrc] = useState<string>();
   const LOADING_IMG = '/loading.gif',
     ERROR_IMG = '/error.webp';
@@ -39,11 +40,11 @@ export default function MediaPreview({ file, onGeneratePreview }: Props) {
   }, [file]);
 
   return isVideo ? (
-    <video autoPlay muted loop playsInline className='border border-dark rounded' width={150}>
+    <video autoPlay muted loop playsInline className='border border-dark rounded' width={width || 150}>
       <source src={src} type='video/mp4'></source>
     </video>
   ) : (
-    <img src={src} className='border border-dark rounded' width={150} />
+    <img src={src} className='border border-dark rounded' width={width || 150} />
   );
 }
 

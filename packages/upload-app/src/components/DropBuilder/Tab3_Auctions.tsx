@@ -7,7 +7,7 @@ type Props = {
   setFormData: (formData: any) => void;
 };
 
-export function Tab4_Auctions({ ...props }: Props) {
+export function Tab3_Auctions({ ...props }: Props) {
   const handleAddGameClick = () => {
     document.getElementById('auctionInputFile').click();
   };

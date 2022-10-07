@@ -75,7 +75,7 @@ export const Tab1_DropDetails = ({ ...props }: Props) => {
 
       <label className='mt-4'>
         <DocumentTextIcon width='20' style={{ marginRight: 5 }} />
-        Description
+        Description *
       </label>
       <textarea
         className='form-control md-textarea'

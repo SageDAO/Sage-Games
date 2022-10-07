@@ -1,7 +1,8 @@
-import { useState } from 'react';
-import { CalendarIcon, CurrencyDollarIcon, DocumentTextIcon, PhotographIcon } from '@heroicons/react/outline';
+import { useEffect, useState } from 'react';
+import { CalendarIcon, ClockIcon, CurrencyDollarIcon, DocumentTextIcon, PhotographIcon } from '@heroicons/react/outline';
 import DatePicker from 'react-datepicker';
 import { format as formatDate } from 'date-fns';
+import { useEffectOnce } from 'react-use';
 
 type Props = {
   index: number; // index of this entry on parent array
@@ -43,6 +44,11 @@ export const AuctionGameEntry = ({ ...props }: Props) => {
     }
   };
 
+  // Preselect 24 hours duration
+  useEffect(() => {
+    props.onFieldChange(props.index, 'duration', 24*60*60);
+  }, []);
+
   return (
     <table cellPadding={10}>
       <tbody>
@@ -62,7 +68,7 @@ export const AuctionGameEntry = ({ ...props }: Props) => {
             />
             <label className='mt-3'>
               <CalendarIcon width='20' style={{ marginRight: 5 }} />
-              Start Date *
+              Start Date ({Intl.DateTimeFormat().resolvedOptions().timeZone}) *
             </label>
             <DatePicker
               placeholderText='Click to select a date'
@@ -73,17 +79,16 @@ export const AuctionGameEntry = ({ ...props }: Props) => {
               value={state.startDate ? formatDate(state.startDate.getTime(), 'MM/dd/yyyy hh:mm aa') : ''}
             />
             <label className='mt-3'>
-              <CalendarIcon width='20' style={{ marginRight: 5 }} />
-              End Date *
+              <ClockIcon width='20' style={{ marginRight: 5 }} />
+              Duration *
             </label>
-            <DatePicker
-              placeholderText='Click to select a date'
-              minDate={state.startDate || new Date()}
-              onChange={setEndDate}
-              showTimeSelect
-              className='form-control'
-              value={state.endDate ? formatDate(state.endDate.getTime(), 'MM/dd/yyyy hh:mm aa') : ''}
-            />
+            <select
+              onChange={handleFieldChange}
+              className="form-select py-0"
+              value={props.data.duration || ''}
+            >
+              <option value={24*60*60}>24 hours</option>
+            </select>
           </td>
           <td width='35%'>
             <label>
@@ -99,7 +104,7 @@ export const AuctionGameEntry = ({ ...props }: Props) => {
             />
             <label className='mt-3'>
               <DocumentTextIcon width='20' style={{ marginRight: 5 }} />
-              Description
+              Description *
             </label>
             <textarea
               className='form-control md-textarea'

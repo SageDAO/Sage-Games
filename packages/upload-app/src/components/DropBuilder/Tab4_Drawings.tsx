@@ -7,7 +7,7 @@ type Props = {
   setFormData: (formData: any) => void;
 };
 
-export const Tab3_Drawings = ({ ...props }: Props) => {
+export const Tab4_Drawings = ({ ...props }: Props) => {
   const handleAddGameClick = () => {
     let newGame = { nfts: [] };
     props.setFormData((prevData: any) => ({ ...prevData, drawingGames: [...props.formData.drawingGames, newGame] }));

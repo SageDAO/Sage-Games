@@ -7,6 +7,7 @@ import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
 import { format as formatDate } from 'date-fns';
 import { toNamespacedPath } from 'path';
+import MediaPreview from '../MediaPreview';
 
 type Props = {
   formData: any;
@@ -71,14 +72,21 @@ export const Tab5_Review = ({ ...props }: Props) => {
       {errors.length == 0 && (
         <div className='text-center'>
           <div className='flex items-center'>
+            <MediaPreview file={props.formData.bannerImageFile} width={350} />
+            <br />
+            <b>{props.formData.name}</b>
+            <br />
+            &nbsp;
+          </div>
+          <div className='flex items-center'>
+            {props.formData.auctionGames.map((auction: any, i: number) => (
+              <GameReviewItem game={auction} nft={auction} gameType='auction' key={i} />
+            ))}
             {props.formData.drawingGames.map((drawing: any) =>
               drawing.nfts.map((nft: any, i: number) => (
                 <GameReviewItem game={drawing} nft={nft} gameType='drawing' key={i} />
               ))
             )}
-            {props.formData.auctionGames.map((auction: any, i: number) => (
-              <GameReviewItem game={auction} nft={auction} gameType='auction' key={i} />
-            ))}
           </div>
           <div className='mx-auto alert alert-primary mt-5' role='alert' style={{ width: '50%' }}>
             <BadgeCheckIcon width='20' stroke='#084298' /> &nbsp; Everything looks good!
@@ -119,7 +127,8 @@ function GameReviewItem({ game, gameType, nft }) {
                 <br />
                 start date: {formatDate(game.startDate * 1000, 'MM/dd/yyyy hh:mm aa')}
                 <br />
-                end date: {formatDate(game.endDate * 1000, 'MM/dd/yyyy hh:mm aa')}
+                {game.endDate && `end date: ${formatDate(game.endDate * 1000, 'MM/dd/yyyy hh:mm aa')}`}
+                {game.duration && `duration: ${game.duration / (60 * 60)} hours`}
                 <br />
                 description: {nft.description}
                 <br />
@@ -128,7 +137,7 @@ function GameReviewItem({ game, gameType, nft }) {
                 ) : (
                   <>
                     ticket cost: {game.ticketCostTokens} ASH + {game.ticketCostPoints || 0} PIXEL <br />
-                    max tickets: {game.maxTickets|| 0} total, {game.maxTicketsPerUser || 0} per user
+                    max tickets: {game.maxTickets || 0} total, {game.maxTicketsPerUser || 0} per user
                     <br />
                   </>
                 )}
