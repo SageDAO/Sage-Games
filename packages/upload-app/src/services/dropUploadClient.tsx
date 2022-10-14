@@ -144,8 +144,8 @@ async function uploadNftMetadataFilesToArweave(data: any) {
   }
   // Upload Drawings' NFT files
   for (const drawing of data.drawingGames) {
-    // unfoldDrawingNfts(drawing);
-    for (const nft of drawing.nfts) {
+    unfoldDrawingNfts(drawing);
+    for (const nft of drawing.unfoldedNfts) {
       nft.metadataPath = await _createNftMetadataOnArweave(nft);
     }
   }
@@ -164,11 +164,7 @@ async function unfoldDrawingNfts(drawing: any) {
       // Unfold each edition into a new NFT
       for (let i = 1; i <= nft.numberOfEditions; i++) {
         let nftEdition = { ...nft };
-        if (nftEdition.description) {
-          nftEdition.description += ` - ${i}/${nft.numberOfEditions}`;
-        } else {
-          nftEdition.description = `${i}/${nft.numberOfEditions}`;
-        }
+        nftEdition.name += ` #${i}/${nft.numberOfEditions}`;
         unfoldedNfts.push(nftEdition);
       }
     } else {
@@ -237,8 +233,7 @@ async function dbInsertDrawingGames(data: any) {
     }
     drawing.drawingId = drawingId;
     console.log(`dbInsertDrawingGames() :: Drawing ${i + 1} ID = ${drawingId}`);
-    // for (const nft of drawing.unfoldedNfts) {
-    for (const nft of drawing.nfts) {
+    for (const nft of drawing.unfoldedNfts) {
       nft.drawingId = drawingId;
       await dbInsertNft(nft);
     }
