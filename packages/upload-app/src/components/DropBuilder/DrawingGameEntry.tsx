@@ -129,7 +129,7 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
         <div className='col'>
           <label>
             <StarIcon width='20' style={{ marginRight: 5 }} />
-            PIXEL Cost *
+            PIXEL Cost
           </label>
           <input
             type='text'

@@ -75,7 +75,7 @@ export function DropBuilder() {
           <Tab4_Drawings formData={formData} setFormData={setFormData} />
         </TabPanel>
         <TabPanel>
-          <Tab5_Review formData={formData} />
+          <Tab5_Review formData={formData} setFormData={setFormData} />
         </TabPanel>
       </Tabs>
     </div>

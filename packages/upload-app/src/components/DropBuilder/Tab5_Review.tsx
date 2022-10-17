@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { BadgeCheckIcon, CloudUploadIcon, ExclamationCircleIcon, TicketIcon } from '@heroicons/react/outline';
 import { ProgressBar } from '../ProgressBar';
 import { validate } from './_validation';
@@ -6,40 +7,45 @@ import { handleDropUpload } from '../../services/dropUploadClient';
 import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
 import { format as formatDate } from 'date-fns';
-import { toNamespacedPath } from 'path';
 import MediaPreview from '../MediaPreview';
 
 type Props = {
   formData: any;
+  setFormData: (formData: any) => void;
 };
 
-export const Tab5_Review = ({ ...props }: Props) => {
+export const Tab5_Review = ({ formData, setFormData }) => {
   const [currentProgressPercent, setCurrentProgressPercent] = useState<number>(0);
   const [displayConfetti, setDisplayConfetti] = useState<boolean>(false);
   const [recycleConfetti, setRecycleConfetti] = useState<boolean>(true);
   const { width, height } = useWindowSize();
-  const errors = validate(props.formData);
 
-  const splitsAsArray = (data: any, pctField: string, adrField: string, range: number[]): any[] => {
-    let splits = Array();
-    for (let i of range) {
-      let percent = data[`${pctField}${i}`];
-      let destinationAddress = data[`${adrField}${i}`];
-      if (percent && Number(percent) > 0 && destinationAddress && destinationAddress.length > 0) {
-        splits.push({ percent: parseFloat(percent), destinationAddress });
-      }
-    }
-    return splits;
-  };
+  const errors = validate(formData);
 
   const displayProgressBar = () => {
     document.getElementById('progressBar').style.display = 'block';
   };
 
+  const onAuctionDragEnd = (result: any) => {
+    if (!result.destination) {
+      return;
+    }
+    const reordered = reorder(formData.auctionGames, result.source.index, result.destination.index);
+    setFormData({ ...formData, auctionGames: reordered });
+  };
+
+  const onDrawingDragEnd = (result: any) => {
+    if (!result.destination) {
+      return;
+    }
+    const reordered = reorder(formData.drawingGames, result.source.index, result.destination.index);
+    setFormData({ ...formData, drawingGames: reordered });
+  };
+
   const startUpload = async (e: React.MouseEvent<HTMLButtonElement>) => {
     (e.target as HTMLButtonElement).disabled = true;
     try {
-      const data = props.formData;
+      const data = formData;
       // data.royaltySplitEntries = splitsAsArray(data, "rltySplit", "rltySplitAddr", [1, 2, 3, 4]);
       // data.primarySalesSplitEntries = splitsAsArray(
       //         data,
@@ -72,45 +78,97 @@ export const Tab5_Review = ({ ...props }: Props) => {
       {errors.length == 0 && (
         <div className='text-center'>
           <div className='flex items-center'>
-            <MediaPreview file={props.formData.bannerImageFile} width={350} />
+            <MediaPreview file={formData.bannerImageFile} width={350} />
             <br />
-            <b>{props.formData.name}</b>
+            <b>{formData.name}</b>
             <br />
             &nbsp;
           </div>
           <div className='flex items-center'>
-            {props.formData.auctionGames.map((auction: any, i: number) => (
-              <GameReviewItem game={auction} nft={auction} gameType='auction' key={i} />
-            ))}
-            {props.formData.drawingGames.map((drawing: any) =>
-              drawing.nfts.map((nft: any, i: number) => (
-                <GameReviewItem game={drawing} nft={nft} gameType='drawing' key={i} />
-              ))
-            )}
+            <DragDropContext onDragEnd={onAuctionDragEnd}>
+              <Droppable droppableId='droppable1'>
+                {(provided, snapshot) => (
+                  <div
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                    style={getListStyle(snapshot.isDraggingOver)}
+                  >
+                    {formData.auctionGames.map((auction: any, i: number) => (
+                      <Draggable key={i} draggableId={i.toString()} index={i}>
+                        {(provided, snapshot) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
+                          >
+                            <GameReviewItem game={auction} nft={auction} gameType='auction' />
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
+
+            <DragDropContext onDragEnd={onDrawingDragEnd}>
+              <Droppable droppableId='droppable2'>
+                {(provided, snapshot) => (
+                  <div
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                    style={getListStyle(snapshot.isDraggingOver)}
+                  >
+                    {formData.drawingGames.map((drawing: any, i: number) =>
+                      drawing.nfts.map((nft: any, j: number) => (
+                        <Draggable key={`${i}_${j}`} draggableId={`${i}_${j}`} index={i}>
+                          {(provided, snapshot) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
+                            >
+                              <GameReviewItem game={drawing} nft={nft} gameType='drawing' />
+                            </div>
+                          )}
+                        </Draggable>
+                      ))
+                    )}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
           </div>
-          <div className='mx-auto alert alert-primary mt-5' role='alert' style={{ width: '50%' }}>
+          <div className='mx-auto alert alert-primary mt-3' role='alert' style={{ width: '50%' }}>
             <BadgeCheckIcon width='20' stroke='#084298' /> &nbsp; Everything looks good!
           </div>
           <button className='mx-auto btn btn-primary mt-4' onClick={startUpload}>
-            <CloudUploadIcon width='20' stroke='white' /> &nbsp; Upload Drop to {props.formData.target}
+            <CloudUploadIcon width='20' stroke='white' /> &nbsp; Upload Drop to {formData.target}
           </button>
           <div id='progressBar' className='mt-5 mx-auto' style={{ width: '50%', display: 'none' }}>
             <ProgressBar currentProgressPercent={currentProgressPercent} />
           </div>
+          <div id='bottomSpacer' className='mb-5'></div>
         </div>
       )}
       {/* <br />
       <br />
       <div className='mx-auto' role='alert' style={{ width: '50%' }}>
-        <pre>{JSON.stringify(props.formData, null, 2)}</pre>
+        <pre>{JSON.stringify(formData, null, 2)}</pre>
       </div> */}
     </div>
   );
 };
 
+// Game item preview component ----------------------------------------------------------------------------------------
+
 function GameReviewItem({ game, gameType, nft }) {
   return (
-    <table style={{ marginLeft: 'auto', marginRight: 'auto', width: '50%' }} cellPadding={'5px'}>
+    <table style={{ marginLeft: 'auto', marginRight: 'auto', width: '40%' }} cellPadding={'5px'}>
       <tbody>
         <tr>
           <td width='150'>
@@ -152,3 +210,39 @@ function GameReviewItem({ game, gameType, nft }) {
     </table>
   );
 }
+
+// Dragging helper functions ------------------------------------------------------------------------------------------
+
+const reorder = (list: any[], startIndex: number, endIndex: number) => {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+  return result;
+};
+
+const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
+  userSelect: 'none',
+  padding: 10,
+  background: isDragging ? '#eee' : '',
+  borderRadius: isDragging ? '4px' : '',
+  ...draggableStyle,
+});
+
+const getListStyle = (isDraggingOver: boolean) => ({
+  border: isDraggingOver ? '1px dashed' : '',
+  borderRadius: isDraggingOver ? '4px' : '',
+});
+
+// Splitter helper functions ------------------------------------------------------------------------------------------
+
+const splitsAsArray = (data: any, pctField: string, adrField: string, range: number[]): any[] => {
+  let splits = Array();
+  for (let i of range) {
+    let percent = data[`${pctField}${i}`];
+    let destinationAddress = data[`${adrField}${i}`];
+    if (percent && Number(percent) > 0 && destinationAddress && destinationAddress.length > 0) {
+      splits.push({ percent: parseFloat(percent), destinationAddress });
+    }
+  }
+  return splits;
+};

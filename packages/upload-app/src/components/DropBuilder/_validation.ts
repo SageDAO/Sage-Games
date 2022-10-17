@@ -102,8 +102,8 @@ export function validate(data: any): string[] {
       // if (!checkRequired(a.tags)) err.push(`[Auction Games] Auction ${i + 1}: NFT must have at least one tag`);
       if (a.endDate <= a.startDate) err.push(`[Auction Games] Auction ${i + 1}: End Date must be after Start Date`);
       if (!checkReqPosNumber(a.minPrice)) err.push(`[Auction Games] Auction ${i + 1}: Minimum Price must be a number`);
-      if (!checkRequired(a.description))  err.push(`[Auction Games] Auction ${i + 1}: Description is required`);
-}
+      if (!checkRequired(a.description)) err.push(`[Auction Games] Auction ${i + 1}: Description is required`);
+    }
   };
 
   const validateTab4 = (data: any) => {
@@ -111,10 +111,12 @@ export function validate(data: any): string[] {
       if (!checkRequired(d.startDate)) err.push(`[Drawing Games] Drawing ${i + 1}: Start Date is required`);
       if (!checkRequired(d.endDate)) err.push(`[Drawing Games] Drawing ${i + 1}: End Date is required`);
       if (d.endDate <= d.startDate) err.push(`[Drawing Games] Drawing ${i + 1}: End Date must be after Start Date`);
+      if (!checkRequired(d.ticketCostTokens))
+        err.push(`[Drawing Games] Drawing ${i + 1}: ASH Cost is required`);
       if (!checkPosNumber(d.ticketCostTokens))
-        err.push(`[Drawing Games] Drawing ${i + 1}: Ticket Cost (Tokens) must be a number`);
+        err.push(`[Drawing Games] Drawing ${i + 1}: ASH Cost must be a number`);
       if (!checkPosInt(d.ticketCostPoints))
-        err.push(`[Drawing Games] Drawing ${i + 1}: Ticket Cost (Points) must be an integer`);
+        err.push(`[Drawing Games] Drawing ${i + 1}: PIXEL Cost must be an integer`);
       if (d.nfts.length == 0) err.push(`[Drawing Games] Drawing ${i + 1}: Must have at least one NFT`);
       for (const [j, n] of d.nfts.entries()) {
         if (!checkRequired(n.name)) err.push(`[Drawing Games] Drawing ${i + 1} NFT ${j + 1}: Name is required`);
