@@ -164,7 +164,7 @@ async function unfoldDrawingNfts(drawing: any) {
       // Unfold each edition into a new NFT
       for (let i = 1; i <= nft.numberOfEditions; i++) {
         let nftEdition = { ...nft };
-        nftEdition.name += ` #${i}/${nft.numberOfEditions}`;
+        // nftEdition.name += ` #${i}/${nft.numberOfEditions}`;
         unfoldedNfts.push(nftEdition);
       }
     } else {
