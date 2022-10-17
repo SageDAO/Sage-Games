@@ -124,14 +124,14 @@ async function uploadNftMediaFilesToArweave(data: any) {
   console.log(`uploadNftMediaFilesToArweave()`);
   // Upload Auctions' NFT files
   for (const [i, auction] of data.auctionGames.entries()) {
-    auction.ipfsPath = await copyFromS3toArweave(endpoint, auction.s3Path);
-    console.log(`uploadNftMediaFilesToArweave() :: Auction ${i + 1} NFT uploaded to ${auction.ipfsPath}`);
+    auction.arweavePath = await copyFromS3toArweave(endpoint, auction.s3Path);
+    console.log(`uploadNftMediaFilesToArweave() :: Auction ${i + 1} NFT uploaded to ${auction.arweavePath}`);
   }
   // Upload Drawings' NFT files
   for (const [i, drawing] of data.drawingGames.entries()) {
     for (const [j, nft] of drawing.nfts.entries()) {
-      nft.ipfsPath = await copyFromS3toArweave(endpoint, nft.s3Path);
-      console.log(`uploadNftMediaFilesToArweave() :: Drawing ${i + 1} NFT ${j + 1} uploaded to ${nft.ipfsPath}`);
+      nft.arweavePath = await copyFromS3toArweave(endpoint, nft.s3Path);
+      console.log(`uploadNftMediaFilesToArweave() :: Drawing ${i + 1} NFT ${j + 1} uploaded to ${nft.arweavePath}`);
     }
   }
 }
@@ -146,14 +146,17 @@ async function uploadNftMetadataFilesToArweave(data: any) {
   for (const drawing of data.drawingGames) {
     unfoldDrawingNfts(drawing);
     for (const nft of drawing.unfoldedNfts) {
-      nft.metadataPath = await _createNftMetadataOnArweave(nft);
+      if (nft.numberOfEditions == 1) {
+        // multiple editions will have their metadata uploaded by the update_games.js job
+        nft.metadataPath = await _createNftMetadataOnArweave(nft);
+      }
     }
   }
 }
 
 async function _createNftMetadataOnArweave(nft: any): Promise<string> {
   const isVideo = nft.nftFile.name.toLowerCase().endsWith('mp4');
-  return await createNftMetadataOnArweave(endpoint, nft.name, nft.description, nft.ipfsPath, isVideo);
+  return await createNftMetadataOnArweave(endpoint, nft.name, nft.description, nft.arweavePath, isVideo);
 }
 
 async function unfoldDrawingNfts(drawing: any) {
