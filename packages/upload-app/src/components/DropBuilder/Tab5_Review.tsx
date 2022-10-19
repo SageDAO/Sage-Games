@@ -157,9 +157,9 @@ export const Tab5_Review = ({ formData, setFormData }: Props) => {
       )}
       <br />
       <br />
-      <div className='mx-auto' role='alert' style={{ width: '50%' }}>
+      {/* <div className='mx-auto' role='alert' style={{ width: '50%' }}>
         <pre>{JSON.stringify(formData, null, 2)}</pre>
-      </div>
+      </div> */}
     </div>
   );
 };
