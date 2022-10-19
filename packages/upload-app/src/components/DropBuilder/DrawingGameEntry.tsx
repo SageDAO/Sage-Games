@@ -5,6 +5,7 @@ import { format as formatDate } from 'date-fns';
 import { DrawingGameNftEntry } from './DrawingGameNftEntry';
 import MediaPreview from '../MediaPreview';
 import { createNftEntry } from './DropBuilder';
+import { getDimensions } from '../../utilities/mediaDimensions';
 
 type Props = {
   formData: any;
@@ -37,10 +38,15 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
     document.getElementById(`nftInputFile_${props.index}`).click();
   };
 
-  const handleHiddenInputFileChange = (e: React.ChangeEvent<HTMLInputElement>, srcIndex: number) => {
+  const handleHiddenInputFileChange = async (e: React.ChangeEvent<HTMLInputElement>, srcIndex: number) => {
     if (!e.target.files?.length) return;
     const updatedGameArray = [...props.formData.drawingGames];
-    updatedGameArray[srcIndex].nfts.push(createNftEntry(e.target.files[0]));
+    const newFile = e.target.files[0];
+    const newNft = createNftEntry(newFile);
+    const { width, height } = await getDimensions(newFile);
+    newNft.width = width;
+    newNft.height = height;
+    updatedGameArray[srcIndex].nfts.push(newNft);
     props.setFormData((prevData: any) => ({ ...prevData, drawingGames: updatedGameArray }));
   };
 

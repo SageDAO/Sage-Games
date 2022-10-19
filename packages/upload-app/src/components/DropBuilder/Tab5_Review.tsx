@@ -14,7 +14,7 @@ type Props = {
   setFormData: (formData: any) => void;
 };
 
-export const Tab5_Review = ({ formData, setFormData }) => {
+export const Tab5_Review = ({ formData, setFormData }: Props) => {
   const [currentProgressPercent, setCurrentProgressPercent] = useState<number>(0);
   const [displayConfetti, setDisplayConfetti] = useState<boolean>(false);
   const [recycleConfetti, setRecycleConfetti] = useState<boolean>(true);
@@ -78,7 +78,7 @@ export const Tab5_Review = ({ formData, setFormData }) => {
       {errors.length == 0 && (
         <div className='text-center'>
           <div className='flex items-center'>
-            <MediaPreview file={formData.bannerImageFile} width={350} />
+            <MediaPreview file={formData.bannerImageFile} previewWidth={350} />
             <br />
             <b>{formData.name}</b>
             <br />
@@ -155,11 +155,11 @@ export const Tab5_Review = ({ formData, setFormData }) => {
           <div id='bottomSpacer' className='mb-5'></div>
         </div>
       )}
-      {/* <br />
+      <br />
       <br />
       <div className='mx-auto' role='alert' style={{ width: '50%' }}>
         <pre>{JSON.stringify(formData, null, 2)}</pre>
-      </div> */}
+      </div>
     </div>
   );
 };

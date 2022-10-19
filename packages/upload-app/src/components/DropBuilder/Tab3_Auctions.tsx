@@ -1,4 +1,5 @@
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
+import { getDimensions } from '../../utilities/mediaDimensions';
 import { AuctionGameEntry } from './AuctionGameEntry';
 import { createNftEntry } from './DropBuilder';
 
@@ -7,31 +8,36 @@ type Props = {
   setFormData: (formData: any) => void;
 };
 
-export function Tab3_Auctions({ ...props }: Props) {
+export function Tab3_Auctions({ formData, setFormData }: Props) {
   const handleAddGameClick = () => {
     document.getElementById('auctionInputFile').click();
   };
 
-  const handleHiddenInputFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleHiddenInputFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.length) return;
-    props.setFormData((prevData: any) => ({
+    const newFile = e.target.files[0];
+    const newNft = createNftEntry(newFile);
+    const { width, height } = await getDimensions(newFile);
+    newNft.width = width;
+    newNft.height = height;
+    setFormData((prevData: any) => ({
       ...prevData,
-      auctionGames: [...props.formData.auctionGames, createNftEntry(e.target.files[0])],
+      auctionGames: [...formData.auctionGames, newNft],
     }));
   };
 
   const handleDeleteGameClick = (delIndex: number) => {
-    props.setFormData((prevData: any) => ({
+    setFormData((prevData: any) => ({
       ...prevData,
-      auctionGames: props.formData.auctionGames.filter((_: any, index: number) => index != delIndex),
+      auctionGames: formData.auctionGames.filter((_: any, index: number) => index != delIndex),
     }));
   };
 
   const handleFieldChange = (srcIndex: number, name: string, value: any) => {
-    let updatedGameArray = props.formData.auctionGames.map((game: any, index: number) =>
+    let updatedGameArray = formData.auctionGames.map((game: any, index: number) =>
       index == srcIndex ? { ...game, [name]: value } : game
     );
-    props.setFormData((prevData: any) => ({ ...prevData, auctionGames: updatedGameArray }));
+    setFormData((prevData: any) => ({ ...prevData, auctionGames: updatedGameArray }));
   };
 
   return (
@@ -46,7 +52,7 @@ export function Tab3_Auctions({ ...props }: Props) {
       />
       <Tabs forceRenderTabPanel={true}>
         <TabList>
-          {props.formData.auctionGames.map((_: any, i: number) => {
+          {formData.auctionGames.map((_: any, i: number) => {
             return (
               <Tab key={i}>
                 <img src='/icon_auction_outline.svg' width={20} className='mx-1' alt='' />
@@ -56,7 +62,7 @@ export function Tab3_Auctions({ ...props }: Props) {
           })}
           <Tab onClick={handleAddGameClick}>+ Add Auction Game</Tab>
         </TabList>
-        {props.formData.auctionGames.map((auction: any, i: number) => {
+        {formData.auctionGames.map((auction: any, i: number) => {
           return (
             <TabPanel key={i}>
               <AuctionGameEntry
