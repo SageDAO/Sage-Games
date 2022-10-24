@@ -18,6 +18,6 @@ export const targetConfig: Configuration = {
     ENDPOINT_URL: 'https://sage-staging.vercel.app/api/endpoints/',
   },
   'SAGE Production': {
-    ENDPOINT_URL: 'https://sage-dev.vercel.app/api/endpoints/',
+    ENDPOINT_URL: 'https://www.sage.art/api/endpoints/',
   },
 };
