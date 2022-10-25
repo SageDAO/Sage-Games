@@ -18,8 +18,8 @@ type Props = {
 
 export const DrawingGameEntry = ({ ...props }: Props) => {
   interface State {
-    startDate: Date | null;
-    endDate: Date | null;
+    startDate: Date;
+    endDate: Date;
   }
 
   const [state, setState] = useState<State>({ startDate: null, endDate: null });
@@ -96,11 +96,13 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
           <DatePicker
             id='drawingStartDate'
             placeholderText='Click to select a date'
+            selected={state.startDate}
             minDate={new Date()}
-            onChange={setStartDate}
             showTimeSelect
+            timeIntervals={15}
+            dateFormat="MM/dd/yyyy hh:mm"
+            onChange={setStartDate}
             className='form-control'
-            value={state.startDate ? formatDate(state.startDate.getTime(), 'MM/dd/yyyy hh:mm aa') : ''}
           />
         </div>
         <div className='col'>
@@ -111,11 +113,13 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
           <DatePicker
             id='drawingEndDate'
             placeholderText='Click to select a date'
+            selected={state.endDate}
             minDate={new Date()}
-            onChange={setEndDate}
             showTimeSelect
+            timeIntervals={15}
+            dateFormat="MM/dd/yyyy hh:mm"
+            onChange={setEndDate}
             className='form-control'
-            value={state.endDate ? formatDate(state.endDate.getTime(), 'MM/dd/yyyy hh:mm aa') : ''}
           />
         </div>
         <div className='col'>
