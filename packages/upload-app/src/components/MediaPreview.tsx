@@ -22,6 +22,9 @@ export default function MediaPreview({ file, previewWidth }: Props) {
     reader.readAsDataURL(file);
   }
 
+  if (!previewSrc) {
+    return null;
+  }
   return isVideo ? (
     <video autoPlay muted loop playsInline className='border border-dark rounded' width={previewWidth || 150}>
       <source src={previewSrc} type='video/mp4'></source>
