@@ -98,9 +98,11 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
             placeholderText='Click to select a date'
             selected={state.startDate}
             minDate={new Date()}
-            showTimeSelect
-            timeIntervals={15}
-            dateFormat="MM/dd/yyyy hh:mm"
+            //showTimeSelect
+            //timeIntervals={15}
+            showTimeInput
+            timeInputLabel="Time:"
+            dateFormat="MM/dd/yyyy HH:mm"
             onChange={setStartDate}
             className='form-control'
           />
@@ -115,9 +117,11 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
             placeholderText='Click to select a date'
             selected={state.endDate}
             minDate={new Date()}
-            showTimeSelect
-            timeIntervals={15}
-            dateFormat="MM/dd/yyyy hh:mm"
+            //showTimeSelect
+            //timeIntervals={15}
+            showTimeInput
+            timeInputLabel="Time:"
+            dateFormat="MM/dd/yyyy HH:mm"
             onChange={setEndDate}
             className='form-control'
           />

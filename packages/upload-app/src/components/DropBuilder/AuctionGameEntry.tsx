@@ -72,11 +72,16 @@ export const AuctionGameEntry = ({ ...props }: Props) => {
             </label>
             <DatePicker
               placeholderText='Click to select a date'
+              selected={state.startDate}
               minDate={new Date()}
+              // showTimeSelect
+              //timeIntervals={15}
+              showTimeInput
+              timeInputLabel="Time:"
+              dateFormat="MM/dd/yyyy HH:mm"
               onChange={setStartDate}
-              showTimeSelect
               className='form-control'
-              value={state.startDate ? formatDate(state.startDate.getTime(), 'MM/dd/yyyy hh:mm aa') : ''}
+              //value={state.startDate ? formatDate(state.startDate.getTime(), 'MM/dd/yyyy hh:mm aa') : ''}
             />
             <label className='mt-3'>
               <ClockIcon width='20' style={{ marginRight: 5 }} />
