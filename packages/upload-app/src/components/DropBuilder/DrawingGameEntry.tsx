@@ -129,7 +129,7 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
         <div className='col'>
           <label>
             <CurrencyDollarIcon width='20' style={{ marginRight: 5 }} />
-            ASH Cost *
+            ASH Cost
           </label>
           <input
             type='text'

@@ -111,8 +111,8 @@ export function validate(data: any): string[] {
       if (!checkRequired(d.startDate)) err.push(`[Drawing Games] Drawing ${i + 1}: Start Date is required`);
       if (!checkRequired(d.endDate)) err.push(`[Drawing Games] Drawing ${i + 1}: End Date is required`);
       if (d.endDate <= d.startDate) err.push(`[Drawing Games] Drawing ${i + 1}: End Date must be after Start Date`);
-      if (!checkRequired(d.ticketCostTokens))
-        err.push(`[Drawing Games] Drawing ${i + 1}: ASH Cost is required`);
+      // if (!checkRequired(d.ticketCostTokens))
+      //   err.push(`[Drawing Games] Drawing ${i + 1}: ASH Cost is required`);
       if (!checkPosNumber(d.ticketCostTokens))
         err.push(`[Drawing Games] Drawing ${i + 1}: ASH Cost must be a number`);
       if (!checkPosInt(d.ticketCostPoints))
