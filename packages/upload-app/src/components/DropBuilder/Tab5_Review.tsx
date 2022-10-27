@@ -194,7 +194,7 @@ function GameReviewItem({ game, gameType, nft }) {
                   <>min price: {game.minPrice} ASH</>
                 ) : (
                   <>
-                    ticket cost: {game.ticketCostTokens} ASH + {game.ticketCostPoints || 0} PIXEL <br />
+                    entry cost: {game.ticketCostTokens || 0} ASH + {game.ticketCostPoints || 0} PIXEL <br />
                     max tickets: {game.maxTickets || 0} total, {game.maxTicketsPerUser || 0} per user
                     <br />
                   </>

@@ -160,7 +160,7 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
         <div className='col'>
           <label>
             <ColorSwatchIcon width='20' style={{ marginRight: 5 }} />
-            Max Tickets
+            Max Entries
           </label>
           <input
             type='number'
@@ -174,7 +174,7 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
         <div className='col'>
           <label>
             <UserGroupIcon width='20' style={{ marginRight: 5 }} />
-            Max Tickets per User
+            Max Entries per User
           </label>
           <input
             type='number'
