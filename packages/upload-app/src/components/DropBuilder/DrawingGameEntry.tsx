@@ -1,9 +1,7 @@
 import { useState } from 'react';
 import { CalendarIcon, ColorSwatchIcon, CurrencyDollarIcon, StarIcon, UserGroupIcon } from '@heroicons/react/outline';
 import DatePicker from 'react-datepicker';
-import { format as formatDate } from 'date-fns';
 import { DrawingGameNftEntry } from './DrawingGameNftEntry';
-import MediaPreview from '../MediaPreview';
 import { createNftEntry } from './DropBuilder';
 import { getDimensions } from '../../utilities/mediaDimensions';
 

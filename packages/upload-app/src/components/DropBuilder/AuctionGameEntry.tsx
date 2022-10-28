@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { CalendarIcon, ClockIcon, CurrencyDollarIcon, DocumentTextIcon, PhotographIcon } from '@heroicons/react/outline';
 import DatePicker from 'react-datepicker';
-import { format as formatDate } from 'date-fns';
-import { useEffectOnce } from 'react-use';
 
 type Props = {
   index: number; // index of this entry on parent array
