@@ -16,13 +16,19 @@ export function Tab3_Auctions({ formData, setFormData }: Props) {
   const handleHiddenInputFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.length) return;
     const newFile = e.target.files[0];
-    const newNft = createNftEntry(newFile);
+    const newGame = createNftEntry(newFile);
     const { width, height } = await getDimensions(newFile);
-    newNft.width = width;
-    newNft.height = height;
+    newGame.width = width;
+    newGame.height = height;
+    if (formData.auctionGames.length > 0) {
+      // pre-fill with previous game data
+      for (const field of ['startDate', 'minPrice', 'description']) {
+        newGame[field] = formData.auctionGames[formData.auctionGames.length - 1][field];
+      }
+    }
     setFormData((prevData: any) => ({
       ...prevData,
-      auctionGames: [...formData.auctionGames, newNft],
+      auctionGames: [...formData.auctionGames, newGame],
     }));
   };
 

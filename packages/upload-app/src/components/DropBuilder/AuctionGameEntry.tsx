@@ -18,7 +18,11 @@ export const AuctionGameEntry = ({ ...props }: Props) => {
     endDate: Date | null;
   }
 
-  const [state, setState] = useState<State>({ startDate: null, endDate: null }); // used by datepicker component
+  const initialState: State = {
+    startDate: props.data.startDate ? new Date(props.data.startDate * 1000) : null, 
+    endDate: props.data.endDate ? new Date(props.data.endDate * 1000) : null
+  };
+  const [state, setState] = useState<State>(initialState); // used by datepicker component
 
   const setStartDate = (d: Date) => {
     setState({ ...state, startDate: d });

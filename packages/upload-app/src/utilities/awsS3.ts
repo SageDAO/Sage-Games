@@ -1,4 +1,4 @@
-export function createBucketName() {
+export function createBucketFolderName() {
   return Date.now().toString();
 }
 

@@ -1,8 +1,8 @@
 import { toast } from 'react-toastify';
-import { BookOpenIcon, CloudUploadIcon, CogIcon, DatabaseIcon, PhotographIcon } from '@heroicons/react/outline';
+import { BookOpenIcon, BriefcaseIcon, CloudUploadIcon, CogIcon, DatabaseIcon, PhotographIcon } from '@heroicons/react/outline';
 import { targetConfig } from './config';
 import { TaskStatus, ToastContent } from '../components/ToastContent';
-import { createBucketName, uploadFileToS3Bucket } from '../utilities/awsS3';
+import { createBucketFolderName, uploadFileToS3Bucket } from '../utilities/awsS3';
 import { copyFromS3toArweave, createNftMetadataOnArweave } from '../utilities/arweave';
 import { ethers } from 'ethers';
 
@@ -14,8 +14,8 @@ export async function handleDropUpload(data: any, setCurrentProgressPercent: (pc
   console.log(`handleDropUpload() :: target = ${data.target}`);
   endpoint = targetConfig[data.target].ENDPOINT_URL;
   console.log(`handleDropUpload() :: endpoint = ${endpoint}`);
-  await checkArtistWalletAdress(data.artistWallet);
   const tasks = [
+    { icon: <BriefcaseIcon />, funct: checkArtistWalletAdress, desc: 'Validating artist wallet' },
     { icon: <CloudUploadIcon />, funct: uploadMediaFilesToS3Bucket, desc: 'Uploading media files to S3 bucket' },
     { icon: <PhotographIcon />, funct: uploadNftMediaFilesToArweave, desc: 'Uploading NFT files to Arweave' },
     { icon: <BookOpenIcon />, funct: uploadNftMetadataFilesToArweave, desc: 'Uploading metadata to Arweave' },
@@ -26,19 +26,6 @@ export async function handleDropUpload(data: any, setCurrentProgressPercent: (pc
   await runTasks(tasks, data, setCurrentProgressPercent);
   toast.success(`Success! Drop created with id ${data.dropId}`);
   playSoundFile('/chime.mp3');
-}
-
-async function checkArtistWalletAdress(artistWallet: string) {
-  try {
-    const result = await fetch(`${endpoint}dropUpload/?action=GetArtistNftContractAddress&artistAddress=${artistWallet}`);
-    const { nftContractAddress } = await result.json();
-    console.log(`checkArtistWalletAdress(${artistWallet}) :: ${nftContractAddress}`);
-    ethers.utils.getAddress(nftContractAddress); // this generates an error in case the address is invalid
-  } catch (e) {
-    console.log(e);
-    toast.error('Unable to validate artist wallet. Make sure artist has deployed a SAGE NFT Contract.');
-    throw new Error();
-  }
 }
 
 function copy(aObject: any): any {
@@ -95,27 +82,54 @@ async function runTask(icon: JSX.Element, toastMsg: string, callback: any, args:
   }
 }
 
+async function checkArtistWalletAdress(data: any) {
+  try {
+    const artistWallet = data.artistWallet;
+    const result = await fetch(`${endpoint}dropUpload/?action=GetArtistNftContractAddress&artistAddress=${artistWallet}`);
+    const { nftContractAddress } = await result.json();
+    console.log(`checkArtistWalletAdress(${artistWallet}) :: ${nftContractAddress}`);
+    ethers.utils.getAddress(nftContractAddress); // this generates an error in case the address is invalid
+  } catch (e) {
+    console.log(e);
+    toast.error('Unable to validate artist wallet. Make sure artist has deployed a SAGE NFT Contract.');
+    throw new Error();
+  }
+}
+
 async function uploadMediaFilesToS3Bucket(data: any) {
+
   console.log(`uploadMediaFilesToS3Bucket()`);
-  const createFilename = (counter: number, sourceName: string) => {
+  const folderName = createBucketFolderName();
+
+  const createNftFilename = (counter: number, sourceName: string) => {
     return `nft_${counter}.${sourceName.toLowerCase().split('.').pop()}`;
   };
-  const bucketName = createBucketName();
-  // Upload banner image
-  let fileExtension = data.bannerImageFile.name.toLowerCase().split('.').pop();
-  let filename = `banner.${fileExtension}`;
-  data.bannerImageS3Path = await uploadFileToS3Bucket(endpoint, bucketName, filename, data.bannerImageFile);
+
+  const uploadMedia = async (dataFieldName: string, targetFilename: string, resultFieldName: string) => {
+    if (!data[dataFieldName]) {
+      return;
+    }
+    let fileExtension = data[dataFieldName].name.toLowerCase().split('.').pop();
+    let targetFile = `${targetFilename}.${fileExtension}`;
+    data[resultFieldName] = await uploadFileToS3Bucket(endpoint, folderName, targetFile, data[dataFieldName]);  
+  }
+
+  await uploadMedia('bannerImageFile', 'banner', 'bannerImageS3Path');
+  await uploadMedia('tileImageFile', 'tile', 'tileImageS3Path');
+  await uploadMedia('featuredMediaFile', 'featured', 'featuredMediaS3Path');
+  await uploadMedia('mobileCoverFile', 'mobile_cover', 'mobileCoverS3Path');
+
   let nftFileCounter = 0;
   // Upload Auctions' NFT files
   for (const a of data.auctionGames) {
-    a.nftFilename = createFilename(++nftFileCounter, a.nftFile.name);
-    a.s3Path = await uploadFileToS3Bucket(endpoint, bucketName, a.nftFilename, a.nftFile);
+    a.nftFilename = createNftFilename(++nftFileCounter, a.nftFile.name);
+    a.s3Path = await uploadFileToS3Bucket(endpoint, folderName, a.nftFilename, a.nftFile);
   }
   // Upload Drawings' NFT files
   for (const d of data.drawingGames) {
     for (const nft of d.nfts) {
-      nft.nftFilename = createFilename(++nftFileCounter, nft.nftFile.name);
-      nft.s3Path = await uploadFileToS3Bucket(endpoint, bucketName, nft.nftFilename, nft.nftFile);
+      nft.nftFilename = createNftFilename(++nftFileCounter, nft.nftFile.name);
+      nft.s3Path = await uploadFileToS3Bucket(endpoint, folderName, nft.nftFilename, nft.nftFile);
     }
   }
 }
@@ -167,6 +181,7 @@ async function unfoldDrawingNfts(drawing: any) {
       // Unfold each edition into a new NFT
       for (let i = 1; i <= nft.numberOfEditions; i++) {
         let nftEdition = { ...nft };
+        // edition counter on the name became the prize distribution job's responsibility
         // nftEdition.name += ` #${i}/${nft.numberOfEditions}`;
         unfoldedNfts.push(nftEdition);
       }

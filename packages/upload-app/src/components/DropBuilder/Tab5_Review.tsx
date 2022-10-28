@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { BadgeCheckIcon, CloudUploadIcon, ExclamationCircleIcon, TicketIcon } from '@heroicons/react/outline';
+import { BadgeCheckIcon, CloudUploadIcon, CubeIcon, ExclamationCircleIcon, TicketIcon } from '@heroicons/react/outline';
 import { ProgressBar } from '../ProgressBar';
 import { validate } from './_validation';
 import { handleDropUpload } from '../../services/dropUploadClient';
@@ -8,6 +8,7 @@ import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
 import { format as formatDate } from 'date-fns';
 import MediaPreview from '../MediaPreview';
+import { Card } from 'react-bootstrap';
 
 type Props = {
   formData: any;
@@ -67,7 +68,9 @@ export const Tab5_Review = ({ formData, setFormData }: Props) => {
 
   return (
     <div className='mt-5'>
+      
       {displayConfetti && <Confetti width={width} height={height} recycle={recycleConfetti} />}
+      
       {errors.map((item: string, i: number) => {
         return (
           <div key={i} className='mx-auto alert alert-danger' role='alert' style={{ width: '50%' }}>
@@ -75,55 +78,42 @@ export const Tab5_Review = ({ formData, setFormData }: Props) => {
           </div>
         );
       })}
-      {errors.length == 0 && (
-        <div className='text-center'>
-          <div className='flex items-center'>
-            <MediaPreview file={formData.bannerImageFile} previewWidth={350} />
-            <br />
-            <b>{formData.name}</b>
-            <br />
-            &nbsp;
-          </div>
-          <div className='flex items-center'>
-            <DragDropContext onDragEnd={onAuctionDragEnd}>
-              <Droppable droppableId='droppable1'>
-                {(provided, snapshot) => (
-                  <div
-                    {...provided.droppableProps}
-                    ref={provided.innerRef}
-                    style={getListStyle(snapshot.isDraggingOver)}
-                  >
-                    {formData.auctionGames.map((auction: any, i: number) => (
-                      <Draggable key={i} draggableId={i.toString()} index={i}>
-                        {(provided, snapshot) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
-                          >
-                            <GameReviewItem game={auction} nft={auction} gameType='auction' />
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </DragDropContext>
 
-            <DragDropContext onDragEnd={onDrawingDragEnd}>
-              <Droppable droppableId='droppable2'>
-                {(provided, snapshot) => (
-                  <div
-                    {...provided.droppableProps}
-                    ref={provided.innerRef}
-                    style={getListStyle(snapshot.isDraggingOver)}
-                  >
-                    {formData.drawingGames.map((drawing: any, i: number) =>
-                      drawing.nfts.map((nft: any, j: number) => (
-                        <Draggable key={`${i}_${j}`} draggableId={`${i}_${j}`} index={i}>
+      {errors.length == 0 && (
+        <>
+          <div className='text-center'>
+            <div className='mx-auto mt-3 alert alert-secondary' role='alert' style={{ width: '50%' }}>
+              <CubeIcon width='20' /> &nbsp; <strong>{formData.name}</strong>
+              <br />
+              <br />
+              {formData.description}
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', alignItems: 'flex-start' }}>
+
+            <ImagePreviewCard label={'Banner Image'} file={formData.bannerImageFile} />
+
+            <ImagePreviewCard label={'Tile Image'} file={formData.tileImageFile} />
+
+            <ImagePreviewCard label={'Featured Drop Media'} file={formData.featuredMediaFile} />
+
+            <ImagePreviewCard label={'Mobile Cover Media'} file={formData.mobileCoverFile} />
+
+          </div>
+          <div className='text-center'>
+            <div className='flex items-center'>
+
+              <DragDropContext onDragEnd={onAuctionDragEnd}>
+                <Droppable droppableId='droppable1'>
+                  {(provided, snapshot) => (
+                    <div
+                      {...provided.droppableProps}
+                      ref={provided.innerRef}
+                      style={getListStyle(snapshot.isDraggingOver)}
+                    >
+                      {formData.auctionGames.map((auction: any, i: number) => (
+                        <Draggable key={i} draggableId={i.toString()} index={i}>
                           {(provided, snapshot) => (
                             <div
                               ref={provided.innerRef}
@@ -131,29 +121,64 @@ export const Tab5_Review = ({ formData, setFormData }: Props) => {
                               {...provided.dragHandleProps}
                               style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
                             >
-                              <GameReviewItem game={drawing} nft={nft} gameType='drawing' />
+                              <GameReviewItem game={auction} nft={auction} gameType='auction' />
                             </div>
                           )}
                         </Draggable>
-                      ))
-                    )}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </DragDropContext>
+                      ))}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </DragDropContext>
+
+              <DragDropContext onDragEnd={onDrawingDragEnd}>
+                <Droppable droppableId='droppable2'>
+                  {(provided, snapshot) => (
+                    <div
+                      {...provided.droppableProps}
+                      ref={provided.innerRef}
+                      style={getListStyle(snapshot.isDraggingOver)}
+                    >
+                      {formData.drawingGames.map((drawing: any, i: number) =>
+                        drawing.nfts.map((nft: any, j: number) => (
+                          <Draggable key={`${i}_${j}`} draggableId={`${i}_${j}`} index={i}>
+                            {(provided, snapshot) => (
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
+                              >
+                                <GameReviewItem game={drawing} nft={nft} gameType='drawing' />
+                              </div>
+                            )}
+                          </Draggable>
+                        ))
+                      )}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </DragDropContext>
+
+            </div>
+
+            <div id='allGoodNotification' className='mx-auto alert alert-primary mt-3' role='alert' style={{ width: '50%' }}>
+              <BadgeCheckIcon width='20' stroke='#084298' /> &nbsp; Everything looks good!
+            </div>
+
+            <button id='uploadButton' className='mx-auto btn btn-primary mt-4' onClick={startUpload}>
+              <CloudUploadIcon width='20' stroke='white' /> &nbsp; Upload Drop to {formData.target}
+            </button>
+
+            <div id='progressBar' className='mt-5 mx-auto' style={{ width: '50%', display: 'none' }}>
+              <ProgressBar currentProgressPercent={currentProgressPercent} />
+            </div>
+            <div id='bottomSpacer' className='mb-5'></div>
+
           </div>
-          <div className='mx-auto alert alert-primary mt-3' role='alert' style={{ width: '50%' }}>
-            <BadgeCheckIcon width='20' stroke='#084298' /> &nbsp; Everything looks good!
-          </div>
-          <button className='mx-auto btn btn-primary mt-4' onClick={startUpload}>
-            <CloudUploadIcon width='20' stroke='white' /> &nbsp; Upload Drop to {formData.target}
-          </button>
-          <div id='progressBar' className='mt-5 mx-auto' style={{ width: '50%', display: 'none' }}>
-            <ProgressBar currentProgressPercent={currentProgressPercent} />
-          </div>
-          <div id='bottomSpacer' className='mb-5'></div>
-        </div>
+        </>
       )}
       <br />
       <br />
@@ -163,6 +188,22 @@ export const Tab5_Review = ({ formData, setFormData }: Props) => {
     </div>
   );
 };
+
+// Input file preview component ---------------------------------------------------------------------------------------
+
+function ImagePreviewCard({ label, file }) {
+  if (!file) {
+    return null;
+  }
+  return (
+    <Card style={{ width: '15rem' }}>
+      <Card.Header>{label}</Card.Header>
+      <Card.Body style={{ textAlign: 'center' }}>
+        <MediaPreview file={file} previewWidth={200} />
+      </Card.Body>
+    </Card>
+  );
+}
 
 // Game item preview component ----------------------------------------------------------------------------------------
 
@@ -202,9 +243,6 @@ function GameReviewItem({ game, gameType, nft }) {
               </span>
             </div>
           </td>
-        </tr>
-        <tr>
-          <td height={15}></td>
         </tr>
       </tbody>
     </table>

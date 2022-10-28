@@ -10,6 +10,12 @@ type Props = {
 export const Tab4_Drawings = ({ ...props }: Props) => {
   const handleAddGameClick = () => {
     let newGame = { nfts: [] };
+    if (props.formData.drawingGames.length > 0) {
+      // pre-fill with previous game data
+      for (const field of ['startDate', 'endDate', 'ticketCostTokens', 'ticketCostPoints', 'maxTickets', 'maxTicketsPerUser']) {
+        newGame[field] = props.formData.drawingGames[props.formData.drawingGames.length - 1][field];
+      }
+    }
     props.setFormData((prevData: any) => ({ ...prevData, drawingGames: [...props.formData.drawingGames, newGame] }));
   };
 
