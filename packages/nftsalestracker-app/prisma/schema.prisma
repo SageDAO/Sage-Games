@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Crawler {
+  id              Int           @id @default(autoincrement())
+  name            String
+  lastBlockNumber Int           @default(0)
+}
+
+model Creator {
+  id              Int           @id @default(autoincrement())
+  displayName     String        @default("anon")
+}
+
+model CreatorWallet {
+  id              Int           @id @default(autoincrement())
+  creatorId       Int
+  Creator         Creator       @relation(fields: [creatorId], references: [id])
+  walletAddress   String
+  ensName         String?
+}
+
+model NftSale {
+  id              Int           @id @default(autoincrement())
+  crawlerId       Int
+  txHash          String
+  blockNumber     Int
+  creatorWalletId Int
+  marketplace     String
+  contractAddress String
+  tokenId         Int
+  sellerAddress   String
+  buyerAddress    String
+  price           Float
+  priceCurrency   String
+  CrawlerWallet   CrawlerWallet @relation(fields: [creatorWalletId], references: [id])
+}
