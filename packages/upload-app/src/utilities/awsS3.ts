@@ -1,4 +1,4 @@
-export function createBucketName() {
+export function createBucketFolderName() {
   return Date.now().toString();
 }
 
@@ -6,11 +6,15 @@ export async function uploadFileToS3Bucket(endpoint: string, bucket: string, fil
   console.log(`uploadFileToS3Bucket(bucket: ${bucket}, file: ${filename})`);
   let { uploadUrl, getUrl } = await fetchS3SignedUrl(endpoint, bucket, filename);
   console.log(`uploadFileToS3Bucket() :: sending PUT request...`);
-  await fetch(uploadUrl, {
+  const result = await fetch(uploadUrl, {
     method: 'PUT',
     headers: { 'Content-Type': file.type },
     body: file,
   });
+  if (result.status != 200) {
+    console.log(result);
+    throw new Error('Error uploading file to S3');
+  }
   console.log(`uploadFileToS3Bucket() :: file uploaded to ${getUrl}`);
   return getUrl;
 }

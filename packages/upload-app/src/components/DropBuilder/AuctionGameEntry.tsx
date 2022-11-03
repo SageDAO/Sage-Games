@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { CalendarIcon, ClockIcon, CurrencyDollarIcon, DocumentTextIcon, PhotographIcon } from '@heroicons/react/outline';
 import DatePicker from 'react-datepicker';
-import { format as formatDate } from 'date-fns';
-import { useEffectOnce } from 'react-use';
 
 type Props = {
   index: number; // index of this entry on parent array
@@ -18,7 +16,11 @@ export const AuctionGameEntry = ({ ...props }: Props) => {
     endDate: Date | null;
   }
 
-  const [state, setState] = useState<State>({ startDate: null, endDate: null }); // used by datepicker component
+  const initialState: State = {
+    startDate: props.data.startDate ? new Date(props.data.startDate * 1000) : null, 
+    endDate: props.data.endDate ? new Date(props.data.endDate * 1000) : null
+  };
+  const [state, setState] = useState<State>(initialState); // used by datepicker component
 
   const setStartDate = (d: Date) => {
     setState({ ...state, startDate: d });
@@ -72,11 +74,16 @@ export const AuctionGameEntry = ({ ...props }: Props) => {
             </label>
             <DatePicker
               placeholderText='Click to select a date'
+              selected={state.startDate}
               minDate={new Date()}
+              // showTimeSelect
+              //timeIntervals={15}
+              showTimeInput
+              timeInputLabel="Time:"
+              dateFormat="MM/dd/yyyy HH:mm"
               onChange={setStartDate}
-              showTimeSelect
               className='form-control'
-              value={state.startDate ? formatDate(state.startDate.getTime(), 'MM/dd/yyyy hh:mm aa') : ''}
+              //value={state.startDate ? formatDate(state.startDate.getTime(), 'MM/dd/yyyy hh:mm aa') : ''}
             />
             <label className='mt-3'>
               <ClockIcon width='20' style={{ marginRight: 5 }} />

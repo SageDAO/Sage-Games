@@ -57,7 +57,7 @@ export const DrawingGameNftEntry = ({ ...props }: Props) => {
           <td width='42%' style={{ verticalAlign: 'top' }}>
             <label>
               <DocumentTextIcon width='20' style={{ marginRight: 5 }} />
-              Description
+              Description *
             </label>
             <textarea
               className='form-control md-textarea'

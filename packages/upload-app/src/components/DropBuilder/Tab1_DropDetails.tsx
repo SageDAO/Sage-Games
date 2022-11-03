@@ -1,10 +1,10 @@
 import {
+  BriefcaseIcon,
+  CubeIcon,
   DocumentTextIcon,
-  FolderIcon,
   LocationMarkerIcon,
-  PencilAltIcon,
   PhotographIcon,
-  TagIcon,
+  VideoCameraIcon,
 } from '@heroicons/react/outline';
 
 type Props = {
@@ -13,13 +13,15 @@ type Props = {
 };
 
 export const Tab1_DropDetails = ({ ...props }: Props) => {
-  const handleBannerFileChange = (e: any) => {
-    if (!e.target.files?.length) return;
-    props.setFormData((prevData: any) => ({ ...prevData, bannerImageFile: e.target.files[0] }));
-  };
-
   const handleFieldChange = (e: any) => {
     const { name, value } = e.target;
+    props.setFormData((prevData: any) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleFileChange = (e: any) => {
+    if (!e.target.files?.length) return;
+    const name = e.target.name;
+    const value = e.target.files[0];
     props.setFormData((prevData: any) => ({ ...prevData, [name]: value }));
   };
 
@@ -50,7 +52,7 @@ export const Tab1_DropDetails = ({ ...props }: Props) => {
         </div>
         <div className='col'>
           <label>
-            <FolderIcon width='20' style={{ marginRight: 5 }} />
+            <CubeIcon width='20' style={{ marginRight: 5 }} />
             Drop Name *
           </label>
           <input type='text' className='form-control' name='name' id='name' onChange={handleFieldChange} />
@@ -60,7 +62,7 @@ export const Tab1_DropDetails = ({ ...props }: Props) => {
       <div className='row mt-4'>
         <div className='col'>
           <label>
-            <PencilAltIcon width='20' style={{ marginRight: 5 }} />
+            <BriefcaseIcon width='20' style={{ marginRight: 5 }} />
             Artist Wallet Address *
           </label>
           <input
@@ -123,13 +125,50 @@ export const Tab1_DropDetails = ({ ...props }: Props) => {
 
       <label className='mt-4'>
         <PhotographIcon width='20' style={{ marginRight: 5 }} />
-        Banner Image *
+        Banner Image (up to 2MB) *
       </label>
       <input
         type='file'
         className='form-control form-control-sm form-control-file'
         name='bannerImageFile'
-        onChange={handleBannerFileChange}
+        onChange={handleFileChange}
+        accept='image/png,image/jpeg,image/gif'
+      />
+
+      <label className='mt-4'>
+        <PhotographIcon width='20' style={{ marginRight: 5 }} />
+        Tile Image (up to 2MB)
+      </label>
+      <input
+        type='file'
+        className='form-control form-control-sm form-control-file'
+        name='tileImageFile'
+        onChange={handleFileChange}
+        accept='image/png,image/jpeg,image/gif'
+      />
+
+      <label className='mt-4'>
+        <VideoCameraIcon width='20' style={{ marginRight: 5 }} />
+        Featured Drop Media (up to 20MB)
+      </label>
+      <input
+        type='file'
+        className='form-control form-control-sm form-control-file'
+        name='featuredMediaFile'
+        onChange={handleFileChange}
+        accept='image/png,image/jpeg,image/gif,video/mp4'
+      />
+
+      <label className='mt-4'>
+        <VideoCameraIcon width='20' style={{ marginRight: 5 }} />
+        Mobile Cover Media (up to 20MB)
+      </label>
+      <input
+        type='file'
+        className='form-control form-control-sm form-control-file'
+        name='mobileCoverFile'
+        onChange={handleFileChange}
+        accept='image/png,image/jpeg,image/gif,video/mp4'
       />
     </div>
   );

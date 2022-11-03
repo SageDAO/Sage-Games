@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { CalendarIcon, ColorSwatchIcon, CurrencyDollarIcon, StarIcon, UserGroupIcon } from '@heroicons/react/outline';
 import DatePicker from 'react-datepicker';
-import { format as formatDate } from 'date-fns';
 import { DrawingGameNftEntry } from './DrawingGameNftEntry';
-import MediaPreview from '../MediaPreview';
 import { createNftEntry } from './DropBuilder';
+import { getDimensions } from '../../utilities/mediaDimensions';
 
 type Props = {
   formData: any;
@@ -17,11 +16,15 @@ type Props = {
 
 export const DrawingGameEntry = ({ ...props }: Props) => {
   interface State {
-    startDate: Date | null;
-    endDate: Date | null;
+    startDate: Date;
+    endDate: Date;
   }
 
-  const [state, setState] = useState<State>({ startDate: null, endDate: null });
+  const initialState: State = {
+    startDate: props.data.startDate ? new Date(props.data.startDate * 1000) : null, 
+    endDate: props.data.endDate ? new Date(props.data.endDate * 1000) : null
+  };
+  const [state, setState] = useState<State>(initialState); // used by datepicker component
 
   const setStartDate = (d: Date) => {
     setState({ ...state, startDate: d });
@@ -37,10 +40,15 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
     document.getElementById(`nftInputFile_${props.index}`).click();
   };
 
-  const handleHiddenInputFileChange = (e: React.ChangeEvent<HTMLInputElement>, srcIndex: number) => {
+  const handleHiddenInputFileChange = async (e: React.ChangeEvent<HTMLInputElement>, srcIndex: number) => {
     if (!e.target.files?.length) return;
     const updatedGameArray = [...props.formData.drawingGames];
-    updatedGameArray[srcIndex].nfts.push(createNftEntry(e.target.files[0]));
+    const newFile = e.target.files[0];
+    const newNft = createNftEntry(newFile);
+    const { width, height } = await getDimensions(newFile);
+    newNft.width = width;
+    newNft.height = height;
+    updatedGameArray[srcIndex].nfts.push(newNft);
     props.setFormData((prevData: any) => ({ ...prevData, drawingGames: updatedGameArray }));
   };
 
@@ -90,11 +98,15 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
           <DatePicker
             id='drawingStartDate'
             placeholderText='Click to select a date'
+            selected={state.startDate}
             minDate={new Date()}
+            //showTimeSelect
+            //timeIntervals={15}
+            showTimeInput
+            timeInputLabel="Time:"
+            dateFormat="MM/dd/yyyy HH:mm"
             onChange={setStartDate}
-            showTimeSelect
             className='form-control'
-            value={state.startDate ? formatDate(state.startDate.getTime(), 'MM/dd/yyyy hh:mm aa') : ''}
           />
         </div>
         <div className='col'>
@@ -105,17 +117,21 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
           <DatePicker
             id='drawingEndDate'
             placeholderText='Click to select a date'
+            selected={state.endDate}
             minDate={new Date()}
+            //showTimeSelect
+            //timeIntervals={15}
+            showTimeInput
+            timeInputLabel="Time:"
+            dateFormat="MM/dd/yyyy HH:mm"
             onChange={setEndDate}
-            showTimeSelect
             className='form-control'
-            value={state.endDate ? formatDate(state.endDate.getTime(), 'MM/dd/yyyy hh:mm aa') : ''}
           />
         </div>
         <div className='col'>
           <label>
             <CurrencyDollarIcon width='20' style={{ marginRight: 5 }} />
-            ASH Cost *
+            ASH Cost
           </label>
           <input
             type='text'
@@ -129,7 +145,7 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
         <div className='col'>
           <label>
             <StarIcon width='20' style={{ marginRight: 5 }} />
-            PIXEL Cost *
+            PIXEL Cost
           </label>
           <input
             type='text'
@@ -146,7 +162,7 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
         <div className='col'>
           <label>
             <ColorSwatchIcon width='20' style={{ marginRight: 5 }} />
-            Max Tickets
+            Max Entries
           </label>
           <input
             type='number'
@@ -160,7 +176,7 @@ export const DrawingGameEntry = ({ ...props }: Props) => {
         <div className='col'>
           <label>
             <UserGroupIcon width='20' style={{ marginRight: 5 }} />
-            Max Tickets per User
+            Max Entries per User
           </label>
           <input
             type='number'

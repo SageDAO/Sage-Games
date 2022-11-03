@@ -13,15 +13,17 @@ export function createNftEntry(nftFile: File) {
   const nftEntry = {
     nftFile,
     name: nftFile.name.split('.')[0],
-    s3PathOptimized: null,
+    width: null,
+    height: null,
     previewJSX: null,
   };
   nftEntry.previewJSX = (
     <MediaPreview
       file={nftEntry.nftFile}
-      onGeneratePreview={(_s3PathOptimized: string) => {
-        nftEntry.s3PathOptimized = _s3PathOptimized;
-      }}
+      previewWidth={150}
+      // onGeneratePreview={(_s3PathOptimized: string) => {
+      //   nftEntry.s3PathOptimized = _s3PathOptimized;
+      // }}
     />
   );
   return nftEntry;
@@ -75,7 +77,7 @@ export function DropBuilder() {
           <Tab4_Drawings formData={formData} setFormData={setFormData} />
         </TabPanel>
         <TabPanel>
-          <Tab5_Review formData={formData} />
+          <Tab5_Review formData={formData} setFormData={setFormData} />
         </TabPanel>
       </Tabs>
     </div>
