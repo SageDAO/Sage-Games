@@ -1,10 +1,12 @@
 /**
  * Crawler for NFT sales data obtained from an Alchemy endpoint, which supports:
  *
- *   - OpenSea (Seaport) address 0x50075f151abc5b6b448b1272a0a1cfb5cfa25828, deployed on block 14806444 (05/19/2022)
- *   - LooksRare         address 0xaf1cfc6b4104c797149fb7a294f7d46f7ec27b80, deployed on block 13891957 (12/28/2021)
- *   - x2y2              address 0xd0c3cd7ac1109593e31150098ef77abe3ff18f98, deployed on block 14055260 (01/22/2022)
+ *   - OpenSea (Seaport)
+ *   - LooksRare
+ *   - x2y2
  *
+ * (API only started indexing from block 13899842, dated 12/29/2021)
+ * 
  * https://docs.alchemy.com/reference/getnftsales
  */
 
@@ -30,7 +32,7 @@ export default async function run() {
 
 async function getLastIndexedBlockNumber(): Promise<number> {
   const record = await prisma.crawler.findUnique({ where: { id: CRAWLER_ID } })
-  return record ? record.lastBlockNumber : 13891957
+  return record ? record.lastBlockNumber : 13899842 // first indexed block on this API
 }
 
 //export {}
