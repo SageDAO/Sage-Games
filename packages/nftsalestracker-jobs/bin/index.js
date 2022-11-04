@@ -1,0 +1,3 @@
+const currentDateAndTime = new Date().toISOString();
+console.log(currentDateAndTime);
+//# sourceMappingURL=index.js.map

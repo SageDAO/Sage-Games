@@ -14,19 +14,22 @@ model Crawler {
   id              Int           @id @default(autoincrement())
   name            String
   lastBlockNumber Int           @default(0)
+  sales           NftSale[]
 }
 
-model Creator {
+model Artist {
   id              Int           @id @default(autoincrement())
   displayName     String        @default("anon")
+  wallets         Wallet[]
 }
 
-model CreatorWallet {
+model Wallet {
   id              Int           @id @default(autoincrement())
-  creatorId       Int
-  Creator         Creator       @relation(fields: [creatorId], references: [id])
-  walletAddress   String
+  artistId        Int
+  artist          Artist        @relation(fields: [artistId], references: [id])
+  address         String
   ensName         String?
+  sales           NftSale[]
 }
 
 model NftSale {
@@ -34,7 +37,7 @@ model NftSale {
   crawlerId       Int
   txHash          String
   blockNumber     Int
-  creatorWalletId Int
+  artistWalletId  Int
   marketplace     String
   contractAddress String
   tokenId         Int
@@ -42,5 +45,6 @@ model NftSale {
   buyerAddress    String
   price           Float
   priceCurrency   String
-  CrawlerWallet   CrawlerWallet @relation(fields: [creatorWalletId], references: [id])
+  crawler         Crawler       @relation(fields: [crawlerId], references: [id])
+  artistWallet    Wallet        @relation(fields: [artistWalletId], references: [id])
 }
