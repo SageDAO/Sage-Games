@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../src/generated/client"
 }
 
 datasource db {
@@ -20,6 +21,7 @@ model Crawler {
 model Artist {
   id              Int           @id @default(autoincrement())
   displayName     String        @default("anon")
+  avatarURL       String?
   wallets         Wallet[]
 }
 
@@ -29,22 +31,21 @@ model Wallet {
   artist          Artist        @relation(fields: [artistId], references: [id])
   address         String
   ensName         String?
-  sales           NftSale[]
 }
 
 model NftSale {
   id              Int           @id @default(autoincrement())
   crawlerId       Int
+  crawler         Crawler       @relation(fields: [crawlerId], references: [id])
   txHash          String
   blockNumber     Int
-  artistWalletId  Int
+  blockTimestamp  Int
   marketplace     String
   contractAddress String
+  ownerAddress    String
   tokenId         Int
   sellerAddress   String
   buyerAddress    String
   price           Float
-  priceCurrency   String
-  crawler         Crawler       @relation(fields: [crawlerId], references: [id])
-  artistWallet    Wallet        @relation(fields: [artistWalletId], references: [id])
+  paymentToken    String
 }

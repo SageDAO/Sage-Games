@@ -6,21 +6,21 @@
  *   - x2y2
  *
  * (API only started indexing from block 13899842, dated 12/29/2021)
- * 
+ *
  * https://docs.alchemy.com/reference/getnftsales
  */
 
 import { Network, Alchemy } from 'alchemy-sdk'
 import { PrismaClient } from '@prisma/client'
 
-const CRAWLER_ID = 1
+const CRAWLER_ID = 2
 const CRAWLER_NAME = 'alchemy'
 const ALCHEMY_KEY = 'U1dr8L1ve25H9E_iJ7d98wnh2Yrr0ry7'
 
 const prisma = new PrismaClient()
 const alchemy = new Alchemy({
   apiKey: ALCHEMY_KEY,
-  network: Network.ETH_MAINNET,
+  network: Network.ETH_MAINNET
 })
 
 export default async function run() {
@@ -31,8 +31,12 @@ export default async function run() {
 }
 
 async function getLastIndexedBlockNumber(): Promise<number> {
-  const record = await prisma.crawler.findUnique({ where: { id: CRAWLER_ID } })
-  return record ? record.lastBlockNumber : 13899842 // first indexed block on this API
+  const record = await prisma.crawler.upsert({
+    where: { id: CRAWLER_ID },
+    update: {},
+    create: { id: CRAWLER_ID, name: CRAWLER_NAME, lastBlockNumber: 13899842 }
+  })
+  return record.lastBlockNumber
 }
 
 //export {}
