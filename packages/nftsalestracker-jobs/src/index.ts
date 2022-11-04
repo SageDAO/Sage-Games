@@ -1,7 +1,7 @@
-import alchemyCrawler from './crawler-alchemy'
+import transposeCrawler from './crawler-transpose'
 
 async function main() {
-  await alchemyCrawler()
+  await transposeCrawler()
 }
 
 function exit(code: number) {
@@ -10,4 +10,7 @@ function exit(code: number) {
 
 main()
   .then(() => setTimeout(exit, 2000, 0))
-  .catch((error) => setTimeout(exit, 2000, 1))
+  .catch((error) => {
+    console.log(error)
+    setTimeout(exit, 2000, 1)
+  })

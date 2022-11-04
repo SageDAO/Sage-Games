@@ -26,11 +26,11 @@ model Artist {
 }
 
 model Wallet {
-  id              Int           @id @default(autoincrement())
+  address         String        @id
   artistId        Int
   artist          Artist        @relation(fields: [artistId], references: [id])
-  address         String
   ensName         String?
+  sales           NftSale[]
 }
 
 model NftSale {
@@ -39,10 +39,11 @@ model NftSale {
   crawler         Crawler       @relation(fields: [crawlerId], references: [id])
   txHash          String
   blockNumber     Int
-  blockTimestamp  Int
+  blockTimestamp  Int?
   marketplace     String
   contractAddress String
-  ownerAddress    String
+  ownerAddress    String?
+  ownerWallet     Wallet?       @relation(fields: [ownerAddress], references: [address])
   tokenId         Int
   sellerAddress   String
   buyerAddress    String
