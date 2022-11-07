@@ -16,8 +16,8 @@
  */
 
 import { ethers } from 'ethers'
-import { PrismaClient } from './generated/client'
 import axios, { AxiosRequestConfig } from 'axios'
+import { PrismaClient } from './generated/client'
 import { CrawlerInfo, getBlockTimestamp, getContractOwner, getLastIndexedBlock } from './utils'
 
 const TRANSPOSE_CRAWLER = <CrawlerInfo>{
@@ -44,32 +44,56 @@ export default async function run() {
     var { data } = await axios.get(url, requestHeaders)
     importedRecordCount += data.results.length
     var lastBlockNumber = await consumeData(data.results)
-    //await prisma.crawler.update({ where: { id: TRANSPOSE_CRAWLER.id }, data: { lastBlockNumber }})
-    console.log(`${url} :: ${data.results.length} records (${importedRecordCount} total, block = ${lastBlockNumber})`)
-    url = null // data.next
+    await prisma.crawler.update({ where: { id: TRANSPOSE_CRAWLER.id }, data: { lastBlockNumber }})
+    console.log(`${new Date().toISOString()} ${url} :: ${data.results.length} records (${importedRecordCount} total, block = ${lastBlockNumber})`)
+    url = data.next
   }
 }
 
 async function consumeData(rows: any[]): Promise<number> {
   const prismaCreates = []
+  var contractQueryTimeSum = 0;
+  var dbQueryTimeSum = 0
   for (const row of rows) {
-    prismaCreates.push({
-      crawlerId: TRANSPOSE_CRAWLER.id,
+    var contractQueryIn = performance.now()
+    const ownerAddress = await getContractOwner(row.contract_address)
+    const blockTimestamp = await getBlockTimestamp(row.block_number)
+    var contractQueryOut = performance.now()
+    contractQueryTimeSum += contractQueryOut - contractQueryIn
+    const data = {
+      crawler: { connect: { id: TRANSPOSE_CRAWLER.id }},
       txHash: row.transaction_hash,
       blockNumber: row.block_number,
-      blockTimestamp: await getBlockTimestamp(row.block_number),
+      blockTimestamp,
       marketplace: `${row.exchange_name}-${row.contract_version}`,
       contractAddress: row.contract_address,
-      ownerAddress: await getContractOwner(row.contract_address),
       tokenId: row.token_id,
       sellerAddress: row.seller,
       buyerAddress: row.buyer,
       price: parseFloat(ethers.utils.formatEther(String(row.price))),
       paymentToken: row.payment_token,
-    })
-    // TODO connect relationships
+      ownerWallet: null || {}
+    }
+    if (ownerAddress) {
+      data.ownerWallet = { 
+        connectOrCreate: { 
+          where: { address: ownerAddress }, 
+          create: { address: ownerAddress } 
+        } 
+      }
+    }
+    const dbQueryIn = performance.now()
+    try {
+      await prisma.nftSale.create({ data })
+    } catch (e: any) {
+      console.log(e.message)
+    }
+    const dbQueryOut = performance.now()
+    dbQueryTimeSum += dbQueryOut - dbQueryIn
+    prismaCreates.push(data)
   }
-  //await prisma.nftSale.createMany({ data: prismaCreates, skipDuplicates: true })
+  console.log(`Avg contract query time: ${contractQueryTimeSum/prismaCreates.length}`)
+  console.log(`Avg db query time: ${dbQueryTimeSum/prismaCreates.length}`)
   return prismaCreates.pop().blockNumber
 }
 
