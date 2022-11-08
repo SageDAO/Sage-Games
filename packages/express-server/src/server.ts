@@ -3,7 +3,7 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import Debug from "debug";
-import leaderboardRouter from "./routes/leaderboard";
+import leaderboardRouter from "./routes/leaderboard.route";
 
 dotenv.config();
 

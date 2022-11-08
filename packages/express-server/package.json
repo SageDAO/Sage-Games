@@ -6,14 +6,16 @@
     "build": "npx tsc",
     "start": "node dist/server.js",
     "dev": "cross-env DEBUG='*' nodemon src/server.ts",
-    "prisma:generate": "npx prisma generate --schema=./src/prisma/schema.prisma"
+    "prisma:generate": "npx prisma generate --schema=./src/prisma/schema.prisma",
+    "postinstall": "npm run prisma:generate"
   },
   "dependencies": {
     "@prisma/client": "^4.5.0",
     "cors": "^2.8.5",
     "debug": "^4.3.4",
     "dotenv": "^16.0.3",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "express-validator": "^6.14.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",

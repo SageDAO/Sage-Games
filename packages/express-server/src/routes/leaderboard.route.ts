@@ -1,7 +1,13 @@
 import prisma from "../prisma/client";
 import express, { Express, Request, Response } from "express";
+import { param } from "express-validator";
+import { validationResult } from "express-validator/src/validation-result";
+import Debug from "debug";
+const debug = Debug("[leaderboard]");
 
 const leaderboardRouter = express.Router();
+
+//FOR MAIN LEADERBOARD VIEW
 
 leaderboardRouter.get("/", async (_req, res) => {
   try {
@@ -13,11 +19,18 @@ leaderboardRouter.get("/", async (_req, res) => {
   }
 });
 
-leaderboardRouter.get("/artist", async (req, res, next) => {
-  const { id } = req.query;
+//FOR SINGLE ARTIST VIEW
+
+leaderboardRouter.get("/artists/:id",
+  param('id').isNumeric()
+, async (req, res, next) => {
+  // const { id } = req.params;
   try {
-    if (!id) {
-      res.status(400).send("no wallet id provided");
+    const {id} = req.params!
+    debug(id)
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      return res.status(400).json(({errors: errors.array()}))
     }
     //where walletAddress is among this artist's wallet
     const artist = await prisma.artist.findFirst({
