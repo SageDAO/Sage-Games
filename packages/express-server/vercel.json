@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "/leaderboard",
+      "dest": "/dist/routes/leaderboard.route.js"
+    }
+  ]
+}
