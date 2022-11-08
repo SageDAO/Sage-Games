@@ -5,8 +5,7 @@
   "scripts": {
     "build": "npx tsc",
     "start": "node dist/server.js",
-    "debug": "cross-env DEBUG='*'",
-    "dev": "npx tsc --watch && nodemon dist/server.js"
+    "dev": "cross-env DEBUG='*' nodemon src/server.ts"
   },
   "dependencies": {
     "cors": "^2.8.5",
