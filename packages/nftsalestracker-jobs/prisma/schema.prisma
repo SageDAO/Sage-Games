@@ -44,7 +44,7 @@ model NftSale {
   contractAddress String
   ownerAddress    String?
   ownerWallet     Wallet?       @relation(fields: [ownerAddress], references: [address])
-  tokenId         Int
+  tokenId         String
   sellerAddress   String
   buyerAddress    String
   price           Float

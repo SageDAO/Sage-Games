@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { ethers } from 'ethers'
+import { ConnectionInfo } from 'ethers/lib/utils'
 import { Cache } from 'memory-cache'
 
 export type CrawlerInfo = {
@@ -9,14 +10,22 @@ export type CrawlerInfo = {
   apiKey: string
 }
 
-type LastIndexedBlock = { blockNumber: number; blockTimestamp: number }
+export type LastIndexedBlock = { blockNumber: number; blockTimestamp: number }
 
 const prisma = new PrismaClient()
-const provider = new ethers.providers.JsonRpcProvider('https://rpc.ankr.com/eth') // TODO use pro (alchemy?) rpc url
+// const provider = new ethers.providers.AlchemyProvider(null, 'U1dr8L1ve25H9E_iJ7d98wnh2Yrr0ry7') // TODO use pro (alchemy?) rpc url
+// const provider = new ethers.providers.JsonRpcProvider('https://rpc.ankr.com/eth') // TODO use pro (alchemy?) rpc url
+
+const connection = <ConnectionInfo>{
+  url: 'https://eth-mainnet.g.alchemy.com/v2/U1dr8L1ve25H9E_iJ7d98wnh2Yrr0ry7',
+  throttleLimit: 5,
+}
+const provider = new ethers.providers.StaticJsonRpcProvider(connection)
+
 const blockTimestampCache = new Cache<number, number>()
 const contractOwnerCache = new Cache<string, string>()
 
-export async function getLastIndexedBlock(crawler: CrawlerInfo): Promise<LastIndexedBlock> {
+export async function getLastIndexedBlockOnDB(crawler: CrawlerInfo): Promise<LastIndexedBlock> {
   const record = await prisma.crawler.upsert({
     where: { id: crawler.id },
     update: {},
@@ -49,12 +58,12 @@ export async function getContractOwner(contractAddress: string): Promise<string>
         contractAddress,
         ['function owner() public view returns (address)'],
         provider
-      )  
+      )
       ownerAddress = await contract.owner()
     } catch (e) {
       ownerAddress = 'null'
     }
-    contractOwnerCache.put(contractAddress, ownerAddress, 90_000) // cache results for 90 seconds
+    contractOwnerCache.put(contractAddress, ownerAddress, 3_600_000) // cache results for one hour
   }
   return ownerAddress == 'null' ? null : ownerAddress
 }
